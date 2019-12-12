@@ -1,7 +1,4 @@
-- [ ] Account for Camera lens distortion
+- [x] Account for Camera lens distortion
+- [ ] Account for perspective
 - [ ] Account for time trigger delay
-
-To calibrate:
-- [ ] Transformation from sample plane to cameras plane
-- [ ] lens distortion
-- [ ] Camera relative positions
+- [ ] Add reading of the "analytical" trajectory to compare

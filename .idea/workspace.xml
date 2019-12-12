@@ -1,7 +1,139 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="07a047a0-5fc3-425e-85a2-ca29d66a331d" name="Default Changelist" comment="" />
+    <list default="true" id="07a047a0-5fc3-425e-85a2-ca29d66a331d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cam.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/3Drecons.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/3Drecons.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0001.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0001jpg.chd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0002.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0003.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0004.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0005.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0006.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0007.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0008.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0009.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0010.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0011.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0012.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0013.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0014.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0015.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0016.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0017.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0018.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0019.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0020.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0021.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0022.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0023.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0024.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0025.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0026.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0027.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0028.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0029.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0030.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0031.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0032.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0033.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0034.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0035.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0036.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0037.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0038.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0039.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0040.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0041.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0042.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0043.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0044.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0045.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0046.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0047.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0048.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0049.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0050.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0051.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0052.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0053.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0054.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0055.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0056.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0057.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0058.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0059.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0060.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0061.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0062.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0063.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0064.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0065.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0066.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0067.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0068.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_left/150psi1_0069.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0001.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0001jpg.chd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0002.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0003.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0004.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0005.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0006.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0007.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0008.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0009.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0010.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0011.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0012.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0013.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0014.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0015.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0016.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0017.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0018.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0019.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0020.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0021.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0022.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0023.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0024.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0025.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0026.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0027.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0028.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0029.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0030.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0031.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0032.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0033.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0034.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0035.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0036.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0037.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0038.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0039.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0040.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0041.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0042.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0043.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0044.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0045.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0046.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0047.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0048.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0049.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0050.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/150psi1_top/150psi1_0051.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Results.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/objectExtract.py" beforeDir="false" afterPath="$PROJECT_DIR$/objectExtract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reconstruction_3d.py" beforeDir="false" afterPath="$PROJECT_DIR$/reconstruction_3d.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,7 +152,9 @@
   </component>
   <component name="ProjectId" id="1UIqXcPWY9Mn7htCxJhFuzuQlZ1" />
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RunDashboard">
@@ -36,6 +170,28 @@
     </option>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="3Drecons" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="3Drecons" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -75,6 +231,17 @@
       <option name="presentableId" value="Default" />
       <updated>1575054497721</updated>
       <workItem from="1575054499048" duration="5714000" />
+      <workItem from="1575378541246" duration="196000" />
+      <workItem from="1575467616040" duration="15883000" />
+      <workItem from="1575594792258" duration="539000" />
+      <workItem from="1575583509136" duration="1929000" />
+      <workItem from="1575750530695" duration="3963000" />
+      <workItem from="1575754615567" duration="11174000" />
+      <workItem from="1575827891484" duration="46000" />
+      <workItem from="1575946834252" duration="15322000" />
+      <workItem from="1575978957080" duration="3356000" />
+      <workItem from="1576109487702" duration="12000" />
+      <workItem from="1576111584453" duration="403000" />
     </task>
     <servers />
   </component>
@@ -86,13 +253,15 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/3Drecons$main.coverage" NAME="main Coverage Results" MODIFIED="1575059202545" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/3Drecons$main.coverage" NAME="main Coverage Results" MODIFIED="1575981794712" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
