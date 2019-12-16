@@ -7,13 +7,15 @@ class Cam:
     """
     Class for the camera object
     """
-    def __init__(self, mtx, dist, R, T, picDir, firstPic, pic_to_cm, framerate, cropsize=0):
+    def __init__(self, mtx, dist, R, T, picDir, firstPic, pic_to_cm, framerate, res, cropsize=0):
         """
         Camera object initialisation
 
         :param mtx: camera intrinsinc matrix
         :param dist: camera distortion matrix
-        :param R: camera to sample rotation (Rodrigues vector)
+        :param R: camera to sample rotation (Rodrigues vector).
+        Warning: the initialisation function outputs cam.R as a rotation *matrix* but takes a
+        Rodrigues vector as input.
         :param T: camera to sample translation
         :param picDir: shot pictures directory
         :param firstPic: first picture name
@@ -21,6 +23,7 @@ class Cam:
         :param framerate: camera framerate
         :param cropsize: size of teh screen to crop (usefull when pictures information was written
         on each pictures)
+        :param res: camera resolution (W, H)
         """
         self.mtx = np.loadtxt(mtx)
         self.dist = np.loadtxt(dist)
@@ -32,8 +35,9 @@ class Cam:
         self.pic_to_cm = pic_to_cm
         self.framerate = framerate
         self.cropSize = cropsize
+        self.res = res
 
-    def make_calib(self):
+    def undistort(self):
         """
         Undistort teh camera pictures and change the picture file to the undistorted one
         :return:
