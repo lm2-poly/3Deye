@@ -7,7 +7,7 @@ import numpy as np
 from reconstruction_3d import reconstruct_3d
 from cam import Cam
 from calibration.main import calibrate_stereo
-
+from data_save import data_save
 
 def make_doublesin_traj(numFrame):
     X = np.linspace(-4, 4., numFrame)
@@ -17,9 +17,9 @@ def make_doublesin_traj(numFrame):
     return X, Y, Z
 
 
-print("******* Calibrating cameras")
-calibrate_stereo("calibration/lens_dist_calib", "calibration/lens_dist_calib",
-                "calibration/sources/tilted_top.png", "calibration/sources/tilted_left.png")
+#print("******* Calibrating cameras")
+#calibrate_stereo("calibration/lens_dist_calib", "calibration/lens_dist_calib",
+#                "calibration/sources/tilted_top.png", "calibration/sources/tilted_left.png")
 calib_file = "calibration/res"
 
 print("******* Loading camera data and props")
@@ -53,3 +53,5 @@ plt.xlim((0,10))
 plt.ylim((-2.0, 2.0))
 plt.show()
 
+print("******* Export trajectory file")
+data_save(timespan, X, Y, Z)
