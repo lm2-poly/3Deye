@@ -1,4 +1,5 @@
 - [x] Account for Camera lens distortion
-- [ ] Account for perspective
+- [x] Account for perspective
 - [ ] Account for time trigger delay
 - [ ] Add reading of the "analytical" trajectory to compare
+- [ ] Add tiff format support
