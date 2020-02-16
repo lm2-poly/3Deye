@@ -13,7 +13,7 @@ def get_cam_matrix(calib_pics):
     # termination criteria
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
     objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pics, True, criteria)
-    objpoints = 0.25 * np.array(objpoints)
+    objpoints = 0.4375 * np.array(objpoints)
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
     h, w = img.shape[:2]

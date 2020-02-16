@@ -7,7 +7,8 @@ class Cam:
     """
     Class for the camera object
     """
-    def __init__(self, mtx, dist, R, T, picDir, firstPic, pic_to_cm, framerate, res, cropsize=0):
+    def __init__(self, mtx, dist, R, T, picDir, firstPic, pic_to_cm, framerate, res, cropsize=0,
+                 origin=(0,0)):
         """
         Camera object initialisation
 
@@ -24,12 +25,14 @@ class Cam:
         :param cropsize: size of teh screen to crop (usefull when pictures information was written
         on each pictures)
         :param res: camera resolution (W, H)
+        :param origin: pixel coordinate of the system origin
         """
         self.mtx = np.loadtxt(mtx)
         self.dist = np.loadtxt(dist)
         self.R = np.zeros((3, 3))
         cv2.Rodrigues(np.loadtxt(R), self.R)
-        self.T = np.loadtxt(T) + np.array([0.75, 0.75, 0])
+        self.T = np.loadtxt(T) #+ np.array([0.75, 0.75, 0])
+        self.origin = origin
         self.dir = picDir
         self.firstPic = firstPic
         self.pic_to_cm = pic_to_cm

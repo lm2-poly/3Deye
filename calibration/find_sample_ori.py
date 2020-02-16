@@ -13,10 +13,10 @@ def get_transfo_mat(calib_pic_file, mtx, dist):
     :return:
     """
     # termination criteria
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.000001)
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
     objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pic_file, False, criteria)
-    objpoints = 0.25 * np.array(objpoints)
+    objpoints = 0.4375 * np.array(objpoints)
     obj_vect = np.reshape(objpoints, (objpoints.shape[0] * objpoints.shape[1], 3))
     img_vect = np.reshape(np.array(imgpoints), (objpoints.shape[0] * objpoints.shape[1], 2))
     ret, R, T = cv2.solvePnP(obj_vect, img_vect, mtx, dist)

@@ -1,10 +1,10 @@
 import glob
-
+import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
 
-def filter_val(pic, width, height, tol=0., lastVal = [0,0]):
+def filter_val(pic, width, height, tol=10., lastVal = [0,0]):
 	'''
 	Compute the barycenter of a point cloud which pixel grey value is above a given threshold
 
@@ -41,7 +41,7 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1):
 
 	:param dir: directory name containing the picture
 	:param firstPicEnd: name of the first picture (should not contain the moving object)
-	:param cropSize: Size to crop from the picture (bottom), use if the images have a banner
+	:param cropSizes: Size to crop from the picture (bottom), use if the images have a banner
 	:param pic_to_cm: pixel to centimeter size ratio
 	:param framerate: camera framerate
 	:param splitSymb: symbol to use to split the picture names (default "_")
@@ -51,18 +51,22 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1):
 	img = Image.open(cam.dir + "/" + cam.firstPic)
 	firstNum = int(cam.firstPic.split(splitSymb)[numsplit].split(".")[0])
 	width, height = img.size
-	area = (0, 0, width, height - cam.cropSize)
+	area = (cam.cropSize[0], cam.cropSize[2], width - cam.cropSize[1], height - cam.cropSize[3])
 	img = img.crop(area)
 	RGBPicRef = np.zeros((width, height))
 
-	for i in range(0, width):
-		for j in range(0, height - cam.cropSize):
+	for i in range(0, width - (cam.cropSize[0] + cam.cropSize[1])):
+		for j in range(0, height - (cam.cropSize[2] + cam.cropSize[3])):
 			RGBPicRef[i, j] = img.getpixel((i, j))
-
+	plt.imshow(RGBPicRef)
+	plt.show()
 	img.close()
 	picList = glob.glob(cam.dir+"/*.jpg")
-	picList.remove(cam.dir+"\\"+cam.firstPic)
-
+	if cam.dir+"/"+cam.firstPic in picList:
+		picList.remove(cam.dir+"/"+cam.firstPic)
+	else:
+		picList.remove(cam.dir+"\\"+cam.firstPic)
+	picList = sorted(picList)
 	lenDat = len(picList)
 	avgdif = np.zeros((lenDat, 2))
 	RGBPic_actu = np.zeros((width, height))
@@ -71,12 +75,16 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1):
 	for k in range(0, lenDat):
 		img = Image.open(picList[k])
 		img = img.crop(area)
-		for i in range(0, width):
-			for j in range(0, height - cam.cropSize):
+		for i in range(0, width - (cam.cropSize[0] + cam.cropSize[1])):
+			for j in range(0, height - (cam.cropSize[2] + cam.cropSize[3])):
 				RGBPic_actu[i, j] = img.getpixel((i, j))
 		img.close()
 		numActu = int(picList[k].split(splitSymb)[numsplit].split(".")[0]) - firstNum - 1
-		bary_x, bary_y, num_pic = filter_val(abs(RGBPic_actu - RGBPicRef), width, height - cam.cropSize, lastVal=lastVal)
+		bary_x, bary_y, num_pic = filter_val(abs(RGBPic_actu - RGBPicRef), width - (cam.cropSize[0]+cam.cropSize[1]),
+											 height - (cam.cropSize[2] + cam.cropSize[3]), lastVal=lastVal)
+		#plt.contourf(abs(RGBPic_actu - RGBPicRef))
+		#plt.colorbar()		
+		#plt.show()
 		lastVal = [bary_x, bary_y]
 		avgdif[numActu, 0] = bary_x
 		avgdif[numActu, 1] = bary_y

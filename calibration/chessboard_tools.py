@@ -64,7 +64,7 @@ def get_chessboard_points(picDir, listPic, criteria):
     imgpoints = []  # 2d points in image plane.
 
     if listPic:
-        images = glob.glob(picDir+'/*.png')
+        images = glob.glob(picDir+'/*.jpg')
     else:
         images = [picDir]
 

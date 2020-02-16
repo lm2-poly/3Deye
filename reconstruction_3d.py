@@ -19,7 +19,8 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
     traj_2d_top, timespan_top = compute_2d_traj(cam_top, splitSymb=splitSymb, numsplit=numsplit)
     traj_2d_left, timespan_left = compute_2d_traj(cam_left, splitSymb=splitSymb, numsplit=numsplit)
     minspan_len = min(len(timespan_top), len(timespan_left))
-
+    cam_shift_origin(cam_left)
+    cam_shift_origin(cam_top)
     if method == "no-persp":
         X, Y, Z = get_3d_nopersp(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top)
     else:
@@ -73,6 +74,15 @@ def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, metho
             X_coor[i], Y_coor[i], Z_coor[i] = [np.nan, np.nan, np.nan]
     return Y_coor, X_coor, -Z_coor
 
+def cam_shift_origin(cam):
+    """Shift cam origin from the actual one to the cam.origin pixel value
+
+    :param cam: camera object to tranform
+    """
+    actu_ori = get_proj_coords(0, 0, 0, cam)
+    tx = actu_ori[0]/actu_ori[2] - cam.origin[0]
+    ty = actu_ori[1]/actu_ori[2] - cam.origin[1]
+    cam.origin = (float(tx), float(ty))
 
 def make_system_mat(cam_top, cam_left, pos_2d_left, pos_2d_top):
     """Computes the matrix A, b of the equation system AX = b where X is the shot 3D coordinates
@@ -82,10 +92,11 @@ def make_system_mat(cam_top, cam_left, pos_2d_left, pos_2d_top):
     :param cam_top,cam_left: camera object for the top and left camera
     :return:
     """
+
     A = np.zeros((3, 3))
     B = np.zeros((1, 3))
-    u1, v1 = pos_2d_top
-    u2, v2 = pos_2d_left
+    u1, v1 = pos_2d_top + cam_top.origin
+    u2, v2 = pos_2d_left + cam_left.origin
     a_top, b_top = make_alpha_beta(cam_top)
     a_left, b_left = make_alpha_beta(cam_left)
 
