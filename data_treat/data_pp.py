@@ -34,12 +34,14 @@ def result_plot(X, Y, Z, timespan):
     :param timespan: time point list
     :return: nothing
     """
-
+    X0 = X[~np.isnan(X)][0]
+    Y0 = Y[~np.isnan(X)][0]
+    Z0 = Z[~np.isnan(X)][0]
     plt.figure(figsize=(12, 8))
     plt.subplot(121)
-    plt.plot(timespan[~np.isnan(X)] * 1000, X[~np.isnan(X)], marker=".", label="X")
-    plt.plot(timespan[~np.isnan(X)] * 1000, Y[~np.isnan(X)], marker=".", label="Y")
-    plt.plot(timespan[~np.isnan(X)] * 1000, Z[~np.isnan(X)], marker=".", label="Z")
+    plt.plot(timespan[~np.isnan(X)] * 1000, X[~np.isnan(X)] - X0, marker=".", label="X")
+    plt.plot(timespan[~np.isnan(X)] * 1000, Y[~np.isnan(X)] - Y0, marker=".", label="Y")
+    plt.plot(timespan[~np.isnan(X)] * 1000, Z[~np.isnan(X)] - Z0, marker=".", label="Z")
     plt.xlabel('t (ms)')
     plt.ylabel('Z (cm)')
     plt.subplot(122)
@@ -64,23 +66,34 @@ def get_init_angle(X, Y, Z, t, cam_top, cam_left, plot=True):
     :param plot: True or False indicate if should plot a verification picture
     :return: nothing
     """
-    init = 1
-    end = 3
-    v = np.array([X[init] - X[end], Y[init] - Y[end], Z[init] - Z[end]])
+    init = 0
+    end = 6
+    dX = X[end] - X[init] #np.diff(X[~np.isnan(X)], n=2)
+    dY = Y[end] - Y[init] #np.diff(Y[~np.isnan(X)], n=2)
+    dZ = Z[end] - Z[init] #np.diff(Z[~np.isnan(X)], n=2)
+    dt = t[1] - t[0]
+    v = np.array([dX, dY, dZ])/(end-init)/dt/100.
+    print(v)
     vnorm = math.sqrt(v[0]**2 + v[1]**2 + v[2]**2)
-    alpha = math.acos(v[2]/vnorm)*180./math.pi
+    alpha = math.acos(-v[0]/vnorm)*180./math.pi
 
     proj_V = get_proj_coords(v[0], v[1], v[2], cam_left)
 
     proj_V = [float(proj_V[0])/float(proj_V[2]), float(proj_V[1])/float(proj_V[2])]
-    picList = os.listdir(cam_left.dir)
-    ver_pic = np.array(Image.open(cam_left.dir + '/' + picList[0]))
-    for i in range(1,5):
-        ver_pic += np.array(Image.open(cam_left.dir+'/'+picList[i]))
-
-    fig, ax = plt.subplots()
-    ax.imshow(ver_pic, "gray")
-    ax.quiver(400, 170, -proj_V[0]/100, proj_V[1]/100, color=(1.,0.,0.), scale=21)
+    plot_supper(init, end, cam_left)
+    #ax.quiver(400, 170, -proj_V[0], proj_V[1], color=(1.,0.,0.), scale=21)
+    plt.show()
+    plot_supper(init, end, cam_top)
+    # ax.quiver(400, 170, -proj_V[0], proj_V[1], color=(1.,0.,0.), scale=21)
     plt.show()
     print("angle: {:.02f}°".format(alpha))
     return alpha
+
+
+def plot_supper(init, end, cam):
+    picList = os.listdir(cam.dir)
+    ver_pic = np.array(Image.open(cam.dir + '/' + picList[0]))
+    for i in range(init, end):
+        ver_pic += np.array(Image.open(cam.dir + '/' + picList[i]))
+    fig, ax = plt.subplots()
+    ax.imshow(ver_pic, "gray")

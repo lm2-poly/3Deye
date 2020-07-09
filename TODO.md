@@ -1,4 +1,6 @@
-- [x] Account for Camera lens distortion
-- [ ] Account for perspective
 - [ ] Account for time trigger delay
-- [ ] Add reading of the "analytical" trajectory to compare
+- [ ] Improve detection algorithm
+- [ ] Improved velocity determination linear fit
+- [ ] Put shot origin at first picture detection
+- [ ] Get shot trajectory deviation at impact
+- [ ] Plot reprojection error

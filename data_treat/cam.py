@@ -7,7 +7,7 @@ class Cam:
     """
     Class for the camera object
     """
-    def __init__(self, mtx, dist, R, T, picDir, firstPic, pic_to_cm, framerate, res, cropsize=0,
+    def __init__(self, mtx, dist, R, T, picDir, firstPic, pic_to_cm, framerate, camRes, res, cropsize=0,
                  origin=(0,0)):
         """
         Camera object initialisation
@@ -24,7 +24,8 @@ class Cam:
         :param framerate: camera framerate
         :param cropsize: size of teh screen to crop (usefull when pictures information was written
         on each pictures)
-        :param res: camera resolution (W, H)
+        :param camRes: camera resolution
+        :param res: picture resolution (W, H)
         :param origin: pixel coordinate of the system origin
         """
         self.mtx = np.loadtxt(mtx)
@@ -39,6 +40,8 @@ class Cam:
         self.framerate = framerate
         self.cropSize = cropsize
         self.res = res
+        self.camRes = camRes
+
 
     def undistort(self):
         """
