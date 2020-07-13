@@ -1,9 +1,3 @@
-- [ ] Account for time trigger delay
+- [ ] Change axis origin calibration
 - [ ] Improve detection algorithm
 - [ ] Improved velocity determination linear fit
-- [ ] Get shot trajectory deviation at impact
-- [ ] Change axis origin calibration
-- [x] Provide horizontal angle estimation
-- [x] Put shot origin at first picture detection
-- [x] Plot reprojection error
-- [x] Plot detected shot trajectry on the run

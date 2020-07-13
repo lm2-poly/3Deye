@@ -110,6 +110,37 @@ def get_init_angle(X, Y, Z, t, cam_top, cam_left, plot=True):
     return alpha
 
 
+def get_impact_position(X, Y, Z, cam_left, cam_top):
+    """Automatic detection of the moment of impact simply by taking the moment where Y changes direction
+
+    :param X,Y,Z: reconstructed X, Y, and Z coordinates (ndarray)
+    :param cam_left,cam_top: left and top camera objects.
+    :return impact X,Y,Z position relative to the first detected shot picture position.
+    """
+    X0 = X[~np.isnan(X)][0]
+    Y0 = Y[~np.isnan(X)][0]
+    Z0 = Z[~np.isnan(X)][0]
+    i = 0
+    lenY = len(Y)
+    cont = True
+    while i < lenY and cont:
+        if Y[i+1] < Y[i]:
+            cont = False
+        else:
+            i+=1
+    plot_supper(0, 10, cam_top)
+    xt, yt = get_proj_list(X, Y, Z, cam_top)
+    plt.plot(xt, yt, color="white", label="Shot trajectory")
+    plt.plot(xt[i], yt[i], '.', ms=5, color="red", label="Detected impact position")
+    plt.title("Impact position detection")
+    plt.xlim((0, cam_top.res[0]))
+    plt.ylim((0, cam_top.res[1]))
+    plt.legend()
+    plt.show()
+    print("Impact position: ({:.02f}, {:.02f}, {:.02f}) (cm)".format(X[i] - X0, Y[i] - Y0, Z[i] - Z0))
+    return X[i] - X0, Y[i] - Y0, Z[i] - Z0
+
+
 def plot_supper(init, end, cam):
     picList = os.listdir(cam.dir)
     ver_pic = np.array(Image.open(cam.dir + '/' + picList[0]))
