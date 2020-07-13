@@ -18,7 +18,7 @@
 #
 import os
 import sys
-from  mock impot MagicMock()
+from  mock import MagicMock()
 
 MOCK_MODULES = ['numpy', 'scipy', 'cv2', 'matplotlib', 'matplotlib.pyplot', 'PIL', 'math', 'glob', 'scipy.optimize', 'os']
 for mod_name in MOCK_MODULES:
