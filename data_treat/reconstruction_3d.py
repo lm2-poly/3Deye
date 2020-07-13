@@ -4,7 +4,8 @@ from scipy.optimize import least_squares
 from data_treat.objectExtract import compute_2d_traj
 import matplotlib.pyplot as plt
 
-def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp"):
+
+def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp", plotTraj=True):
     """Reconstruct the 3D trajectory of a moving object filmed by 2 cameras with a given angle between them
 
     :param cam_top,cam_left: camera object for the top and left camera
@@ -13,23 +14,26 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
     :param method: "persp", "persp-opti" or "no-persp" (default) - using the
     camera intrinsinc matrix for 3D trajectory or not, using analytical expression
     or least square optimisation
+    :param plotTraj: Boolean, if True the detected shot position will be plotted
     :return:
     """
 
-    traj_2d_top, timespan_top = compute_2d_traj(cam_top, splitSymb=splitSymb, numsplit=numsplit)
-    traj_2d_left, timespan_left = compute_2d_traj(cam_left, splitSymb=splitSymb, numsplit=numsplit)
+    print("**** Shot position detection")
+    print("** Top camera")
+    traj_2d_top, timespan_top = compute_2d_traj(cam_top, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj)
+    print("** Left camera")
+    traj_2d_left, timespan_left = compute_2d_traj(cam_left, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj)
     minspan_len = min(len(timespan_top), len(timespan_left))
-    cam_shift_origin(cam_left)
-    cam_shift_origin(cam_top)
 
     traj_2d_top, traj_2d_left = cam_shift_resize(traj_2d_top, traj_2d_left, cam_top, cam_left)
 
+    print("**** 3D position reconstruction")
     if method == "no-persp":
         X, Y, Z = get_3d_nopersp(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top)
     else:
         X, Y, Z = get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method)
-
     plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left)
+
     return X, Y, Z, timespan_top[:minspan_len]
 
 
@@ -114,7 +118,7 @@ def get_proj_list(X, Y, Z, cam):
     y = []
     for i in range(0, lenList):
         dat_actu = get_proj_coords(X[i], Y[i], Z[i], cam)
-        x.append(float(dat_actu[0]/dat_actu[2]))
+        x.append(float(dat_actu[0] / dat_actu[2]))
         y.append(float(dat_actu[1] / dat_actu[2]))
     return np.array(x), np.array(y)
 

@@ -4,7 +4,7 @@ Reconstruct the 3D trajectory of a shot filmed by two orthogonal cameras
 import matplotlib.pyplot as plt
 import numpy as np
 
-from data_treat.reconstruction_3d import reconstruct_3d
+from data_treat.reconstruction_3d import reconstruct_3d, cam_shift_origin
 from data_treat.cam import Cam
 from calibration.main import calibrate_stereo
 from data_treat.data_pp import data_save, result_plot, load_data, get_init_angle
@@ -46,6 +46,8 @@ cam_left = Cam(calib_file+"/mtx_left",
                cropsize=[0, 0, 0, 48],
                origin=(412, 916))
 #[207, 0, 0, 50]
+cam_shift_origin(cam_left)
+cam_shift_origin(cam_top)
 
 #print("******* Removing lens distorsion")
 #cam_top.undistort()
@@ -54,14 +56,14 @@ cam_left = Cam(calib_file+"/mtx_left",
 
 
 print("******* Reconstructing 3D trajectory")
-X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=-1, method="persp-opti")
-#timespan, X, Y, Z = load_data("Trajectory.txt")
+#X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=-1, method="persp", plotTraj=False)
+timespan, X, Y, Z = load_data("Trajectory.txt")
 
 print("******* Plot results")
-#result_plot(X, Y, Z, timespan)
+result_plot(X, Y, Z, timespan)
 
 print("******* Compute initial angle")
-#get_init_angle(X,Y,Z,timespan, cam_top, cam_left)
+get_init_angle(X,Y,Z,timespan, cam_top, cam_left)
 
 print("******* Export trajectory file")
-#data_save(timespan, X, Y, Z)
+data_save(timespan, X, Y, Z)

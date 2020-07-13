@@ -34,7 +34,7 @@ def filter_val(pic, width, height, tol=10., lastVal = [0,0]):
 	return bary_x, bary_y, numvals
 
 
-def compute_2d_traj(cam, splitSymb="_", numsplit=1):
+def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 	'''
 	Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,
 	by computing the difference of images with the object and without the object (initial state)
@@ -54,12 +54,12 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1):
 	area = (cam.cropSize[0], cam.cropSize[2], width - cam.cropSize[1], height - cam.cropSize[3])
 	img = img.crop(area)
 	RGBPicRef = np.zeros((width, height))
-
+	if (plotTraj):
+		imSuper = np.array(img)[:,:,0]
 	for i in range(0, width - (cam.cropSize[0] + cam.cropSize[1])):
 		for j in range(0, height - (cam.cropSize[2] + cam.cropSize[3])):
 			RGBPicRef[i, j] = img.getpixel((i, j))[0]
-	plt.imshow(RGBPicRef)
-	plt.show()
+
 	img.close()
 	picList = glob.glob(cam.dir+"/*.jpg")
 	if cam.dir+"/"+cam.firstPic in picList:
@@ -78,6 +78,9 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1):
 		for i in range(0, width - (cam.cropSize[0] + cam.cropSize[1])):
 			for j in range(0, height - (cam.cropSize[2] + cam.cropSize[3])):
 				RGBPic_actu[i, j] = img.getpixel((i, j))[0]
+		if plotTraj:
+			imSuper += np.array(img)[:, :, 0]
+			imSuper = (imSuper/2).astype('uint8')
 		img.close()
 		numActu = int(picList[k].split(splitSymb)[numsplit].split(".")[0]) - firstNum - 1
 		bary_x, bary_y, num_pic = filter_val(abs(RGBPic_actu - RGBPicRef), width - (cam.cropSize[0]+cam.cropSize[1]),
@@ -88,6 +91,16 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1):
 		lastVal = [bary_x, bary_y]
 		avgdif[numActu, 0] = bary_x
 		avgdif[numActu, 1] = bary_y
+
+		if plotTraj:
+			plt.clf()
+			plt.imshow(imSuper, cmap='gray')
+			plt.plot([bary_x], [bary_y], '.', markersize=5, color="red", label="Detected position")
+			plt.xlim((0, cam.res[0]))
+			plt.ylim((0, cam.res[1]))
+			plt.legend()
+			plt.draw()
+			plt.pause(0.1)
 
 	#avgdif *= cam.pic_to_cm
 

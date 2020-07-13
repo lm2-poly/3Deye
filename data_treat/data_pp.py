@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import math
 from PIL import Image
 import os
-from data_treat.reconstruction_3d import get_proj_coords
+from data_treat.reconstruction_3d import get_proj_list
 
 
 def load_data(fileName):
@@ -66,34 +66,62 @@ def get_init_angle(X, Y, Z, t, cam_top, cam_left, plot=True):
     :param plot: True or False indicate if should plot a verification picture
     :return: nothing
     """
-    init = 0
+    init = 1
     end = 6
+    numPic = end - init
     dX = X[end] - X[init] #np.diff(X[~np.isnan(X)], n=2)
     dY = Y[end] - Y[init] #np.diff(Y[~np.isnan(X)], n=2)
     dZ = Z[end] - Z[init] #np.diff(Z[~np.isnan(X)], n=2)
-    dt = t[1] - t[0]
-    v = np.array([dX, dY, dZ])/(end-init)/dt/100.
-    print(v)
+
+    v = np.array([dX, dY, dZ])/(end-init)
+
     vnorm = math.sqrt(v[0]**2 + v[1]**2 + v[2]**2)
-    alpha = math.acos(-v[0]/vnorm)*180./math.pi
+    alpha = math.acos(v[1]/vnorm)*180./math.pi
 
-    proj_V = get_proj_coords(v[0], v[1], v[2], cam_left)
+    xt, yt = get_proj_list(X, Y, Z, cam_top)
+    xl, yl = get_proj_list(-Y, Z, -X, cam_left)
 
-    proj_V = [float(proj_V[0])/float(proj_V[2]), float(proj_V[1])/float(proj_V[2])]
+    pos_screen_resize(xt, yt, cam_top)
+    pos_screen_resize(xl, yl, cam_left)
+
+    proj_V_t = [xt[end] - xt[init], yt[end] - yt[init]]
+    proj_V_l = [xl[end] - xl[init], yl[end] - yl[init]]
+
+    plt.figure(figsize=(14, 6))
+    plt.subplot(121)
+    plt.title("Left camera")
     plot_supper(init, end, cam_left)
-    #ax.quiver(400, 170, -proj_V[0], proj_V[1], color=(1.,0.,0.), scale=21)
-    plt.show()
+    plt.quiver(xl[init] - cam_left.origin[0], yl[init] - cam_left.origin[1],
+               proj_V_l[0]/(numPic+1), proj_V_l[1]/(numPic+1), color=(1., 0., 0.), scale=50)
+    plt.xlim((0, cam_left.res[0]))
+    plt.ylim((0, cam_left.res[1]))
+
+    plt.subplot(122)
+    plt.title("Top camera")
     plot_supper(init, end, cam_top)
-    # ax.quiver(400, 170, -proj_V[0], proj_V[1], color=(1.,0.,0.), scale=21)
+    plt.quiver([xt[init]- cam_top.origin[0]], [yt[init]- cam_top.origin[1]],
+               proj_V_t[0]/(numPic+1), proj_V_t[1]/(numPic+1), color=(1., 0., 0.), scale=50)
+
+    plt.xlim((0, cam_top.res[0]))
+    plt.ylim((0, cam_top.res[1]))
     plt.show()
-    print("angle: {:.02f}°".format(alpha))
+
+    print("Horizontal angle: {:.02f}°".format(alpha))
     return alpha
 
 
 def plot_supper(init, end, cam):
     picList = os.listdir(cam.dir)
     ver_pic = np.array(Image.open(cam.dir + '/' + picList[0]))
+    ver_pic = ver_pic[0:cam.res[0] - cam.cropSize[3], :]
     for i in range(init, end):
-        ver_pic += np.array(Image.open(cam.dir + '/' + picList[i]))
-    fig, ax = plt.subplots()
-    ax.imshow(ver_pic, "gray")
+        im_act = np.array(Image.open(cam.dir + '/' + picList[i]))
+        ver_pic += im_act[0:cam.res[0] - cam.cropSize[3], :]
+
+    plt.imshow(ver_pic, "gray")
+
+
+
+def pos_screen_resize(x, y, cam):
+    x -= (cam.camRes[0] / 2 - cam.res[0] / 2)
+    y -= (cam.camRes[1] / 2 - cam.res[1] / 2)
