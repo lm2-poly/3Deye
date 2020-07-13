@@ -11,9 +11,7 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
     :param cam_top,cam_left: camera object for the top and left camera
     :param splitSymb: split symbol used in the images name between name and image number
     :param numsplit: index corresponding to the image number after the name was split
-    :param method: "persp", "persp-opti" or "no-persp" (default) - using the
-    camera intrinsinc matrix for 3D trajectory or not, using analytical expression
-    or least square optimisation
+    :param method: "persp", "persp-opti" or "no-persp" (default) - using the camera intrinsinc matrix for 3D trajectory or not, using analytical expression or least square optimisation
     :param plotTraj: Boolean, if True the detected shot position will be plotted
     :return:
     """
@@ -112,7 +110,8 @@ def get_proj_list(X, Y, Z, cam):
 
     :param X,Y,Z: list of 3D coordinates
     :param cam: cam object
-    :return two_lists x and y with the camera 2D projected oordinates"""
+    :return: two_lists x and y with the camera 2D projected coordinates
+    """
     lenList = X.shape[0]
     x = []
     y = []
@@ -145,8 +144,7 @@ def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, metho
     :param traj_2d_left: trajectory found by the left camera
     :param traj_2d_top: trajectory found by the right camera
     :param cam_top,cam_left: camera object for the top and left camera
-    :param method: "persp" (default) or "persp-opti" - use analytical expression
-    or least square optimisation
+    :param method: "persp" (default) or "persp-opti" - use analytical expression or least square optimisation
     :return:
     """
     X = traj_2d_left[:minspan_len, 0]
@@ -216,8 +214,7 @@ def make_system_mat(cam_top, cam_left, pos_2d_left, pos_2d_top):
 
 
 def make_alpha_beta(cam):
-    """Compute necessary coefficients for the 3D coordinate system matrix AX=b
-    for better code readability.
+    """Compute necessary coefficients for the 3D coordinate system matrix AX=b for better code readability.
 
     :param cam: camera object
     """
@@ -255,8 +252,7 @@ def get_proj_coords(X, Y, Z, cam):
 
 
 def get_proj_error(var, cam_left, cam_top, pos_2d_left, pos_2d_top):
-    """Compute the projection error between the projection of
-     a guessed 3D coordinate vector and the actual screen point
+    """Compute the projection error between the projection of a guessed 3D coordinate vector and the actual screen point
 
     :param var: 3D coordinate triplet
     :param pos_2d_left: position found by the left camera

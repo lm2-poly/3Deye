@@ -115,7 +115,7 @@ def get_impact_position(X, Y, Z, cam_left, cam_top):
 
     :param X,Y,Z: reconstructed X, Y, and Z coordinates (ndarray)
     :param cam_left,cam_top: left and top camera objects.
-    :return impact X,Y,Z position relative to the first detected shot picture position.
+    :return: impact X,Y,Z position relative to the first detected shot picture position.
     """
     X0 = X[~np.isnan(X)][0]
     Y0 = Y[~np.isnan(X)][0]
@@ -142,6 +142,10 @@ def get_impact_position(X, Y, Z, cam_left, cam_top):
 
 
 def plot_supper(init, end, cam):
+    """Plot the superposition (addition) of a cam shot picture between picture init and end
+    :param init,end: start and stop indices for the addition
+    :param cam: camera object to be used
+    """
     picList = os.listdir(cam.dir)
     ver_pic = np.array(Image.open(cam.dir + '/' + picList[0]))
     ver_pic = ver_pic[0:cam.res[0] - cam.cropSize[3], :]
@@ -152,7 +156,11 @@ def plot_supper(init, end, cam):
     plt.imshow(ver_pic, "gray")
 
 
-
 def pos_screen_resize(x, y, cam):
+    """Returns the coordinate in the resized screen given coordinates in the unresized creen
+    :param x,y: ndarray containing unresized scree coordinates
+    :param cam: cam object
+    :return: nothing but changes x and y values
+    """
     x -= (cam.camRes[0] / 2 - cam.res[0] / 2)
     y -= (cam.camRes[1] / 2 - cam.res[1] / 2)

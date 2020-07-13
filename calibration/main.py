@@ -10,12 +10,9 @@ import numpy as np
 def calibrate_stereo(left_lens, right_lens, left_pos, right_pos):
     """Calibrate a stereocamera system given calibration file names
 
-    :param left_lens,right_lens: path of the right and left camera lens calibration
-    pictures
+    :param left_lens,right_lens: path of the right and left camera lens calibration pictures
     :param left_pos,right_pos: path of the right and left camera position pictures
-    :return : nothing but generates the camera calibration files in the "res folder"
-    mtx_top,mtx_left (camera intrinsinc matrix), dist_top,dist_left (passage matrix
-    from the sample to 
+    :return: nothing but generates the camera calibration files in the "res folder" mtx_top,mtx_left (camera intrinsinc matrix), dist_top,dist_left (passage matrix from the sample to
     """
     print("Getting cameras matrix")
     mtx_top, dist_top = get_cam_matrix(left_lens)

@@ -1,0 +1,477 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>data_treat.reconstruction_3d &mdash; 3Drecons 1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> 3Drecons
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">3Drecons</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>data_treat.reconstruction_3d</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for data_treat.reconstruction_3d</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;functions to reconstruct the object 3D trajectory&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">least_squares</span>
+<span class="kn">from</span> <span class="nn">data_treat.objectExtract</span> <span class="kn">import</span> <span class="n">compute_2d_traj</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+
+<div class="viewcode-block" id="reconstruct_3d"><a class="viewcode-back" href="../../index.html#data_treat.reconstruction_3d.reconstruct_3d">[docs]</a><span class="k">def</span> <span class="nf">reconstruct_3d</span><span class="p">(</span><span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">splitSymb</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">numsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;no-persp&quot;</span><span class="p">,</span> <span class="n">plotTraj</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reconstruct the 3D trajectory of a moving object filmed by 2 cameras with a given angle between them</span>
+
+<span class="sd">    :param cam_top,cam_left: camera object for the top and left camera</span>
+<span class="sd">    :param splitSymb: split symbol used in the images name between name and image number</span>
+<span class="sd">    :param numsplit: index corresponding to the image number after the name was split</span>
+<span class="sd">    :param method: &quot;persp&quot;, &quot;persp-opti&quot; or &quot;no-persp&quot; (default) - using the camera intrinsinc matrix for 3D trajectory or not, using analytical expression or least square optimisation</span>
+<span class="sd">    :param plotTraj: Boolean, if True the detected shot position will be plotted</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**** Shot position detection&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** Top camera&quot;</span><span class="p">)</span>
+    <span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">timespan_top</span> <span class="o">=</span> <span class="n">compute_2d_traj</span><span class="p">(</span><span class="n">cam_top</span><span class="p">,</span> <span class="n">splitSymb</span><span class="o">=</span><span class="n">splitSymb</span><span class="p">,</span> <span class="n">numsplit</span><span class="o">=</span><span class="n">numsplit</span><span class="p">,</span> <span class="n">plotTraj</span><span class="o">=</span><span class="n">plotTraj</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** Left camera&quot;</span><span class="p">)</span>
+    <span class="n">traj_2d_left</span><span class="p">,</span> <span class="n">timespan_left</span> <span class="o">=</span> <span class="n">compute_2d_traj</span><span class="p">(</span><span class="n">cam_left</span><span class="p">,</span> <span class="n">splitSymb</span><span class="o">=</span><span class="n">splitSymb</span><span class="p">,</span> <span class="n">numsplit</span><span class="o">=</span><span class="n">numsplit</span><span class="p">,</span> <span class="n">plotTraj</span><span class="o">=</span><span class="n">plotTraj</span><span class="p">)</span>
+    <span class="n">minspan_len</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">timespan_top</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">timespan_left</span><span class="p">))</span>
+
+    <span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">traj_2d_left</span> <span class="o">=</span> <span class="n">cam_shift_resize</span><span class="p">(</span><span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**** 3D position reconstruction&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;no-persp&quot;</span><span class="p">:</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span> <span class="o">=</span> <span class="n">get_3d_nopersp</span><span class="p">(</span><span class="n">minspan_len</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">,</span> <span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span> <span class="o">=</span> <span class="n">get_3d_coor</span><span class="p">(</span><span class="n">minspan_len</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">,</span> <span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+    <span class="n">plot_proj_error</span><span class="p">(</span><span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">timespan_top</span><span class="p">[:</span><span class="n">minspan_len</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="cam_shift_resize"><a class="viewcode-back" href="../../index.html#data_treat.reconstruction_3d.cam_shift_resize">[docs]</a><span class="k">def</span> <span class="nf">cam_shift_resize</span><span class="p">(</span><span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gives the 2D screen trajectory in the unresized picture frame</span>
+
+<span class="sd">    :param traj_2d_top, traj_2d_left: screen trajectory for the top and left cameras</span>
+<span class="sd">    :param cam_top,cam_left: top and left camera objects</span>
+<span class="sd">    :return: shift_2d_top, shift_2d_left trajectory list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shift_2d_top</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">shift_2d_left</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">lenTraj</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">traj_2d_top</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lenTraj</span><span class="p">):</span>
+        <span class="n">x_t</span> <span class="o">=</span> <span class="n">traj_2d_top</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">camRes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">y_t</span> <span class="o">=</span> <span class="n">traj_2d_top</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">camRes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">shift_2d_top</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x_t</span><span class="p">,</span> <span class="n">y_t</span><span class="p">])</span>
+        <span class="n">x_l</span> <span class="o">=</span> <span class="n">traj_2d_left</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">camRes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">y_l</span> <span class="o">=</span> <span class="n">traj_2d_left</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">camRes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">shift_2d_left</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x_l</span><span class="p">,</span> <span class="n">y_l</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shift_2d_top</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shift_2d_left</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="plot_proj_error"><a class="viewcode-back" href="../../index.html#data_treat.reconstruction_3d.plot_proj_error">[docs]</a><span class="k">def</span> <span class="nf">plot_proj_error</span><span class="p">(</span><span class="n">traj_top</span><span class="p">,</span> <span class="n">traj_left</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot the reprojected trajectory for each camera to check for the trajectory errors</span>
+
+<span class="sd">        :param traj_top, traj_left: screen trajectory for the top and left cameras</span>
+<span class="sd">        :param X,Y,Z: computed 3D trajectory</span>
+<span class="sd">        :param cam_top,cam_left: top and left camera objects</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">x_top</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">=</span> <span class="n">get_proj_list</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">)</span>
+    <span class="n">x_left</span><span class="p">,</span> <span class="n">y_left</span> <span class="o">=</span> <span class="n">get_proj_list</span><span class="p">(</span><span class="o">-</span><span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Trajectory reprojection error&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">131</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Top camera&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">traj_top</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">traj_top</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Camera trajectory&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_top</span> <span class="o">-</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_top</span> <span class="o">-</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Reprojected trajectory&quot;</span><span class="p">)</span>
+    <span class="n">plot_square</span><span class="p">(</span><span class="n">cam_top</span><span class="p">)</span>
+    <span class="c1">#plt.xlim((0, 1240))</span>
+    <span class="c1">#plt.ylim((0, 800))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">132</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Left camera&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">traj_left</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">traj_left</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Camera trajectory&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_left</span><span class="o">-</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_left</span><span class="o">-</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Reprojected trajectory&quot;</span><span class="p">)</span>
+    <span class="n">plot_square</span><span class="p">(</span><span class="n">cam_left</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">133</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Left camera&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="c1">#plt.xlim((0, 1240))</span>
+    <span class="c1">#plt.ylim((0, 800))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<span class="k">def</span> <span class="nf">plot_square</span><span class="p">(</span><span class="n">cam</span><span class="p">):</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">cam</span><span class="o">.</span><span class="n">camRes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">cam</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">cam</span><span class="o">.</span><span class="n">camRes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">cam</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="p">[</span><span class="n">cam</span><span class="o">.</span><span class="n">camRes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">cam</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">cam</span><span class="o">.</span><span class="n">camRes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">cam</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="p">[</span><span class="n">cam</span><span class="o">.</span><span class="n">camRes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">cam</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">cam</span><span class="o">.</span><span class="n">camRes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">cam</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="p">[</span><span class="n">cam</span><span class="o">.</span><span class="n">camRes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">cam</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">cam</span><span class="o">.</span><span class="n">camRes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">cam</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_proj_list"><a class="viewcode-back" href="../../index.html#data_treat.reconstruction_3d.get_proj_list">[docs]</a><span class="k">def</span> <span class="nf">get_proj_list</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">cam</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes the projection of a list of points in the 3D space onto the camera</span>
+
+<span class="sd">    :param X,Y,Z: list of 3D coordinates</span>
+<span class="sd">    :param cam: cam object</span>
+<span class="sd">    :return: two_lists x and y with the camera 2D projected coordinates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lenList</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lenList</span><span class="p">):</span>
+        <span class="n">dat_actu</span> <span class="o">=</span> <span class="n">get_proj_coords</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Z</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cam</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">dat_actu</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">dat_actu</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">dat_actu</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">dat_actu</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_3d_nopersp"><a class="viewcode-back" href="../../index.html#data_treat.reconstruction_3d.get_3d_nopersp">[docs]</a><span class="k">def</span> <span class="nf">get_3d_nopersp</span><span class="p">(</span><span class="n">minspan_len</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">,</span> <span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find the 3D trajectory of the ball by orthographic projection nor camera exact positions</span>
+
+<span class="sd">    :param minspan_len: number of time points</span>
+<span class="sd">    :param traj_2d_left: trajectory found by the left camera</span>
+<span class="sd">    :param traj_2d_top: trajectory found by the right camera</span>
+<span class="sd">    :param cam_top,cam_left: camera object for the top and left camera</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="p">(</span><span class="n">traj_2d_left</span><span class="p">[:</span><span class="n">minspan_len</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">pic_to_cm</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="p">(</span><span class="n">traj_2d_top</span><span class="p">[:</span><span class="n">minspan_len</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">pic_to_cm</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="p">(</span><span class="n">traj_2d_left</span><span class="p">[:</span><span class="n">minspan_len</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">pic_to_cm</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="o">-</span><span class="n">Z</span></div>
+
+
+<div class="viewcode-block" id="get_3d_coor"><a class="viewcode-back" href="../../index.html#data_treat.reconstruction_3d.get_3d_coor">[docs]</a><span class="k">def</span> <span class="nf">get_3d_coor</span><span class="p">(</span><span class="n">minspan_len</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">,</span> <span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;persp&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Retrieve the ball 3D trajectory from each cameras parameters and 2D trajectories</span>
+
+<span class="sd">    :param minspan_len: number of time points</span>
+<span class="sd">    :param traj_2d_left: trajectory found by the left camera</span>
+<span class="sd">    :param traj_2d_top: trajectory found by the right camera</span>
+<span class="sd">    :param cam_top,cam_left: camera object for the top and left camera</span>
+<span class="sd">    :param method: &quot;persp&quot; (default) or &quot;persp-opti&quot; - use analytical expression or least square optimisation</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">traj_2d_left</span><span class="p">[:</span><span class="n">minspan_len</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">traj_2d_top</span><span class="p">[:</span><span class="n">minspan_len</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">traj_2d_left</span><span class="p">[:</span><span class="n">minspan_len</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">X_coor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">minspan_len</span><span class="p">))</span>
+    <span class="n">Y_coor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">minspan_len</span><span class="p">))</span>
+    <span class="n">Z_coor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">minspan_len</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">minspan_len</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+            <span class="n">A</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">make_system_mat</span><span class="p">(</span><span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">traj_2d_top</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="n">X_coor</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Y_coor</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Z_coor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="c1"># X_coor[i], Y_coor[i], Z_coor[i] = np.linalg.pinv(np.matrix(A)) * np.matrix(B).T</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;persp-opti&quot;</span><span class="p">:</span>
+                <span class="n">X0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">cam_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">traj_2d_top</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
+                <span class="n">res_act</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span><span class="n">get_proj_error</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X0</span><span class="o">.</span><span class="n">T</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+                <span class="n">X_coor</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Y_coor</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Z_coor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_act</span><span class="o">.</span><span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">X_coor</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Y_coor</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Z_coor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">X_coor</span><span class="p">,</span> <span class="n">Y_coor</span><span class="p">,</span> <span class="n">Z_coor</span></div>
+
+
+<div class="viewcode-block" id="cam_shift_origin"><a class="viewcode-back" href="../../index.html#data_treat.reconstruction_3d.cam_shift_origin">[docs]</a><span class="k">def</span> <span class="nf">cam_shift_origin</span><span class="p">(</span><span class="n">cam</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shift cam origin from the actual one to the cam.origin pixel value</span>
+
+<span class="sd">    :param cam: camera object to tranform</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">actu_ori</span> <span class="o">=</span> <span class="n">get_proj_coords</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cam</span><span class="p">)</span>
+    <span class="n">tx</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">actu_ori</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">actu_ori</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">ty</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">actu_ori</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">actu_ori</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">cam</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">tx</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">ty</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="make_system_mat"><a class="viewcode-back" href="../../index.html#data_treat.reconstruction_3d.make_system_mat">[docs]</a><span class="k">def</span> <span class="nf">make_system_mat</span><span class="p">(</span><span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">pos_2d_left</span><span class="p">,</span> <span class="n">pos_2d_top</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes the matrix A, b of the equation system AX = b where X is the shot 3D coordinates</span>
+
+<span class="sd">    :param pos_2d_left: position found by the left camera</span>
+<span class="sd">    :param pos_2d_top: position found by the right camera</span>
+<span class="sd">    :param cam_top,cam_left: camera object for the top and left camera</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">u1</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">pos_2d_top</span> <span class="o">+</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">origin</span>
+    <span class="n">u2</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="n">pos_2d_left</span> <span class="o">+</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">origin</span>
+    <span class="n">a_top</span><span class="p">,</span> <span class="n">b_top</span> <span class="o">=</span> <span class="n">make_alpha_beta</span><span class="p">(</span><span class="n">cam_top</span><span class="p">)</span>
+    <span class="n">a_left</span><span class="p">,</span> <span class="n">b_left</span> <span class="o">=</span> <span class="n">make_alpha_beta</span><span class="p">(</span><span class="n">cam_left</span><span class="p">)</span>
+
+    <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">cam_top</span><span class="o">.</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">u1</span> <span class="o">-</span> <span class="n">a_top</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">u1</span> <span class="o">-</span> <span class="n">a_top</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+               <span class="n">cam_top</span><span class="o">.</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">u1</span> <span class="o">-</span> <span class="n">a_top</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
+
+    <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">cam_top</span><span class="o">.</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v1</span> <span class="o">-</span> <span class="n">a_top</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v1</span> <span class="o">-</span> <span class="n">a_top</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                <span class="n">cam_top</span><span class="o">.</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v1</span> <span class="o">-</span> <span class="n">a_top</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
+
+    <span class="c1">#A[1, :] = [-cam_left.R[2, 2] * u2 + a_left[0, 2], -cam_left.R[2, 0] * u2 + a_left[0, 0],</span>
+    <span class="c1">#            cam_left.R[2, 1] * u2 - a_left[0, 1]]</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">cam_left</span><span class="o">.</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v2</span> <span class="o">+</span> <span class="n">a_left</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">-</span><span class="n">cam_left</span><span class="o">.</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v2</span> <span class="o">+</span> <span class="n">a_left</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+               <span class="n">cam_left</span><span class="o">.</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v2</span> <span class="o">-</span> <span class="n">a_left</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+
+    <span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">b_top</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">u1</span>
+    <span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">b_top</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v1</span>
+    <span class="c1">#B[0, 1] = b_left[0, 0] - cam_left.T[2] * u2</span>
+    <span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">b_left</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v2</span>
+    <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span></div>
+
+
+<div class="viewcode-block" id="make_alpha_beta"><a class="viewcode-back" href="../../index.html#data_treat.reconstruction_3d.make_alpha_beta">[docs]</a><span class="k">def</span> <span class="nf">make_alpha_beta</span><span class="p">(</span><span class="n">cam</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute necessary coefficients for the 3D coordinate system matrix AX=b for better code readability.</span>
+
+<span class="sd">    :param cam: camera object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fx</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">mtx</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">fy</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">mtx</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">cx</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">mtx</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">cy</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">mtx</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">R</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">fx</span> <span class="o">*</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cx</span> <span class="o">*</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">fx</span> <span class="o">*</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">cx</span> <span class="o">*</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">fx</span> <span class="o">*</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">cx</span> <span class="o">*</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">fy</span> <span class="o">*</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cy</span> <span class="o">*</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">fy</span> <span class="o">*</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">cy</span> <span class="o">*</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">fy</span> <span class="o">*</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">cy</span> <span class="o">*</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">beta</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">fx</span> <span class="o">*</span> <span class="n">cam</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cx</span> <span class="o">*</span> <span class="n">cam</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">beta</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">fy</span> <span class="o">*</span> <span class="n">cam</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">cy</span> <span class="o">*</span> <span class="n">cam</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span></div>
+
+
+<div class="viewcode-block" id="get_proj_coords"><a class="viewcode-back" href="../../index.html#data_treat.reconstruction_3d.get_proj_coords">[docs]</a><span class="k">def</span> <span class="nf">get_proj_coords</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">cam</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the projection of 3D coordinates on a camera screen.</span>
+
+<span class="sd">    :param X,Y,Z: 3D coordinates to be projected</span>
+<span class="sd">    :param cam: camera object used for projection</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mat_pass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)))</span>
+    <span class="n">mat_pass</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">R</span>
+    <span class="n">mat_pass</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">vec_3D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">cam</span><span class="o">.</span><span class="n">mtx</span> <span class="o">*</span> <span class="n">mat_pass</span> <span class="o">*</span> <span class="n">vec_3D</span></div>
+
+
+<div class="viewcode-block" id="get_proj_error"><a class="viewcode-back" href="../../index.html#data_treat.reconstruction_3d.get_proj_error">[docs]</a><span class="k">def</span> <span class="nf">get_proj_error</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">pos_2d_left</span><span class="p">,</span> <span class="n">pos_2d_top</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the projection error between the projection of a guessed 3D coordinate vector and the actual screen point</span>
+
+<span class="sd">    :param var: 3D coordinate triplet</span>
+<span class="sd">    :param pos_2d_left: position found by the left camera</span>
+<span class="sd">    :param pos_2d_top: position found by the right camera</span>
+<span class="sd">    :param cam_top,cam_left: camera object for the top and left camera</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span> <span class="o">=</span> <span class="n">var</span>
+    <span class="n">pos_proj_top</span> <span class="o">=</span> <span class="n">get_proj_coords</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">)</span>
+    <span class="n">pos_proj_left</span> <span class="o">=</span> <span class="n">get_proj_coords</span><span class="p">(</span><span class="o">-</span><span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pos_proj_top</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="n">top_uv</span> <span class="o">=</span> <span class="n">pos_proj_top</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cam_top</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">top_uv</span> <span class="o">=</span> <span class="n">pos_proj_top</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">pos_proj_top</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cam_top</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="k">if</span> <span class="n">pos_proj_top</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="n">left_uv</span> <span class="o">=</span> <span class="n">pos_proj_left</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cam_left</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">left_uv</span> <span class="o">=</span> <span class="n">pos_proj_left</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">pos_proj_left</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cam_left</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="n">top_uv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_uv</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
+    <span class="n">left_uv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">left_uv</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">top_uv</span> <span class="o">-</span> <span class="n">pos_2d_top</span><span class="p">,</span> <span class="n">left_uv</span> <span class="o">-</span> <span class="n">pos_2d_left</span><span class="p">]),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019, S.Breumier
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

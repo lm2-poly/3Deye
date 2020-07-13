@@ -9,21 +9,17 @@ class Cam:
     """
     def __init__(self, mtx, dist, R, T, picDir, firstPic, pic_to_cm, framerate, camRes, res, cropsize=0,
                  origin=(0,0)):
-        """
-        Camera object initialisation
+        """Camera object initialisation
 
         :param mtx: camera intrinsinc matrix
         :param dist: camera distortion matrix
-        :param R: camera to sample rotation (Rodrigues vector).
-        Warning: the initialisation function outputs cam.R as a rotation *matrix* but takes a
-        Rodrigues vector as input.
+        :param R: camera to sample rotation (Rodrigues vector). Warning: the initialisation function outputs cam.R as a rotation *matrix* but takes a Rodrigues vector as input.
         :param T: camera to sample translation
         :param picDir: shot pictures directory
         :param firstPic: first picture name
         :param pic_to_cm: pixel to cm ratio (deprecated)
         :param framerate: camera framerate
-        :param cropsize: size of teh screen to crop (usefull when pictures information was written
-        on each pictures)
+        :param cropsize: size of teh screen to crop (usefull when pictures information was written on each pictures)
         :param camRes: camera resolution
         :param res: picture resolution (W, H)
         :param origin: pixel coordinate of the system origin
