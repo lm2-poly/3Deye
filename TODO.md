@@ -1,3 +1,2 @@
 - [ ] Change axis origin calibration
 - [ ] Improve detection algorithm
-- [ ] Automatic report export

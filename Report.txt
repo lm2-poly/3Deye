@@ -1,0 +1,14 @@
+== Test150psi
+
+=== Test parameters
+
+Picture name: 150psi1_0001.jpg
+framerate: 15000
+resolution: (512, 384)
+
+=== Test output
+
+Horizontal angle: 9.517 °
+Initial velocity (m/s): (3.325, 22.795, 1.457)
+Velocity after impact (m/s): (3.295, -6.364, 0.627)
+Impact position (cm, relative to initial position): (0.325, 2.369, 0.169)

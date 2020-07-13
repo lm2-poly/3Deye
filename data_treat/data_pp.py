@@ -7,26 +7,6 @@ import os
 from data_treat.reconstruction_3d import get_proj_list
 
 
-def load_data(fileName):
-    """Load existing data from file
-
-    :param fileName: name of the file to load
-    """
-    t, X, Y, Z = np.loadtxt(fileName, unpack=True)
-    return t, X, Y, Z
-
-
-def data_save(t, X, Y, Z):
-    """Save position data after 3D trajectory reconstruction
-
-    :param t: time list
-    :param X,Y,Z: position lists
-    :return: write the position in a column text file
-    """
-    np.savetxt("Trajectory.txt", np.array([np.matrix(t).T, np.matrix(X).T,
-                                           np.matrix(Y).T, np.matrix(Z).T]).T[0])
-
-
 def result_plot(X, Y, Z, timespan):
     """Plot the recovered shot trajectory and velocity
 
@@ -189,7 +169,6 @@ def get_velocity(t, X, Y, Z, thres=1.3):
         i+=1
         dat = np.polyfit(t[1:i], Y[1:i] - Y0, deg=1, full=True)
         new_score = float(dat[1])
-        print(new_score)
 
     plt.plot(t[~np.isnan(X)] * 1000, X[~np.isnan(X)] - X0, marker=".", label="X")
     plt.plot(t[~np.isnan(X)] * 1000, Y[~np.isnan(X)] - Y0, marker=".", label="Y")
@@ -218,4 +197,4 @@ def get_velocity(t, X, Y, Z, thres=1.3):
     VZ_after = np.polyfit(t[i:i+lenVel], Z[i:i+lenVel], deg=1)[0]
     print("Velocity after impact: ({:.02f}, {:.02f}, {:.02f}) m/s".format(VX_after / 100, VY_after / 100, VZ_after / 100))
 
-    return VX, VY, VZ, VX_after, VY_after, VZ_after
+    return [VX, VY, VZ], [VX_after, VY_after, VZ_after]

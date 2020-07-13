@@ -7,7 +7,8 @@ import numpy as np
 from data_treat.reconstruction_3d import reconstruct_3d, cam_shift_origin
 from data_treat.cam import Cam
 from calibration.main import calibrate_stereo
-from data_treat.data_pp import data_save, result_plot, load_data, get_init_angle, get_impact_position, get_velocity
+from data_treat.data_pp import result_plot, get_init_angle, get_impact_position, get_velocity
+from data_treat.make_report import make_report, load_data
 
 # print("******* Calibrating cameras")
 # calibrate_stereo("calibration/lens_dist_calib_top",
@@ -55,7 +56,7 @@ cam_shift_origin(cam_top)
 
 print("******* Reconstructing 3D trajectory")
 #X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=-1, method="persp", plotTraj=False)
-timespan, X, Y, Z = load_data("Trajectory.txt")
+timespan, X, Y, Z = load_data("Test150psi.txt")
 
 print("******* Plot results")
 result_plot(X, Y, Z, timespan)
@@ -67,7 +68,7 @@ print("******* Compute impact location")
 xi, yi, zi = get_impact_position(X, Y, Z, cam_left, cam_top)
 
 print("******* Compute Velocity values")
-VX, VY, VZ, VX_after, VY_after, VZ_after = get_velocity(timespan, X, Y, Z)
+Vinit, Vend = get_velocity(timespan, X, Y, Z)
 
-print("******* Export trajectory file")
-data_save(timespan, X, Y, Z)
+print("******* Export trajectory file and report")
+make_report(timespan, X, Y, Z, alpha, Vinit, Vend, [xi, yi, zi], cam_top, cam_left, "Test150psi")
