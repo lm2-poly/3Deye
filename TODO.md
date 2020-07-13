@@ -1,4 +1,3 @@
 - [ ] Change axis origin calibration
 - [ ] Improve detection algorithm
-- [ ] Improved velocity determination linear fit
-- [ ] Generate doc
+- [ ] Automatic report export

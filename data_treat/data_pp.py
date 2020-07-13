@@ -49,9 +49,7 @@ def result_plot(X, Y, Z, timespan):
     plt.plot(timespan[~np.isnan(X)][1:] * 1000, np.diff(X[~np.isnan(X)]) / dt / 100, marker=".", label="$v_X$")
     plt.plot(timespan[~np.isnan(X)][1:] * 1000, np.diff(Y[~np.isnan(X)]) / dt / 100, marker=".", label="$v_Y$")
     plt.plot(timespan[~np.isnan(X)][1:] * 1000, np.diff(Z[~np.isnan(X)]) / dt / 100, marker=".", label="$v_Z$")
-    x_0 = timespan[3] * 1000
-    y_0 = np.diff(X[~np.isnan(X)])[0] / np.diff(timespan)[0] / 100.
-    plt.annotate("$v_0$: {:.02f}m/s".format(-y_0), (x_0, y_0))
+
     plt.xlabel('t (ms)')
     plt.ylabel('V (m/s)')
     plt.legend()
@@ -164,3 +162,60 @@ def pos_screen_resize(x, y, cam):
     """
     x -= (cam.camRes[0] / 2 - cam.res[0] / 2)
     y -= (cam.camRes[1] / 2 - cam.res[1] / 2)
+
+
+def get_velocity(t, X, Y, Z, thres=1.3):
+    """Computes the shot velocity before and after the impact by linear fit.
+    Before the impact, the functions continues adding the next acquisition point to the linear fit until the
+    new points reduces the fit success score at less then the previous score * threshold. Then the first point with
+    constant velocity after the impact is searched so that lienar fit with the same number of points as before the
+    impact yields a better score than before the impact. It is based on the assumption that there will always be
+    more acquisition point after the impact than before.
+
+    :param t: time vector
+    :param X,Y,Z: 3D coordinates (ndarray)
+    :param thres: threshold for the accepted residual difference (default 1.3)
+    :return VX,VY,VZ initial velocity vector coordinates
+    """
+    score_actu = 1000.
+    new_score = 100.
+    i = 3
+    X0 = X[~np.isnan(X)][0]
+    Y0 = Y[~np.isnan(X)][0]
+    Z0 = Z[~np.isnan(X)][0]
+
+    while new_score < 1.3 * score_actu:
+        score_actu = new_score
+        i+=1
+        dat = np.polyfit(t[1:i], Y[1:i] - Y0, deg=1, full=True)
+        new_score = float(dat[1])
+        print(new_score)
+
+    plt.plot(t[~np.isnan(X)] * 1000, X[~np.isnan(X)] - X0, marker=".", label="X")
+    plt.plot(t[~np.isnan(X)] * 1000, Y[~np.isnan(X)] - Y0, marker=".", label="Y")
+    plt.plot(t[~np.isnan(X)] * 1000, Z[~np.isnan(X)] - Z0, marker=".", label="Z")
+    plt.plot(t[~np.isnan(X)][:i] * 1000, (dat[0][0] * t[~np.isnan(X)][:i] + dat[0][1]), label="Best linear fit (initial)")
+
+
+
+    VX = np.polyfit(t[1:i], X[1:i], deg=1)[0]
+    VY = np.polyfit(t[1:i], Y[1:i], deg=1)[0]
+    VZ = np.polyfit(t[1:i], Z[1:i], deg=1)[0]
+    print("Initial velocity: ({:.02f}, {:.02f}, {:.02f}) m/s".format(VX/100, VY/100, VZ/100))
+    score_down = 1000.
+    lenVel = i-1
+    while score_down > score_actu:
+        i += 1
+        dat = np.polyfit(t[i:i+lenVel], Y[i:i+lenVel] - Y0, deg=1, full=True)
+        score_down = float(dat[1])
+    dat = np.polyfit(t[i:i+lenVel], Y[i:i+lenVel] - Y0, deg=1, full=True)
+    plt.plot(t[~np.isnan(X)][i:i+lenVel] * 1000, (dat[0][0] * t[~np.isnan(X)][i:i+lenVel] + dat[0][1]), label="Best linear fit (after impact)")
+    plt.legend()
+    plt.show()
+
+    VX_after = np.polyfit(t[i:i+lenVel], X[i:i+lenVel], deg=1)[0]
+    VY_after = np.polyfit(t[i:i+lenVel], Y[i:i+lenVel], deg=1)[0]
+    VZ_after = np.polyfit(t[i:i+lenVel], Z[i:i+lenVel], deg=1)[0]
+    print("Velocity after impact: ({:.02f}, {:.02f}, {:.02f}) m/s".format(VX_after / 100, VY_after / 100, VZ_after / 100))
+
+    return VX, VY, VZ, VX_after, VY_after, VZ_after

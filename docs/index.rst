@@ -8,7 +8,7 @@
 Camera object
 ==================================================
 
-.. automodule:: data_treat.cam
+.. autoclass:: data_treat.cam
    :members:
 
 Camera calibration
