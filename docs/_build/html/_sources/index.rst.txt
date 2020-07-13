@@ -40,3 +40,9 @@ Trajectory post-processing
 
 .. automodule:: data_treat.data_pp
    :members:
+   
+Report generation and save
+==================================================
+
+.. automodule:: data_treat.make_report
+   :members:

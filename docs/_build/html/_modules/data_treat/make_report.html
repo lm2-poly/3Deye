@@ -1,0 +1,258 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>data_treat.make_report &mdash; 3Drecons 1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> 3Drecons
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">3Drecons</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>data_treat.make_report</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for data_treat.make_report</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">Template</span>
+
+<div class="viewcode-block" id="load_data"><a class="viewcode-back" href="../../index.html#data_treat.make_report.load_data">[docs]</a><span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="n">fileName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load existing data from file</span>
+
+<span class="sd">    :param fileName: name of the file to load</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span> <span class="n">unpack</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span></div>
+
+
+<div class="viewcode-block" id="data_save"><a class="viewcode-back" href="../../index.html#data_treat.make_report.data_save">[docs]</a><span class="k">def</span> <span class="nf">data_save</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">fileName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Save position data after 3D trajectory reconstruction</span>
+
+<span class="sd">    :param t: time list</span>
+<span class="sd">    :param X,Y,Z: position lists</span>
+<span class="sd">    :return: write the position in a column text file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">fileName</span><span class="o">+</span><span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                                           <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="make_report"><a class="viewcode-back" href="../../index.html#data_treat.make_report.make_report">[docs]</a><span class="k">def</span> <span class="nf">make_report</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">Vinit</span><span class="p">,</span> <span class="n">Vend</span><span class="p">,</span> <span class="n">imp_pos</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates a report of the post-processed values as wel as the parameters used to extract the trajectory.</span>
+<span class="sd">    Also saves the trajectory.</span>
+<span class="sd">    </span>
+<span class="sd">    :param t: timespan vector</span>
+<span class="sd">    :param X,Y,Z: estimated 3D trajectory nd arrays</span>
+<span class="sd">    :param alpha: Shot horizontal angle</span>
+<span class="sd">    :param Vinit,Vend: shot velocity before and after the impact</span>
+<span class="sd">    :param imp_pos: x,y,z coordinate list of the impact position</span>
+<span class="sd">    :param cam_top,cam_left: camera objects used for the trajectory determination</span>
+<span class="sd">    :param file_name: name of the trajectory file generated</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_save</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+    <span class="n">make_template_file</span><span class="p">(</span><span class="s2">&quot;data_treat/report_template.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;Report.txt&quot;</span><span class="p">,</span>
+                       <span class="p">[</span><span class="n">file_name</span><span class="p">,</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">firstPic</span><span class="p">,</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">framerate</span><span class="p">,</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">res</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">Vinit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span> <span class="n">Vinit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span> <span class="n">Vinit</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span>
+                        <span class="n">Vend</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span> <span class="n">Vend</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span> <span class="n">Vend</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span> <span class="n">imp_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">imp_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">imp_pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                       <span class="p">[</span><span class="s1">&#39;testName&#39;</span><span class="p">,</span> <span class="s1">&#39;picName&#39;</span><span class="p">,</span> <span class="s1">&#39;fps&#39;</span><span class="p">,</span> <span class="s1">&#39;res&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="s1">&#39;VX&#39;</span><span class="p">,</span> <span class="s1">&#39;VY&#39;</span><span class="p">,</span> <span class="s1">&#39;VZ&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;VXAfter&#39;</span><span class="p">,</span> <span class="s1">&#39;VYAfter&#39;</span><span class="p">,</span> <span class="s1">&#39;VZAfter&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="make_template_file"><a class="viewcode-back" href="../../index.html#data_treat.make_report.make_template_file">[docs]</a><span class="k">def</span> <span class="nf">make_template_file</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">sortie</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">var_names</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a file from a given template file&quot;&quot;&quot;</span>
+    <span class="n">len_vars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">len_vars</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="nb">float</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span>
+            <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:.03f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">fichier</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">template</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">);</span>
+    <span class="n">contenu</span> <span class="o">=</span> <span class="n">fichier</span><span class="o">.</span><span class="n">read</span><span class="p">();</span>
+    <span class="n">modif_dic</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">len_vars</span><span class="p">):</span>
+        <span class="n">modif_dic</span><span class="p">[</span><span class="n">var_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">contenu_modif</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">contenu</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">modif_dic</span><span class="p">);</span>
+    <span class="n">fichier</span><span class="o">.</span><span class="n">close</span><span class="p">();</span>
+    <span class="n">fichier</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">sortie</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">);</span>
+    <span class="n">fichier</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">contenu_modif</span><span class="p">);</span>
+    <span class="n">fichier</span><span class="o">.</span><span class="n">close</span><span class="p">();</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019, S.Breumier
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

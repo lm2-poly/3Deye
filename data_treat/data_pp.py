@@ -155,7 +155,7 @@ def get_velocity(t, X, Y, Z, thres=1.3):
     :param t: time vector
     :param X,Y,Z: 3D coordinates (ndarray)
     :param thres: threshold for the accepted residual difference (default 1.3)
-    :return VX,VY,VZ initial velocity vector coordinates
+    :return: VX,VY,VZ initial velocity vector coordinates
     """
     score_actu = 1000.
     new_score = 100.

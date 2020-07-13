@@ -24,6 +24,7 @@ def data_save(t, X, Y, Z, fileName):
 def make_report(t, X, Y, Z, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file_name):
     """Generates a report of the post-processed values as wel as the parameters used to extract the trajectory.
     Also saves the trajectory.
+    
     :param t: timespan vector
     :param X,Y,Z: estimated 3D trajectory nd arrays
     :param alpha: Shot horizontal angle
