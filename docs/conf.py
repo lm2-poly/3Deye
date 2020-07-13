@@ -20,7 +20,7 @@ import os
 import sys
 import mock
 
-MOCK_MODULES = ['numpy', 'scipy', 'cv2', 'matplotlib', 'matplotlib.pyplot', 'PIL', 'math', 'glob', 'scipy.optimize']
+MOCK_MODULES = ['numpy', 'scipy', 'cv2', 'matplotlib', 'matplotlib.pyplot', 'PIL', 'math', 'glob', 'scipy.optimize', 'PIL.Image']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
     
