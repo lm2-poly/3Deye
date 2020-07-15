@@ -1,2 +1,4 @@
 - [ ] Improve detection algorithm
 - [ ] Improve calibration by detecting chessboard orientation
+- [ ] GUI
+- [ ] Batch treatment
