@@ -47,9 +47,9 @@ def get_init_angle(X, Y, Z, t, cam_top, cam_left, plot=True):
     init = 1
     end = 6
     numPic = end - init
-    dX = X[end] - X[init] #np.diff(X[~np.isnan(X)], n=2)
-    dY = Y[end] - Y[init] #np.diff(Y[~np.isnan(X)], n=2)
-    dZ = Z[end] - Z[init] #np.diff(Z[~np.isnan(X)], n=2)
+    dX = X[end] - X[init]
+    dY = Y[end] - Y[init]
+    dZ = Z[end] - Z[init]
 
     v = np.array([dX, dY, dZ])/(end-init)
 
@@ -57,7 +57,7 @@ def get_init_angle(X, Y, Z, t, cam_top, cam_left, plot=True):
     alpha = math.acos(v[1]/vnorm)*180./math.pi
 
     xt, yt = get_proj_list(X, Y, Z, cam_top)
-    xl, yl = get_proj_list(-Y, Z, -X, cam_left)
+    xl, yl = get_proj_list(-Y, X, Z, cam_left)
 
     pos_screen_resize(xt, yt, cam_top)
     pos_screen_resize(xl, yl, cam_left)
@@ -69,7 +69,7 @@ def get_init_angle(X, Y, Z, t, cam_top, cam_left, plot=True):
     plt.subplot(121)
     plt.title("Left camera")
     plot_supper(init, end, cam_left)
-    plt.quiver(xl[init] - cam_left.origin[0], yl[init] - cam_left.origin[1],
+    plt.quiver(xl[init], yl[init],
                proj_V_l[0]/(numPic+1), proj_V_l[1]/(numPic+1), color=(1., 0., 0.), scale=50)
     plt.xlim((0, cam_left.res[0]))
     plt.ylim((0, cam_left.res[1]))
@@ -77,7 +77,7 @@ def get_init_angle(X, Y, Z, t, cam_top, cam_left, plot=True):
     plt.subplot(122)
     plt.title("Top camera")
     plot_supper(init, end, cam_top)
-    plt.quiver([xt[init]- cam_top.origin[0]], [yt[init]- cam_top.origin[1]],
+    plt.quiver([xt[init]], [yt[init]],
                proj_V_t[0]/(numPic+1), proj_V_t[1]/(numPic+1), color=(1., 0., 0.), scale=50)
 
     plt.xlim((0, cam_top.res[0]))

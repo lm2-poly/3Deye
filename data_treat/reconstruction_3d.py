@@ -64,22 +64,23 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left):
         :return:
         """
     x_top, y_top = get_proj_list(X, Y, Z, cam_top)
-    x_left, y_left = get_proj_list(-Y, Z, -X, cam_left)
+    #x_left, y_left = get_proj_list(-Y, Z, -X, cam_left)
+    x_left, y_left = get_proj_list(-Y, X, Z, cam_left)
 
     plt.figure(figsize=(18, 6))
     plt.title("Trajectory reprojection error")
     plt.subplot(131)
     plt.title("Top camera")
-    plt.plot(traj_top[:, 0], traj_top[:, 1], label="Camera trajectory")
-    plt.plot(x_top - cam_top.origin[0], y_top - cam_top.origin[1],'.', label="Reprojected trajectory")
+    plt.plot(traj_top[:, 0], traj_top[:, 1], 'o-', label="Camera trajectory")
+    plt.plot(x_top, y_top,'.', label="Reprojected trajectory")
     plot_square(cam_top)
     #plt.xlim((0, 1240))
     #plt.ylim((0, 800))
     plt.legend()
     plt.subplot(132)
     plt.title("Left camera")
-    plt.plot(traj_left[:, 0], traj_left[:, 1], label="Camera trajectory")
-    plt.plot(x_left- cam_left.origin[0], y_left- cam_left.origin[1], '.', label="Reprojected trajectory")
+    plt.plot(traj_left[:, 0], traj_left[:, 1], 'o-', label="Camera trajectory")
+    plt.plot(x_left, y_left, '.', label="Reprojected trajectory")
     plot_square(cam_left)
     plt.legend()
     plt.subplot(133)
@@ -134,7 +135,7 @@ def get_3d_nopersp(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top):
     X = (traj_2d_left[:minspan_len, 0] - 0.5 * cam_left.res[0]) * cam_left.pic_to_cm
     Y = (traj_2d_top[:minspan_len, 0] - 0.5 * cam_top.res[0]) * cam_top.pic_to_cm
     Z = (traj_2d_left[:minspan_len, 1] - 0.5 * cam_left.res[1]) * cam_left.pic_to_cm
-    return X, Y, -Z
+    return X, Y, Z
 
 
 def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method="persp"):
@@ -190,8 +191,8 @@ def make_system_mat(cam_top, cam_left, pos_2d_left, pos_2d_top):
 
     A = np.zeros((3, 3))
     B = np.zeros((1, 3))
-    u1, v1 = pos_2d_top + cam_top.origin
-    u2, v2 = pos_2d_left + cam_left.origin
+    u1, v1 = pos_2d_top #+ cam_top.origin
+    u2, v2 = pos_2d_left #+ cam_left.origin
     a_top, b_top = make_alpha_beta(cam_top)
     a_left, b_left = make_alpha_beta(cam_left)
 
@@ -203,8 +204,11 @@ def make_system_mat(cam_top, cam_left, pos_2d_left, pos_2d_top):
 
     #A[1, :] = [-cam_left.R[2, 2] * u2 + a_left[0, 2], -cam_left.R[2, 0] * u2 + a_left[0, 0],
     #            cam_left.R[2, 1] * u2 - a_left[0, 1]]
-    A[2, :] = [-cam_left.R[2, 2] * v2 + a_left[1, 2], -cam_left.R[2, 0] * v2 + a_left[1, 0],
-               cam_left.R[2, 1] * v2 - a_left[1, 1]]
+    #A[2, :] = [-cam_left.R[2, 2] * v2 + a_left[1, 2], -cam_left.R[2, 0] * v2 + a_left[1, 0],
+    #           cam_left.R[2, 1] * v2 - a_left[1, 1]]
+
+    A[2, :] = [cam_left.R[2, 1] * v2 - a_left[1, 1], -cam_left.R[2, 0] * v2 + a_left[1, 0],
+               cam_left.R[2, 2] * v2 - a_left[1, 2]]
 
     B[0, 0] = b_top[0, 0] - cam_top.T[2] * u1
     B[0, 1] = b_top[0, 1] - cam_top.T[2] * v1
@@ -262,16 +266,16 @@ def get_proj_error(var, cam_left, cam_top, pos_2d_left, pos_2d_top):
     """
     X, Y, Z = var
     pos_proj_top = get_proj_coords(X, Y, Z, cam_top)
-    pos_proj_left = get_proj_coords(-Y, Z, -X, cam_left)
+    pos_proj_left = get_proj_coords(-Y, X, Z, cam_left)
 
     if pos_proj_top.T[0, 2] == 0.:
-        top_uv = pos_proj_top.T[0, :2] - np.array([cam_top.origin[0], cam_top.origin[1]])
+        top_uv = pos_proj_top.T[0, :2] #- np.array([cam_top.origin[0], cam_top.origin[1]])
     else:
-        top_uv = pos_proj_top.T[0, :2]/pos_proj_top.T[0, 2] - np.array([cam_top.origin[0], cam_top.origin[1]])
+        top_uv = pos_proj_top.T[0, :2]/pos_proj_top.T[0, 2] #- np.array([cam_top.origin[0], cam_top.origin[1]])
     if pos_proj_top.T[0, 2] == 0.:
-        left_uv = pos_proj_left.T[0, :2]- np.array([cam_left.origin[0], cam_left.origin[1]])
+        left_uv = pos_proj_left.T[0, :2] #- np.array([cam_left.origin[0], cam_left.origin[1]])
     else:
-        left_uv = pos_proj_left.T[0, :2] / pos_proj_left.T[0, 2] - np.array([cam_left.origin[0], cam_left.origin[1]])
+        left_uv = pos_proj_left.T[0, :2] / pos_proj_left.T[0, 2] #- np.array([cam_left.origin[0], cam_left.origin[1]])
     top_uv = np.reshape(np.array(top_uv), (2,))
     left_uv = np.reshape(np.array(left_uv), (2,))
 

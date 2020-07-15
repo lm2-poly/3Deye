@@ -1,14 +1,14 @@
-== Test150psi
+== TestBlender
 
 === Test parameters
 
-Picture name: 150psi1_0001.jpg
+Picture name: camTop_0000.jpg
 framerate: 15000
-resolution: (512, 384)
+resolution: (500, 500)
 
 === Test output
 
-Horizontal angle: 9.517 °
-Initial velocity (m/s): (3.325, 22.795, 1.457)
-Velocity after impact (m/s): (3.295, -6.364, 0.627)
-Impact position (cm, relative to initial position): (0.325, 2.369, 0.169)
+Horizontal angle: 1.107 °
+Initial velocity (m/s): (0.278, 81.044, -1.471)
+Velocity after impact (m/s): (nan, nan, nan)
+Impact position (cm, relative to initial position): (0.019, 4.596, -0.087)

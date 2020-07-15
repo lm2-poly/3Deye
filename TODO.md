@@ -1,2 +1,2 @@
-- [ ] Change axis origin calibration
 - [ ] Improve detection algorithm
+- [ ] Improve calibration by detecting chessboard orientation

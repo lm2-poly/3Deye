@@ -3,8 +3,9 @@ Finds the top and left cameras intrinsinc and distortion matrices and the rotati
 cameras and the sample
 """
 from calibration.calib_len import get_cam_matrix
-from calibration.find_sample_ori import get_transfo_mat
+from calibration.find_sample_ori import get_transfo_mat, plot_proj_origin
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def calibrate_stereo(left_lens, right_lens, left_pos, right_pos):
@@ -21,6 +22,16 @@ def calibrate_stereo(left_lens, right_lens, left_pos, right_pos):
     print("Getting reference frame transformations")
     R_top, T_top = get_transfo_mat(left_pos, mtx_top, dist_top)
     R_left, T_left = get_transfo_mat(right_pos, mtx_left, dist_left)
+    T_left[0] += 0.4375 * 6
+
+    print("Check system coordinate consistency")
+    plt.subplot(121)
+    plt.title("Top camera")
+    plot_proj_origin(left_pos, mtx_top, dist_top, R_top, T_top)
+    plt.subplot(122)
+    plt.title("Left camera")
+    plot_proj_origin(right_pos, mtx_left, dist_left, R_left, T_left)
+    plt.show()
 
     print("Saving results in res")
     np.savetxt("calibration/res/mtx_top", mtx_top)
