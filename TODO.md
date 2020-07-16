@@ -1,4 +1,3 @@
 - [ ] Mask reflective surfaces
 - [ ] Improve calibration by detecting chessboard orientation
 - [ ] Batch treatment
-- [ ] Facteur sans perspective

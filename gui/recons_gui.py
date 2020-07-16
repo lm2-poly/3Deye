@@ -114,22 +114,39 @@ def popupmsg(msg):
 
 def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     show_traj = tk.IntVar()
+    cam_frames = tk.Frame(frame)
+    top_cam = tk.Frame(cam_frames, width=250)
+    left_cam = tk.Frame(cam_frames, width=250)
 
-    top_cam = tk.Frame(frame, width=250)
     titleTop = tk.Label(top_cam, text="Top camera parameters")
     titleTop.pack(side=tk.TOP)
     option_box = tk.Frame(frame)
+
+    cam_factors = tk.Frame(frame)
+    cam_factors.hidden = 1
+    cam_top_lab = tk.Label(cam_factors, text="Top pixel to cm ratio")
+    cam_top_lab.pack()
+    cam_top_factor = tk.Entry(cam_factors)
+    cam_top_factor.insert(tk.END, '{:.04e}'.format(1 / 141.1))
+    cam_top_factor.pack()
+
+    cam_left_lab = tk.Label(cam_factors, text="Left pixel to cm ratio")
+    cam_left_lab.pack()
+    cam_left_factor = tk.Entry(cam_factors)
+    cam_left_factor.insert(tk.END, '{:.04e}'.format(1 / 148.97))
+    cam_left_factor.pack()
+
     w = ttk.Combobox(option_box, values=['No perspective', 'Perspective simple', 'Perspective optimized'])
+    w.bind("<<ComboboxSelected>>", (lambda val=w.get(), camf=cam_factors: method_change(val, camf)))
     w.insert(tk.END, 'Perspective simple')
     cb = tk.Checkbutton(option_box, text="Show detected points", variable=show_traj)
-
 
     top = makeform(top_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
                              'Screen width', 'Screen height', "Acquisition width", "Acquisition height"],
                     ["calibration/res", "camTop", "0", '15000',
                      "500", "500", "500", "500"])
 
-    left_cam = tk.Frame(frame, width=250)
+
     titleLeft = tk.Label(left_cam, text="Left camera parameters")
     titleLeft.pack(side=tk.TOP)
     left = makeform(left_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
@@ -138,9 +155,9 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
                      "500", "500", "500", "500"])
 
     b1 = tk.Button(frame, text='Launch Analysis !',
-                   command=(lambda t=top, l=left, n=notebook, wval=w, s=show_traj, ct=cam_top, cl=cam_left, traj=traj_3d:
-                            launch_analysis(t, l, n, wval,ct, cl, traj, s)))
-
+                   command=(lambda t=top, l=left, n=notebook, wval=w, s=show_traj, ct=cam_top,
+                                   cl=cam_left, traj=traj_3d, ratTop=cam_top_factor, ratLeft=cam_left_factor:
+                            launch_analysis(t, l, n, wval,ct, cl, traj, s, ratTop, ratLeft)))
 
     b1.pack(side=tk.BOTTOM, padx=5, pady=5)
     w.pack(side=tk.LEFT)
@@ -148,9 +165,17 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     option_box.pack(side=tk.BOTTOM)
     warning_label = tk.Label(frame, text="Warning, picture name must be in the following format: 'Name_number.jpg'")
     warning_label.pack(side=tk.BOTTOM)
-    top_cam.pack(side=tk.LEFT, padx=5, pady=5)
-    left_cam.pack(side=tk.RIGHT, padx=5, pady=5)
 
+    top_cam.pack(side=tk.LEFT, padx=5, pady=5)
+    left_cam.pack(side=tk.LEFT, padx=5, pady=5)
+    cam_frames.pack(side=tk.TOP)
+
+def method_change(val, cam_factors):
+    if val.widget.get() == 'No perspective':
+        cam_factors.pack(side=tk.BOTTOM)
+
+    else:
+        cam_factors.pack_forget()
 
 
 def pp_tab(root,frame, cam_top, cam_left, traj_3d):
@@ -208,7 +233,7 @@ def all_children(window) :
     return _list
 
 
-def create_camera(entries, name, cam):
+def create_camera(entries, name, cam, pic_to_cm=None):
     # cam.set_mtx(entries[0][1].get() + "/mtx_"+name)
     # cam.set_dist(entries[0][1].get() + "/dist_"+name)
     # cam.set_R(entries[0][1].get() + "/R_"+name)
@@ -221,13 +246,15 @@ def create_camera(entries, name, cam):
     cam.camRes = (int(entries[4][1].get()), int(entries[5][1].get()))
     cam.res = (int(entries[6][1].get()), int(entries[7][1].get()))
     cam.set_crop_size()
+    if not pic_to_cm is None:
+        cam.pic_to_cm = pic_to_cm
     return cam
 
 
-def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj):
+def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj, ratTop, ratLeft):
     plt.close()
-    create_camera(top_entry, 'top', cam_top)
-    create_camera(left_entry, 'left', cam_left)
+    create_camera(top_entry, 'top', cam_top, float(ratTop.get()))
+    create_camera(left_entry, 'left', cam_left, float(ratLeft.get()))
     notebook.tab(3, state='normal')
 
     X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
