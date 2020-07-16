@@ -2,6 +2,8 @@ import numpy as np
 import cv2
 import glob
 import os
+import json
+
 
 class Cam:
     """
@@ -42,7 +44,6 @@ class Cam:
         self.res = res
         self.camRes = camRes
 
-
     def undistort(self):
         """
         Undistort teh camera pictures and change the picture file to the undistorted one
@@ -75,5 +76,33 @@ class Cam:
         self.R = np.zeros((3, 3))
         cv2.Rodrigues(np.loadtxt(R), self.R)
 
+    def set_R_by_matrix(self, R):
+        self.R = R
+
     def set_T(self, T):
         self.T = np.loadtxt(T)
+
+    def write_cam_data(self):
+        out_str = ''
+        out_str += "Screen resolution:\n" + json.dumps(self.camRes) + '\n'
+        out_str += "Acquisition resolution:\n" + json.dumps(self.res) + '\n'
+        out_str += "Crop array:\n" + json.dumps(self.cropSize) + '\n'
+        out_str += "Intrisinc matrix:\n" + json.dumps(self.mtx.tolist())+'\n'
+        out_str += "Distorsion matrix:\n" + json.dumps(self.dist.tolist())+'\n'
+        out_str += "Rotation matrix:\n" + json.dumps(self.R.tolist()) + '\n'
+        out_str += "Translation vector:\n" + json.dumps(self.T.tolist()) + '\n'
+        out_str += "Picture directory: \n"+self.dir + '\n'
+        out_str += "First picture: \n"+self.firstPic + '\n'
+        return out_str
+
+    def load_from_string(self, data):
+        lines = data.split('\n')
+        self.camRes = tuple(json.loads(lines[1]))
+        self.res = tuple(json.loads(lines[3]))
+        self.cropSize = json.loads(lines[5])
+        self.mtx = np.matrix(json.loads(lines[7]))
+        self.dist = np.matrix(json.loads(lines[9]))
+        self.R = np.matrix(json.loads(lines[11]))
+        self.T = np.matrix(json.loads(lines[13]))
+        self.dir = lines[15]
+        self.firstPic = lines[17]

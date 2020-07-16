@@ -1,6 +1,5 @@
 - [ ] Mask reflective surfaces
-- [x] Change report format
 - [ ] Improve calibration by detecting chessboard orientation
 - [ ] Batch treatment
-- [x] Checkbox "show trajectory"
-- [ ] Load trajectory option
+- [ ] Calibration check with multipoint projection
+- [ ] Clean up former origin method

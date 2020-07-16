@@ -26,15 +26,18 @@ def start_gui():
     notebook = ttk.Notebook(root, style="lefttab.TNotebook")
 
     calib_frame = tk.Frame(notebook, width=800, height=600)
+    load_frame = tk.Frame(notebook, width=800, height=600)
     ana_frame = tk.Frame(notebook, width=800, height=600)
     pp_frame = tk.Frame(notebook, width=800, height=600)
     root.update_idletasks()
 
     calib_tab(root, calib_frame)
+    load_tab(root, load_frame, cam_top, cam_left, traj_3d, notebook)
     ana_tab(root, ana_frame, notebook, cam_top, cam_left, traj_3d)
     pp_tab(root, pp_frame, cam_top, cam_left, traj_3d)
 
     notebook.add(calib_frame, text="Calibration")
+    notebook.add(load_frame, text="Load analysis")
     notebook.add(ana_frame, text="Analysis")
     notebook.add(pp_frame, text="Post processing", state="disabled")
 
@@ -61,6 +64,36 @@ def calib_tab(root,frame):
                    command=(lambda e=ents: launch_calib(e, pic)))
     pic.pack(side=tk.TOP)
     b1.pack(side=tk.TOP, padx=5, pady=5)
+
+
+def load_tab(root, frame, cam_top, cam_left, traj_3d, notebook):
+    lab = tk.Label(frame, width=50, text='Previous analysis report file path:', anchor='w')
+    ent = tk.Entry(frame, width=50)
+    ent.insert(tk.END, 'Trajectory.txt')
+    b1 = tk.Button(frame, text='Load data',
+                   command=(
+                       lambda n=notebook, f=ent.get(), tra=traj_3d, ct=cam_top, cl=cam_left:
+                       start_load(n, f, tra, ct, cl)))
+
+    lab.pack()
+    ent.pack(fill=tk.X)
+    b1.pack()
+
+
+def start_load(notebook, f, tra, ct, cl):
+    notebook.tab(3, state='normal')
+    load_data(f, tra, ct, cl)
+    popupmsg('Data successfully loaded !')
+
+
+def popupmsg(msg):
+    popup = tk.Tk()
+    popup.wm_title("Warning")
+    label = ttk.Label(popup, text=msg, font=("Helvetica", 10))
+    label.pack(side="top", fill="x", pady=10)
+    B1 = ttk.Button(popup, text="Ok", command=popup.destroy)
+    B1.pack()
+    popup.mainloop()
 
 
 def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
@@ -157,7 +190,7 @@ def create_camera(entries, name, cam):
 def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj):
     create_camera(top_entry, 'top', cam_top)
     create_camera(left_entry, 'left', cam_left)
-    notebook.tab(2, state='normal')
+    notebook.tab(3, state='normal')
 
     X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
                                        splitSymb="_", numsplit=-1, method=method.get(), plotTraj=show_traj.get())

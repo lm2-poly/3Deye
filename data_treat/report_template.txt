@@ -13,5 +13,5 @@ Initial velocity (m/s): ($VX, $VY, $VZ)
 Velocity after impact (m/s): ($VXAfter, $VYAfter, $VZAfter)
 Impact position (cm, relative to initial position): ($X, $Y, $Z)
 
-== Trajectory
+=== Trajectory
 t(ms)	X(cm)	Y(cm)	Z(cm)
