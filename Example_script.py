@@ -15,7 +15,9 @@ print("******* Calibrating cameras")
 calibrate_stereo("calibration/lens_dist_calib_top",
                  "calibration/lens_dist_calib_left",
                  "calibration/sources/calib_checker_top.jpg",
-                 "calibration/sources/calib_checker_left.jpg")
+                 "calibration/sources/calib_checker_left.jpg",
+                 chess_dim=7,
+                 chess_case_len=0.4375)
 
 
 print("******* Loading camera data and props")

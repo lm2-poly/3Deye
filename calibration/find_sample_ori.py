@@ -5,27 +5,28 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 
-def get_transfo_mat(calib_pic_file, mtx, dist, pic=None):
+def get_transfo_mat(calib_pic_file, mtx, dist, chess_dim, chess_case_len, pic=None):
     """
     Finds the transformation matrix between the camera's frame and the sample
 
     :param calib_pic_file: picture file of the chessboard
     :param mtx: camera intrinsinc matrix
     :param dist: camera distorsion matrix
+    :param chess_case_len: real life lenth of the chess square
     :return:
     """
     # termination criteria
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
-    objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pic_file, False, criteria)
-    objpoints = 0.4375 * np.array(objpoints)
+    objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pic_file, False, criteria, chess_dim,pic)
+    objpoints = chess_case_len * np.array(objpoints)
     obj_vect = np.reshape(objpoints, (objpoints.shape[0] * objpoints.shape[1], 3))
     img_vect = np.reshape(np.array(imgpoints), (objpoints.shape[0] * objpoints.shape[1], 2))
     ret, R, T = cv2.solvePnP(obj_vect, img_vect, mtx, dist)
     return R, T
 
 
-def plot_proj_origin(chessPic, mtx, dist, R, T, ax, name):
+def plot_proj_origin(chessPic, mtx, dist, R, T, ax, name, chess_dim, chess_case_len):
     pic = Image.open(chessPic)
     Rmat = np.matrix(np.zeros((3,3)))
     cv2.Rodrigues(R, Rmat)
@@ -35,10 +36,10 @@ def plot_proj_origin(chessPic, mtx, dist, R, T, ax, name):
 
     ax.imshow(pic, cmap="gray")
 
-    x_grid = np.linspace(0., 6 * 0.4375, 7)
-    y_grid = np.linspace(0., 6 * 0.4375, 7)
-    for i in range(0, 7):
-        for j in range(0, 7):
+    x_grid = np.linspace(0., (chess_dim-1) * chess_case_len, chess_dim)
+    y_grid = np.linspace(0., (chess_dim-1) * chess_case_len, chess_dim)
+    for i in range(0, chess_dim):
+        for j in range(0, chess_dim):
             if name == 'top':
                 vec_3D = np.matrix([x_grid[i], y_grid[j], 0, 1]).T
             else:

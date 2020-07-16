@@ -3,7 +3,7 @@ import numpy as np
 from calibration.chessboard_tools import get_chessboard_points
 
 
-def get_cam_matrix(calib_pics, pic=None):
+def get_cam_matrix(calib_pics, chess_dim, chess_case_len, pic=None):
     """
     Finds the camera intrinsinc and distortion matrices
 
@@ -12,8 +12,8 @@ def get_cam_matrix(calib_pics, pic=None):
     """
     # termination criteria
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-    objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pics, True, criteria, pic)
-    objpoints = 0.4375 * np.array(objpoints)
+    objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pics, True, criteria, chess_dim, pic)
+    objpoints = chess_case_len * np.array(objpoints)
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
     h, w = img.shape[:2]

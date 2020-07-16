@@ -2,4 +2,3 @@
 - [ ] Improve calibration by detecting chessboard orientation
 - [ ] Batch treatment
 - [ ] Facteur sans perspective
-- [ ] Chess dimensions not hard coded

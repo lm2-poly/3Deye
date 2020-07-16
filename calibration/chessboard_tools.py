@@ -49,7 +49,7 @@ def order_points(pts):
     return rect
 
 
-def get_chessboard_points(picDir, listPic, criteria, pic=None):
+def get_chessboard_points(picDir, listPic, criteria, chess_dim, pic=None):
     """
     Finds the chessboard points to use in camera calibration function
     :param picDir:
@@ -58,8 +58,8 @@ def get_chessboard_points(picDir, listPic, criteria, pic=None):
     :return:
     """
     # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
-    objp = np.zeros((7 * 7, 3), np.float32)
-    objp[:, :2] = np.mgrid[0:7, 0:7].T.reshape(-1, 2)
+    objp = np.zeros((chess_dim * chess_dim, 3), np.float32)
+    objp[:, :2] = np.mgrid[0:chess_dim, 0:chess_dim].T.reshape(-1, 2)
 
     # Arrays to store object points and image points from all the images.
     objpoints = []  # 3d point in real world space
@@ -74,7 +74,7 @@ def get_chessboard_points(picDir, listPic, criteria, pic=None):
         img = cv2.imread(fname)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         # Find the chess board corners
-        ret, corners = cv2.findChessboardCorners(gray, (7, 7), None)
+        ret, corners = cv2.findChessboardCorners(gray, (chess_dim, chess_dim), None)
 
         # If found, add object points, image points (after refining them)
         if ret == True:
@@ -84,7 +84,7 @@ def get_chessboard_points(picDir, listPic, criteria, pic=None):
             imgpoints.append(corners2)
 
             # Draw and display the corners
-            img = cv2.drawChessboardCorners(img, (7, 7), corners2, ret)
+            img = cv2.drawChessboardCorners(img, (chess_dim, chess_dim), corners2, ret)
             # if pic is None:
             #     cv2.imshow('img', img)
             #     cv2.waitKey(500)

@@ -50,6 +50,20 @@ def calib_tab(root,frame):
     pic = tk.Frame(frame, width=500, height=350,
                    highlightbackground="black", highlightthickness=1.)
 
+    chess_param = tk.Frame(frame)
+    numcase_lab = tk.Label(chess_param, text="Number of chessboard cases -1")
+    numcase = tk.Entry(chess_param)
+    numcase.insert(tk.END, 7)
+    lencase_lab = tk.Label(chess_param, text="Cases real life length")
+    lencase = tk.Entry(chess_param)
+    lencase.insert(tk.END, 0.4375)
+
+    numcase_lab.pack()
+    numcase.pack()
+    lencase_lab.pack()
+    lencase.pack()
+    chess_param.pack(side=tk.RIGHT)
+
     ents = makeform(frame, ['Top camera chessboard picture folder',
                             'Left camera chessboard picture folder',
                             'Top camera sample position picture',
@@ -63,9 +77,9 @@ def calib_tab(root,frame):
 
     #frame.bind('<Return>', (lambda event, e=ents: launch_calib(e, pic)))
     b1 = tk.Button(frame, text='Calibrate !',
-                   command=(lambda e=ents: launch_calib(e, pic, frame)))
-    pic.pack(side=tk.TOP)
-    b1.pack(side=tk.TOP, padx=5, pady=5)
+                   command=(lambda e=ents: launch_calib(e, pic, frame, numcase, lencase)))
+    pic.pack(side=tk.BOTTOM)
+    b1.pack(side=tk.BOTTOM, padx=5, pady=5)
 
 
 def load_tab(root, frame, cam_top, cam_left, traj_3d, notebook):
@@ -169,7 +183,7 @@ def launch_pp(entries, cam_top, cam_left, T, traj_3d):
     T.insert(tk.END, log)
 
 
-def launch_calib(entries, pic, frame):
+def launch_calib(entries, pic, frame, numcase, lencase):
     toDel = all_children(pic)
     for item in toDel:
         item.destroy()
@@ -177,7 +191,8 @@ def launch_calib(entries, pic, frame):
                      entries[1][1].get(),
                      entries[2][1].get(),
                      entries[3][1].get(),
-                     entries[4][1].get(), pic)
+                     entries[4][1].get(),
+                     chess_dim=int(numcase.get()), chess_case_len=float(lencase.get()), pic=pic)
 
 
 def all_children(window) :
