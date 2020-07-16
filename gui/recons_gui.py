@@ -19,7 +19,7 @@ def start_gui():
 
     root = tk.Tk()
     root.title("Eye3D")
-    root.geometry("1000x600")
+    root.geometry("1000x650")
     style = ttk.Style(root)
     style.configure("lefttab.TNotebook", tabposition="wn")
 
@@ -114,6 +114,7 @@ def popupmsg(msg):
 
 def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     show_traj = tk.IntVar()
+
     top_cam = tk.Frame(frame, width=250)
     titleTop = tk.Label(top_cam, text="Top camera parameters")
     titleTop.pack(side=tk.TOP)
@@ -145,6 +146,8 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     w.pack(side=tk.LEFT)
     cb.pack(side=tk.RIGHT)
     option_box.pack(side=tk.BOTTOM)
+    warning_label = tk.Label(frame, text="Warning, picture name must be in the following format: 'Name_number.jpg'")
+    warning_label.pack(side=tk.BOTTOM)
     top_cam.pack(side=tk.LEFT, padx=5, pady=5)
     left_cam.pack(side=tk.RIGHT, padx=5, pady=5)
 
