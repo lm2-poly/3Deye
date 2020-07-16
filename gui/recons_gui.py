@@ -64,9 +64,16 @@ def calib_tab(root,frame):
 
 
 def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
+    show_traj = tk.IntVar()
     top_cam = tk.Frame(frame, width=250)
     titleTop = tk.Label(top_cam, text="Top camera parameters")
     titleTop.pack(side=tk.TOP)
+    option_box = tk.Frame(frame)
+    w = ttk.Combobox(option_box, values=['No perspective', 'Perspective simple', 'Perspective optimized'])
+    w.insert(tk.END, 'Perspective simple')
+    cb = tk.Checkbutton(option_box, text="Show detected points", variable=show_traj)
+    cb.pack(side=tk.RIGHT)
+
     top = makeform(top_cam, ['Calibration folder',"Picture folder", 'First picture name', 'framerate',
                              'Screen width', 'Screen height', "Acquisition width", "Acquisition height",
                              "Banner crop size"],
@@ -81,12 +88,14 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
                              "Banner crop size"],
                     ["calibration/res", "camLeft", "camLeft_0000.jpg", '15000',
                      "500", "500", "500", "500", "0"])
+
     b1 = tk.Button(frame, text='Launch Analysis !',
-                   command=(lambda t=top, l=left: launch_analysis(t, l, notebook, w.get(), cam_top, cam_left, traj_3d)))
+                   command=(lambda t=top, l=left, n=notebook, wval=w, s=show_traj, ct=cam_top, cl=cam_left, traj=traj_3d:
+                            launch_analysis(t, l, n, wval,ct, cl, traj, s)))
+
     b1.pack(side=tk.TOP, padx=5, pady=5)
-    w = ttk.Combobox(frame, values=['No perspective', 'Perspective simple', 'Perspective optimized'])
-    w.insert(tk.END, 'Perspective simple')
-    w.pack(side=tk.TOP)
+    w.pack(side=tk.LEFT)
+    option_box.pack(side=tk.TOP)
     top_cam.pack(side=tk.LEFT, padx=5, pady=5)
     left_cam.pack(side=tk.RIGHT, padx=5, pady=5)
 
@@ -145,12 +154,13 @@ def create_camera(entries, name, cam):
     return cam
 
 
-def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d):
+def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj):
     create_camera(top_entry, 'top', cam_top)
     create_camera(left_entry, 'left', cam_left)
     notebook.tab(2, state='normal')
+
     X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
-                                       splitSymb="_", numsplit=-1, method=method, plotTraj=False)
+                                       splitSymb="_", numsplit=-1, method=method.get(), plotTraj=show_traj.get())
     traj_3d.set_trajectory(timespan, X, Y, Z)
 
 

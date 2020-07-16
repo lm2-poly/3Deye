@@ -2,5 +2,5 @@
 - [x] Change report format
 - [ ] Improve calibration by detecting chessboard orientation
 - [ ] Batch treatment
-- [ ] Checkbox "show trajectory"
+- [x] Checkbox "show trajectory"
 - [ ] Load trajectory option
