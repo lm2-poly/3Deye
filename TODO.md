@@ -1,4 +1,6 @@
-- [ ] Improve detection algorithm
+- [ ] Mask reflective surfaces
+- [x] Change report format
 - [ ] Improve calibration by detecting chessboard orientation
-- [ ] GUI
 - [ ] Batch treatment
+- [ ] Checkbox "show trajectory"
+- [ ] Load trajectory option

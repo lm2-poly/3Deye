@@ -1,6 +1,7 @@
 import numpy as np
 from string import Template
 
+
 def load_data(fileName):
     """Load existing data from file
 
@@ -17,8 +18,13 @@ def data_save(t, X, Y, Z, fileName):
     :param X,Y,Z: position lists
     :return: write the position in a column text file
     """
-    np.savetxt(fileName+".txt", np.array([np.matrix(t).T, np.matrix(X).T,
-                                           np.matrix(Y).T, np.matrix(Z).T]).T[0])
+    lenX = X.shape[0]
+    out_str = ''
+    for i in range(0, lenX):
+        out_str += '\n{:.04f} {:.04f} {:.04f} {:.04f}'.format(t[i], X[i], Y[i], Z[i])
+    fichier = open(fileName, 'a')
+    fichier.write(out_str)
+    fichier.close()
 
 
 def make_report(t, X, Y, Z, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file_name, template):
@@ -33,12 +39,12 @@ def make_report(t, X, Y, Z, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file
     :param cam_top,cam_left: camera objects used for the trajectory determination
     :param file_name: name of the trajectory file generated
     """
-    data_save(t, X, Y, Z, file_name)
-    make_template_file(template, "Report.txt",
+    make_template_file(template, file_name,
                        [file_name, cam_top.firstPic, cam_top.framerate, cam_top.res, alpha, Vinit[0]/100, Vinit[1]/100, Vinit[2]/100,
                         Vend[0]/100, Vend[1]/100, Vend[2]/100, imp_pos[0], imp_pos[1], imp_pos[2]],
                        ['testName', 'picName', 'fps', 'res', 'angle', 'VX', 'VY', 'VZ',
                         'VXAfter', 'VYAfter', 'VZAfter', 'X', 'Y', 'Z'])
+    data_save(t, X, Y, Z, file_name)
 
 
 def make_template_file(template, sortie, H, var_names):
