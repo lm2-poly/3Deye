@@ -35,7 +35,7 @@ def calibrate_stereo(left_lens, right_lens, left_pos, right_pos, calib_folder, p
     my_dpi = 96
     figure1 = Figure(figsize=(300/my_dpi, 300/my_dpi), dpi=my_dpi)
     ax1 = figure1.add_subplot(111)
-    plot_proj_origin(left_pos, mtx_top, dist_top, R_top, T_top, ax1)
+    plot_proj_origin(left_pos, mtx_top, dist_top, R_top, T_top, ax1, "top")
     plt.title("Top camera")
 
     if not(pic is None):
@@ -47,7 +47,7 @@ def calibrate_stereo(left_lens, right_lens, left_pos, right_pos, calib_folder, p
     figure2 = Figure(figsize=(300 / my_dpi, 300 / my_dpi), dpi=my_dpi)
     ax2 = figure2.add_subplot(111)
     plt.title("Left camera")
-    plot_proj_origin(right_pos, mtx_left, dist_left, R_left, T_left, ax2)
+    plot_proj_origin(right_pos, mtx_left, dist_left, R_left, T_left, ax2, "left")
     if not (pic is None):
         bar2 = FigureCanvasTkAgg(figure2, pic)
         bar2.draw()
@@ -57,14 +57,6 @@ def calibrate_stereo(left_lens, right_lens, left_pos, right_pos, calib_folder, p
         plt.show(block=False)
 
     print("Saving results in res")
-    # np.savetxt(calib_folder+"/mtx_top", mtx_top)
-    # np.savetxt(calib_folder+"/mtx_left", mtx_left)
-    # np.savetxt(calib_folder+"/dist_top", dist_top)
-    # np.savetxt(calib_folder+"/dist_left", dist_left)
-    # np.savetxt(calib_folder+"/R_top", R_top)
-    # np.savetxt(calib_folder+"/R_left", R_left)
-    # np.savetxt(calib_folder+"/T_top", T_top)
-    # np.savetxt(calib_folder+"/T_left", T_left)
     write_calibration_file(calib_folder+'/cam_top', mtx_top, dist_top, R_top, T_top)
     write_calibration_file(calib_folder + '/cam_left', mtx_left, dist_left, R_left, T_left)
 

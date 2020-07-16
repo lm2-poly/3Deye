@@ -66,7 +66,6 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, pic=None):
         :return:
         """
     x_top, y_top = get_proj_list(X, Y, Z, cam_top)
-    #x_left, y_left = get_proj_list(-Y, Z, -X, cam_left)
     x_left, y_left = get_proj_list(-Y, X, Z, cam_left)
 
     my_dpi = 50

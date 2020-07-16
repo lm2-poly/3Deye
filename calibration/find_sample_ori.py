@@ -25,15 +25,28 @@ def get_transfo_mat(calib_pic_file, mtx, dist, pic=None):
     return R, T
 
 
-def plot_proj_origin(chessPic, mtx, dist, R, T, ax):
+def plot_proj_origin(chessPic, mtx, dist, R, T, ax, name):
     pic = Image.open(chessPic)
     Rmat = np.matrix(np.zeros((3,3)))
     cv2.Rodrigues(R, Rmat)
     mat_pass = np.matrix(np.zeros((3, 4)))
     mat_pass[:, :3] = Rmat
     mat_pass[:, 3] = T
-    vec_3D = np.matrix([0, 0, 0, 1]).T
+
     ax.imshow(pic, cmap="gray")
+
+    x_grid = np.linspace(0., 6 * 0.4375, 7)
+    y_grid = np.linspace(0., 6 * 0.4375, 7)
+    for i in range(0, 7):
+        for j in range(0, 7):
+            if name == 'top':
+                vec_3D = np.matrix([x_grid[i], y_grid[j], 0, 1]).T
+            else:
+                vec_3D = np.matrix([-y_grid[i], x_grid[j], 0, 1]).T
+            proj = mtx * mat_pass * vec_3D
+            ax.plot([float(proj[0] / proj[2])], [float(proj[1] / proj[2])], '.', color="blue")
+
+    vec_3D = np.matrix([0, 0, 0, 1]).T
     proj = mtx * mat_pass * vec_3D
     ax.plot([float(proj[0]/proj[2])], [float(proj[1]/proj[2])], '.', color="red", label='Axis origin')
     ax.legend()

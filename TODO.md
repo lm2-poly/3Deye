@@ -1,5 +1,5 @@
 - [ ] Mask reflective surfaces
 - [ ] Improve calibration by detecting chessboard orientation
 - [ ] Batch treatment
-- [ ] Calibration check with multipoint projection
 - [ ] Facteur sans perspective
+- [ ] Chess dimensions not hard coded
