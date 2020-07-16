@@ -191,10 +191,11 @@ def all_children(window) :
 
 
 def create_camera(entries, name, cam):
-    cam.set_mtx(entries[0][1].get() + "/mtx_"+name)
-    cam.set_dist(entries[0][1].get() + "/dist_"+name)
-    cam.set_R(entries[0][1].get() + "/R_"+name)
-    cam.set_T(entries[0][1].get() + "/T_"+name)
+    # cam.set_mtx(entries[0][1].get() + "/mtx_"+name)
+    # cam.set_dist(entries[0][1].get() + "/dist_"+name)
+    # cam.set_R(entries[0][1].get() + "/R_"+name)
+    # cam.set_T(entries[0][1].get() + "/T_"+name)
+    cam.load_calibration_file(entries[0][1].get()+'/cam_'+name)
     cam.dir = entries[1][1].get()
     cam.firstPic = int(entries[2][1].get())
     cam.pic_to_cm = 1 / 141.1

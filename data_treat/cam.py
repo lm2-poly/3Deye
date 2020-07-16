@@ -10,14 +10,11 @@ class Cam:
     """
     Class for the camera object
     """
-    def __init__(self, mtx=None, dist=None, R=None, T=None, picDir=None, firstPic=None, pic_to_cm=None,
+    def __init__(self, calib_file=None, picDir=None, firstPic=None, pic_to_cm=None,
                  framerate=None, camRes=None, res=None, cropsize=0, origin=(0,0)):
         """Camera object initialisation
 
-        :param mtx: camera intrinsinc matrix
-        :param dist: camera distortion matrix
-        :param R: camera to sample rotation (Rodrigues vector). Warning: the initialisation function outputs cam.R as a rotation *matrix* but takes a Rodrigues vector as input.
-        :param T: camera to sample translation
+        :param calib_file: calibration file for the camera
         :param picDir: shot pictures directory
         :param firstPic: first picture name
         :param pic_to_cm: pixel to cm ratio (deprecated)
@@ -27,15 +24,8 @@ class Cam:
         :param res: picture resolution (W, H)
         :param origin: pixel coordinate of the system origin
         """
-        if not(mtx is None):
-            self.mtx = np.loadtxt(mtx)
-        if not (dist is None):
-            self.dist = np.loadtxt(dist)
-        self.R = np.zeros((3, 3))
-        if not (R is None):
-            cv2.Rodrigues(np.loadtxt(R), self.R)
-        if not(T is None):
-            self.T = np.loadtxt(T) #+ np.array([0.75, 0.75, 0])
+        if not(calib_file is None):
+            self.load_calibration_file(f_name)
         self.dir = picDir
         self.firstPic = firstPic
         self.pic_to_cm = pic_to_cm
@@ -74,7 +64,7 @@ class Cam:
 
     def set_R(self, R):
         self.R = np.zeros((3, 3))
-        cv2.Rodrigues(np.loadtxt(R), self.R)
+        cv2.Rodrigues(R, self.R)
 
     def set_R_by_matrix(self, R):
         self.R = R
@@ -94,6 +84,18 @@ class Cam:
         out_str += "Picture directory: \n"+self.dir + '\n'
         out_str += "First picture: \n"+str(self.firstPic) + '\n'
         return out_str
+
+    def load_calibration_file(self, f_name):
+        fichier = open(f_name)
+        lines = fichier.read().split('\n')
+        fichier.close()
+
+        self.mtx = np.matrix(json.loads(lines[1]))
+        self.dist = np.matrix(json.loads(lines[3]))
+        R = np.matrix(json.loads(lines[5]))
+        self.set_R(R)
+        self.T = np.array(json.loads(lines[7])[0])
+
 
     def load_from_string(self, data):
         lines = data.split('\n')

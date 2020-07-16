@@ -3,4 +3,3 @@
 - [ ] Batch treatment
 - [ ] Calibration check with multipoint projection
 - [ ] Facteur sans perspective
-- [ ] Unify calibration file

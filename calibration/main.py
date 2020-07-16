@@ -11,6 +11,7 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+import json
 
 
 def calibrate_stereo(left_lens, right_lens, left_pos, right_pos, calib_folder, pic=None):
@@ -56,11 +57,24 @@ def calibrate_stereo(left_lens, right_lens, left_pos, right_pos, calib_folder, p
         plt.show(block=False)
 
     print("Saving results in res")
-    np.savetxt(calib_folder+"/mtx_top", mtx_top)
-    np.savetxt(calib_folder+"/mtx_left", mtx_left)
-    np.savetxt(calib_folder+"/dist_top", dist_top)
-    np.savetxt(calib_folder+"/dist_left", dist_left)
-    np.savetxt(calib_folder+"/R_top", R_top)
-    np.savetxt(calib_folder+"/R_left", R_left)
-    np.savetxt(calib_folder+"/T_top", T_top)
-    np.savetxt(calib_folder+"/T_left", T_left)
+    # np.savetxt(calib_folder+"/mtx_top", mtx_top)
+    # np.savetxt(calib_folder+"/mtx_left", mtx_left)
+    # np.savetxt(calib_folder+"/dist_top", dist_top)
+    # np.savetxt(calib_folder+"/dist_left", dist_left)
+    # np.savetxt(calib_folder+"/R_top", R_top)
+    # np.savetxt(calib_folder+"/R_left", R_left)
+    # np.savetxt(calib_folder+"/T_top", T_top)
+    # np.savetxt(calib_folder+"/T_left", T_left)
+    write_calibration_file(calib_folder+'/cam_top', mtx_top, dist_top, R_top, T_top)
+    write_calibration_file(calib_folder + '/cam_left', mtx_left, dist_left, R_left, T_left)
+
+
+def write_calibration_file(f_name, mtx, dist, R, T):
+    out_str = ''
+    out_str += "Intrisinc matrix:\n" + json.dumps(mtx.tolist()) + '\n'
+    out_str += "Distorsion matrix:\n" + json.dumps(dist.tolist()) + '\n'
+    out_str += "Rotation vector(Rodrigues):\n" + json.dumps(R.tolist()) + '\n'
+    out_str += "Translation vector:\n" + json.dumps(T.T.tolist()) + '\n'
+    fichier = open(f_name, 'w')
+    fichier.write(out_str)
+    fichier.close()

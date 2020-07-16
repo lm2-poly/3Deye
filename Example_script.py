@@ -19,11 +19,8 @@ calibrate_stereo("calibration/lens_dist_calib_top",
 
 
 print("******* Loading camera data and props")
-calib_file = "calibration/res"  # Camera calibration file folder
-cam_top = Cam(calib_file + "/mtx_top",  # Top Camera intrinsic matrix file
-              calib_file + "/dist_top",  # Top Camera distorsion parameters file
-              calib_file + "/R_top",  # Top Camera Rotation matrix file
-              calib_file + "/T_top",  # Top Camera Translation vector file
+calib_file = "calibration/res/cam_top"  # Camera calibration file folder
+cam_top = Cam(calib_file,
               "camTop",  # Top Camera picture folder
               firstPic=0,  # Top Camera first picture name
               pic_to_cm=1 / 141.1,  # Top Camera pixel to cm conversion ratio
@@ -33,10 +30,8 @@ cam_top = Cam(calib_file + "/mtx_top",  # Top Camera intrinsic matrix file
               cropsize=[0, 0, 0, 0])  # Image crop size (X_start, X_end, Y_start, Y_end)
 # [0, 50, 0, 145]
 
-cam_left = Cam(calib_file + "/mtx_left",
-               calib_file + "/dist_left",
-               calib_file + "/R_left",
-               calib_file + "/T_left",
+calib_file = "calibration/res/cam_left"  # Camera calibration file folder
+cam_left = Cam(calib_file,
                "camLeft",
                firstPic=0,
                pic_to_cm=1 / 148.97,
