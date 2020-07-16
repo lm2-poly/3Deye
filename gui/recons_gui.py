@@ -53,15 +53,17 @@ def calib_tab(root,frame):
     ents = makeform(frame, ['Top camera chessboard picture folder',
                             'Left camera chessboard picture folder',
                             'Top camera sample position picture',
-                            'Left camera sample position picture'],
+                            'Left camera sample position picture',
+                            'Output calibration files folder path'],
                     ["calibration/lens_dist_calib_top",
                   "calibration/lens_dist_calib_left",
                   "calibration/sources/calib_checker_top.jpg",
-                  "calibration/sources/calib_checker_left.jpg"])
+                  "calibration/sources/calib_checker_left.jpg",
+                     "calibration/res"])
 
     #frame.bind('<Return>', (lambda event, e=ents: launch_calib(e, pic)))
     b1 = tk.Button(frame, text='Calibrate !',
-                   command=(lambda e=ents: launch_calib(e, pic)))
+                   command=(lambda e=ents: launch_calib(e, pic, frame)))
     pic.pack(side=tk.TOP)
     b1.pack(side=tk.TOP, padx=5, pady=5)
 
@@ -169,11 +171,25 @@ def launch_pp(entries, cam_top, cam_left, T, traj_3d):
     T.insert(tk.END, log)
 
 
-def launch_calib(entries, pic):
+def launch_calib(entries, pic, frame):
+    toDel = all_children(pic)
+    for item in toDel:
+        item.destroy()
     calibrate_stereo(entries[0][1].get(),
                      entries[1][1].get(),
                      entries[2][1].get(),
-                     entries[3][1].get(), pic)
+                     entries[3][1].get(),
+                     entries[4][1].get(), pic)
+
+
+def all_children(window) :
+    _list = window.winfo_children()
+
+    for item in _list :
+        if item.winfo_children() :
+            _list.extend(item.winfo_children())
+
+    return _list
 
 
 def create_camera(entries, name, cam):
@@ -200,6 +216,7 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
     X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
                                        splitSymb="_", numsplit=-1, method=method.get(), plotTraj=show_traj.get())
     traj_3d.set_trajectory(timespan, X, Y, Z)
+    popupmsg("Analysis done")
 
 
 

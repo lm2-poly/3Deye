@@ -13,7 +13,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
 
-def calibrate_stereo(left_lens, right_lens, left_pos, right_pos, pic=None):
+def calibrate_stereo(left_lens, right_lens, left_pos, right_pos, calib_folder, pic=None):
     """Calibrate a stereocamera system given calibration file names
 
     :param left_lens,right_lens: path of the right and left camera lens calibration pictures
@@ -36,6 +36,7 @@ def calibrate_stereo(left_lens, right_lens, left_pos, right_pos, pic=None):
     ax1 = figure1.add_subplot(111)
     plot_proj_origin(left_pos, mtx_top, dist_top, R_top, T_top, ax1)
     plt.title("Top camera")
+
     if not(pic is None):
         bar1 = FigureCanvasTkAgg(figure1, pic)
         bar1.draw()
@@ -55,11 +56,11 @@ def calibrate_stereo(left_lens, right_lens, left_pos, right_pos, pic=None):
         plt.show(block=False)
 
     print("Saving results in res")
-    np.savetxt("calibration/res/mtx_top", mtx_top)
-    np.savetxt("calibration/res/mtx_left", mtx_left)
-    np.savetxt("calibration/res/dist_top", dist_top)
-    np.savetxt("calibration/res/dist_left", dist_left)
-    np.savetxt("calibration/res/R_top", R_top)
-    np.savetxt("calibration/res/R_left", R_left)
-    np.savetxt("calibration/res/T_top", T_top)
-    np.savetxt("calibration/res/T_left", T_left)
+    np.savetxt(calib_folder+"/mtx_top", mtx_top)
+    np.savetxt(calib_folder+"/mtx_left", mtx_left)
+    np.savetxt(calib_folder+"/dist_top", dist_top)
+    np.savetxt(calib_folder+"/dist_left", dist_left)
+    np.savetxt(calib_folder+"/R_top", R_top)
+    np.savetxt(calib_folder+"/R_left", R_left)
+    np.savetxt(calib_folder+"/T_top", T_top)
+    np.savetxt(calib_folder+"/T_left", T_left)
