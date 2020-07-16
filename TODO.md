@@ -2,4 +2,4 @@
 - [ ] Improve calibration by detecting chessboard orientation
 - [ ] Batch treatment
 - [ ] Calibration check with multipoint projection
-- [ ] Clean up former origin method
+- [ ] Replace first_pic by first pic index

@@ -30,8 +30,7 @@ cam_top = Cam(calib_file + "/mtx_top",  # Top Camera intrinsic matrix file
               framerate=15000,  # Top Camera framerate
               camRes=(500, 500),  # Camera resolution
               res=(500, 500),  # Resized picture resolution (after cropping the metadata banner)
-              cropsize=[0, 0, 0, 0],  # Image crop size (X_start, X_end, Y_start, Y_end)
-              origin=(187, -50))  # origin=(187, 658)) #Top Camera frame origin
+              cropsize=[0, 0, 0, 0])  # Image crop size (X_start, X_end, Y_start, Y_end)
 # [0, 50, 0, 145]
 
 cam_left = Cam(calib_file + "/mtx_left",
@@ -44,8 +43,7 @@ cam_left = Cam(calib_file + "/mtx_left",
                framerate=15000,
                camRes=(500, 500),
                res=(500, 500),
-               cropsize=[0, 0, 0, 0],
-               origin=(412, 916))
+               cropsize=[0, 0, 0, 0])
 # [207, 0, 0, 50]
 #cam_shift_origin(cam_left)
 #cam_shift_origin(cam_top)

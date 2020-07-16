@@ -35,7 +35,6 @@ class Cam:
             cv2.Rodrigues(np.loadtxt(R), self.R)
         if not(T is None):
             self.T = np.loadtxt(T) #+ np.array([0.75, 0.75, 0])
-        self.origin = origin
         self.dir = picDir
         self.firstPic = firstPic
         self.pic_to_cm = pic_to_cm

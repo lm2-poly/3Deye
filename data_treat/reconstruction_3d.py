@@ -99,7 +99,6 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, pic=None):
     plt.show()
 
 
-
 def plot_square(cam):
     A = [cam.camRes[0] / 2 - cam.res[0] / 2, cam.camRes[1] / 2 - cam.res[1] / 2]
     B = [cam.camRes[0] / 2 + cam.res[0] / 2, cam.camRes[1] / 2 - cam.res[1] / 2]
@@ -174,17 +173,6 @@ def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, metho
     return X_coor, Y_coor, Z_coor
 
 
-def cam_shift_origin(cam):
-    """Shift cam origin from the actual one to the cam.origin pixel value
-
-    :param cam: camera object to tranform
-    """
-    actu_ori = get_proj_coords(0, 0, 0, cam)
-    tx = cam.origin[0] - actu_ori[0]/actu_ori[2]
-    ty = cam.origin[1] - actu_ori[1]/actu_ori[2]
-    cam.origin = (float(tx), float(ty))
-
-
 def make_system_mat(cam_top, cam_left, pos_2d_left, pos_2d_top):
     """Computes the matrix A, b of the equation system AX = b where X is the shot 3D coordinates
 
@@ -196,8 +184,8 @@ def make_system_mat(cam_top, cam_left, pos_2d_left, pos_2d_top):
 
     A = np.zeros((3, 3))
     B = np.zeros((1, 3))
-    u1, v1 = pos_2d_top #+ cam_top.origin
-    u2, v2 = pos_2d_left #+ cam_left.origin
+    u1, v1 = pos_2d_top
+    u2, v2 = pos_2d_left
     a_top, b_top = make_alpha_beta(cam_top)
     a_left, b_left = make_alpha_beta(cam_left)
 
@@ -274,13 +262,13 @@ def get_proj_error(var, cam_left, cam_top, pos_2d_left, pos_2d_top):
     pos_proj_left = get_proj_coords(-Y, X, Z, cam_left)
 
     if pos_proj_top.T[0, 2] == 0.:
-        top_uv = pos_proj_top.T[0, :2] #- np.array([cam_top.origin[0], cam_top.origin[1]])
+        top_uv = pos_proj_top.T[0, :2]
     else:
-        top_uv = pos_proj_top.T[0, :2]/pos_proj_top.T[0, 2] #- np.array([cam_top.origin[0], cam_top.origin[1]])
+        top_uv = pos_proj_top.T[0, :2]/pos_proj_top.T[0, 2]
     if pos_proj_top.T[0, 2] == 0.:
-        left_uv = pos_proj_left.T[0, :2] #- np.array([cam_left.origin[0], cam_left.origin[1]])
+        left_uv = pos_proj_left.T[0, :2]
     else:
-        left_uv = pos_proj_left.T[0, :2] / pos_proj_left.T[0, 2] #- np.array([cam_left.origin[0], cam_left.origin[1]])
+        left_uv = pos_proj_left.T[0, :2] / pos_proj_left.T[0, 2]
     top_uv = np.reshape(np.array(top_uv), (2,))
     left_uv = np.reshape(np.array(left_uv), (2,))
 
