@@ -256,9 +256,15 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
     create_camera(top_entry, 'top', cam_top, float(ratTop.get()))
     create_camera(left_entry, 'left', cam_left, float(ratLeft.get()))
     notebook.tab(3, state='normal')
+    if method.get() == "No perspective":
+        meth = 'no-persp'
+    elif method.get() == "Perspective simple":
+        meth = 'persp'
+    else:
+        meth = 'persp-opti'
 
     X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
-                                       splitSymb="_", numsplit=-1, method=method.get(), plotTraj=show_traj.get())
+                                       splitSymb="_", numsplit=-1, method=meth, plotTraj=show_traj.get())
     traj_3d.set_trajectory(timespan, X, Y, Z)
     popupmsg("Analysis done")
 
