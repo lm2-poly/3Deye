@@ -25,7 +25,7 @@ cam_top = Cam(calib_file + "/mtx_top",  # Top Camera intrinsic matrix file
               calib_file + "/R_top",  # Top Camera Rotation matrix file
               calib_file + "/T_top",  # Top Camera Translation vector file
               "camTop",  # Top Camera picture folder
-              firstPic="camTop_0000.jpg",  # Top Camera first picture name
+              firstPic=0,  # Top Camera first picture name
               pic_to_cm=1 / 141.1,  # Top Camera pixel to cm conversion ratio
               framerate=15000,  # Top Camera framerate
               camRes=(500, 500),  # Camera resolution
@@ -38,7 +38,7 @@ cam_left = Cam(calib_file + "/mtx_left",
                calib_file + "/R_left",
                calib_file + "/T_left",
                "camLeft",
-               firstPic="camLeft_0000.jpg",
+               firstPic=0,
                pic_to_cm=1 / 148.97,
                framerate=15000,
                camRes=(500, 500),

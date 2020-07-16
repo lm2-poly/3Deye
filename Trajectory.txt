@@ -2,7 +2,7 @@
 
 === Test parameters
 
-Picture name: camTop_0000.jpg
+Picture name: 0
 framerate: 15000.000
 resolution: (500, 500)
 
@@ -55,7 +55,7 @@ Translation vector:
 Picture directory: 
 camTop
 First picture: 
-camTop_0000.jpg
+0
 ==== Left camera
 Screen resolution:
 [500, 500]
@@ -74,4 +74,4 @@ Translation vector:
 Picture directory: 
 camLeft
 First picture: 
-camLeft_0000.jpg
+0

@@ -92,11 +92,9 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, pic=None):
     plt.plot(Y, label="Y")
     plt.plot(Z, label="Z")
     plt.legend()
-    plt.show()
+    plt.show(block=False)
     #plt.xlim((0, 1240))
     #plt.ylim((0, 800))
-
-    plt.show()
 
 
 def plot_square(cam):

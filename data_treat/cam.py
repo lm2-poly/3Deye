@@ -91,7 +91,7 @@ class Cam:
         out_str += "Rotation matrix:\n" + json.dumps(self.R.tolist()) + '\n'
         out_str += "Translation vector:\n" + json.dumps(self.T.tolist()) + '\n'
         out_str += "Picture directory: \n"+self.dir + '\n'
-        out_str += "First picture: \n"+self.firstPic + '\n'
+        out_str += "First picture: \n"+str(self.firstPic) + '\n'
         return out_str
 
     def load_from_string(self, data):
@@ -104,4 +104,4 @@ class Cam:
         self.R = np.matrix(json.loads(lines[11]))
         self.T = np.matrix(json.loads(lines[13]))
         self.dir = lines[15]
-        self.firstPic = lines[17]
+        self.firstPic = int(lines[17])

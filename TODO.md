@@ -2,4 +2,7 @@
 - [ ] Improve calibration by detecting chessboard orientation
 - [ ] Batch treatment
 - [ ] Calibration check with multipoint projection
-- [ ] Replace first_pic by first pic index
+- [ ] dossier calibration
+- [ ] Crop size
+- [ ] Facteur sans perspective
+- [ ] pop_up "analysis done"

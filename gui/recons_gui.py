@@ -105,32 +105,35 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     w = ttk.Combobox(option_box, values=['No perspective', 'Perspective simple', 'Perspective optimized'])
     w.insert(tk.END, 'Perspective simple')
     cb = tk.Checkbutton(option_box, text="Show detected points", variable=show_traj)
-    cb.pack(side=tk.RIGHT)
 
-    top = makeform(top_cam, ['Calibration folder',"Picture folder", 'First picture name', 'framerate',
+
+    top = makeform(top_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
                              'Screen width', 'Screen height', "Acquisition width", "Acquisition height",
                              "Banner crop size"],
-                    ["calibration/res", "camTop", "camTop_0000.jpg", '15000',
+                    ["calibration/res", "camTop", "0", '15000',
                      "500", "500", "500", "500", "0"])
 
     left_cam = tk.Frame(frame, width=250)
     titleLeft = tk.Label(left_cam, text="Left camera parameters")
     titleLeft.pack(side=tk.TOP)
-    left = makeform(left_cam, ['Calibration folder',"Picture folder", 'First picture name', 'framerate',
+    left = makeform(left_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
                              'Screen width', 'Screen height', "Acquisition width", "Acquisition height",
                              "Banner crop size"],
-                    ["calibration/res", "camLeft", "camLeft_0000.jpg", '15000',
+                    ["calibration/res", "camLeft", "0", '15000',
                      "500", "500", "500", "500", "0"])
 
     b1 = tk.Button(frame, text='Launch Analysis !',
                    command=(lambda t=top, l=left, n=notebook, wval=w, s=show_traj, ct=cam_top, cl=cam_left, traj=traj_3d:
                             launch_analysis(t, l, n, wval,ct, cl, traj, s)))
 
-    b1.pack(side=tk.TOP, padx=5, pady=5)
+
+    b1.pack(side=tk.BOTTOM, padx=5, pady=5)
     w.pack(side=tk.LEFT)
-    option_box.pack(side=tk.TOP)
+    cb.pack(side=tk.RIGHT)
+    option_box.pack(side=tk.BOTTOM)
     top_cam.pack(side=tk.LEFT, padx=5, pady=5)
     left_cam.pack(side=tk.RIGHT, padx=5, pady=5)
+
 
 
 def pp_tab(root,frame, cam_top, cam_left, traj_3d):
@@ -147,6 +150,7 @@ def pp_tab(root,frame, cam_top, cam_left, traj_3d):
 
 
 def launch_pp(entries, cam_top, cam_left, T, traj_3d):
+    plt.close()
     log = ''
     alpha = get_init_angle(traj_3d.X, traj_3d.Y, traj_3d.Z, traj_3d.t, cam_top, cam_left)
 
@@ -178,7 +182,7 @@ def create_camera(entries, name, cam):
     cam.set_R(entries[0][1].get() + "/R_"+name)
     cam.set_T(entries[0][1].get() + "/T_"+name)
     cam.dir = entries[1][1].get()
-    cam.firstPic = entries[2][1].get()
+    cam.firstPic = int(entries[2][1].get())
     cam.pic_to_cm = 1 / 141.1
     cam.framerate = float(entries[3][1].get())
     cam.camRes = (int(entries[4][1].get()), int(entries[5][1].get()))
@@ -188,6 +192,7 @@ def create_camera(entries, name, cam):
 
 
 def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj):
+    plt.close()
     create_camera(top_entry, 'top', cam_top)
     create_camera(left_entry, 'left', cam_left)
     notebook.tab(3, state='normal')
@@ -195,6 +200,7 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
     X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
                                        splitSymb="_", numsplit=-1, method=method.get(), plotTraj=show_traj.get())
     traj_3d.set_trajectory(timespan, X, Y, Z)
+
 
 
 def makeform(root, fields, def_vals):

@@ -47,25 +47,37 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 	:param numsplit: place of the image number in the picture name after splitting (default 1)
 	:return: X,Y trajectory in the camera reference system and the time list
 	"""
-	img = Image.open(cam.dir + "/" + cam.firstPic).convert('LA')
-	firstNum = int(cam.firstPic.split(splitSymb)[numsplit].split(".")[0])
+	picList = glob.glob(cam.dir + "/*.jpg")
+	picList = sorted(picList)
+
+	firstNum = picList[0].split(splitSymb)[numsplit].split(".")[0]
+	if int(firstNum) == 0:
+		num0 = len(firstNum)-1
+	else:
+		num0 = (firstNum.count('0') - int(np.floor(np.log10(cam.firstPic))))
+
+	firstPic_name = picList[0].split(num0*'0')[0] + num0 * '0'+str(cam.firstPic)+ '.' + picList[0].split('.')[1]
+	img = Image.open(firstPic_name).convert('LA')
+	#firstNum = int(cam.firstPic.split(splitSymb)[numsplit].split(".")[0])
+	firstNum = cam.firstPic
+
 	width, height = img.size
 	area = (cam.cropSize[0], cam.cropSize[2], width - cam.cropSize[1], height - cam.cropSize[3])
 	img = img.crop(area)
 	RGBPicRef = np.zeros((width, height))
 	if (plotTraj):
 		imSuper = np.array(img)[:,:,0]
+
 	for i in range(0, width - (cam.cropSize[0] + cam.cropSize[1])):
 		for j in range(0, height - (cam.cropSize[2] + cam.cropSize[3])):
 			RGBPicRef[i, j] = img.getpixel((i, j))[0]
-
 	img.close()
-	picList = glob.glob(cam.dir+"/*.jpg")
-	if cam.dir+"/"+cam.firstPic in picList:
-		picList.remove(cam.dir+"/"+cam.firstPic)
+
+	if firstPic_name in picList:
+		picList.remove(firstPic_name)
 	else:
-		picList.remove(cam.dir+"\\"+cam.firstPic)
-	picList = sorted(picList)
+		picList.remove(firstPic_name)
+
 	lenDat = len(picList)
 	avgdif = np.zeros((lenDat, 2))
 	RGBPic_actu = np.zeros((width, height))

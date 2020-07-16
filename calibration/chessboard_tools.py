@@ -85,9 +85,9 @@ def get_chessboard_points(picDir, listPic, criteria, pic=None):
 
             # Draw and display the corners
             img = cv2.drawChessboardCorners(img, (7, 7), corners2, ret)
-            if pic is None:
-                cv2.imshow('img', img)
-                cv2.waitKey(500)
-                cv2.destroyAllWindows()
+            # if pic is None:
+            #     cv2.imshow('img', img)
+            #     cv2.waitKey(500)
+            #     cv2.destroyAllWindows()
 
     return objpoints, imgpoints, gray, img, objp, corners2
