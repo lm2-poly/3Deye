@@ -1,14 +1,14 @@
-== TestBlender
+== tmp_results
 
 === Test parameters
 
 Picture name: camTop_0000.jpg
-framerate: 15000
+framerate: 15000.000
 resolution: (500, 500)
 
 === Test output
 
-Horizontal angle: 1.107 °
-Initial velocity (m/s): (0.278, 81.044, -1.471)
-Velocity after impact (m/s): (nan, nan, nan)
-Impact position (cm, relative to initial position): (0.019, 4.596, -0.087)
+Horizontal angle: $angle °
+Initial velocity (m/s): ($VX, $VY, $VZ)
+Velocity after impact (m/s): ($VXAfter, $VYAfter, $VZAfter)
+Impact position (cm, relative to initial position): ($X, $Y, $Z)

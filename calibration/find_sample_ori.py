@@ -5,7 +5,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 
-def get_transfo_mat(calib_pic_file, mtx, dist):
+def get_transfo_mat(calib_pic_file, mtx, dist, pic=None):
     """
     Finds the transformation matrix between the camera's frame and the sample
 

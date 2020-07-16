@@ -21,7 +21,7 @@ def data_save(t, X, Y, Z, fileName):
                                            np.matrix(Y).T, np.matrix(Z).T]).T[0])
 
 
-def make_report(t, X, Y, Z, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file_name):
+def make_report(t, X, Y, Z, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file_name, template):
     """Generates a report of the post-processed values as wel as the parameters used to extract the trajectory.
     Also saves the trajectory.
     
@@ -34,7 +34,7 @@ def make_report(t, X, Y, Z, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file
     :param file_name: name of the trajectory file generated
     """
     data_save(t, X, Y, Z, file_name)
-    make_template_file("data_treat/report_template.txt", "Report.txt",
+    make_template_file(template, "Report.txt",
                        [file_name, cam_top.firstPic, cam_top.framerate, cam_top.res, alpha, Vinit[0]/100, Vinit[1]/100, Vinit[2]/100,
                         Vend[0]/100, Vend[1]/100, Vend[2]/100, imp_pos[0], imp_pos[1], imp_pos[2]],
                        ['testName', 'picName', 'fps', 'res', 'angle', 'VX', 'VY', 'VZ',
@@ -44,15 +44,25 @@ def make_report(t, X, Y, Z, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file
 def make_template_file(template, sortie, H, var_names):
     """Create a file from a given template file"""
     len_vars = len(H)
+    to_rmv = []
     for i in range(0, len_vars):
+        if not(type(H[i]) == tuple)  and not(type(H[i]) == str) and np.isnan(H[i]):
+            to_rmv.append(var_names[i])
         if type(H[i]) == float or type(H[i]) == np.float64:
             H[i] = '{:.03f}'.format(H[i])
+
+    for elem in to_rmv:
+        var_names.remove(elem)
+    while 'nan' in H:
+        H.remove('nan')
+
+    len_vars = len(H)
     fichier = open(template,'r');
     contenu = fichier.read();
     modif_dic = {}
     for i in range(0, len_vars):
         modif_dic[var_names[i]] = H[i]
-    contenu_modif = Template(contenu).substitute(modif_dic);
+    contenu_modif = Template(contenu).safe_substitute(modif_dic);
     fichier.close();
     fichier = open(sortie,'w');
     fichier.write(contenu_modif);

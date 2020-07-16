@@ -3,9 +3,11 @@ import numpy as np
 from scipy.optimize import least_squares
 from data_treat.objectExtract import compute_2d_traj
 import matplotlib.pyplot as plt
+import tkinter as tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
-def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp", plotTraj=True):
+def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp", plotTraj=True, pic=None):
     """Reconstruct the 3D trajectory of a moving object filmed by 2 cameras with a given angle between them
 
     :param cam_top,cam_left: camera object for the top and left camera
@@ -30,7 +32,7 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
         X, Y, Z = get_3d_nopersp(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top)
     else:
         X, Y, Z = get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method)
-    plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left)
+    plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left, pic)
 
     return X, Y, Z, timespan_top[:minspan_len]
 
@@ -55,7 +57,7 @@ def cam_shift_resize(traj_2d_top, traj_2d_left, cam_top, cam_left):
     return np.array(shift_2d_top), np.array(shift_2d_left)
 
 
-def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left):
+def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, pic=None):
     """Plot the reprojected trajectory for each camera to check for the trajectory errors
 
         :param traj_top, traj_left: screen trajectory for the top and left cameras
@@ -67,7 +69,8 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left):
     #x_left, y_left = get_proj_list(-Y, Z, -X, cam_left)
     x_left, y_left = get_proj_list(-Y, X, Z, cam_left)
 
-    plt.figure(figsize=(18, 6))
+    my_dpi = 50
+    figure = plt.figure(figsize=(900/my_dpi, 300/my_dpi), dpi=my_dpi)
     plt.title("Trajectory reprojection error")
     plt.subplot(131)
     plt.title("Top camera")
@@ -84,7 +87,7 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left):
     plot_square(cam_left)
     plt.legend()
     plt.subplot(133)
-    plt.title("Left camera")
+    plt.title("Shot 3D Trajectory")
     plt.plot(X, label="X")
     plt.plot(Y, label="Y")
     plt.plot(Z, label="Z")
@@ -92,7 +95,9 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left):
     plt.show()
     #plt.xlim((0, 1240))
     #plt.ylim((0, 800))
+
     plt.show()
+
 
 
 def plot_square(cam):
@@ -132,8 +137,8 @@ def get_3d_nopersp(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top):
     :param cam_top,cam_left: camera object for the top and left camera
     :return:
     """
-    X = (traj_2d_left[:minspan_len, 0] - 0.5 * cam_left.res[0]) * cam_left.pic_to_cm
-    Y = (traj_2d_top[:minspan_len, 0] - 0.5 * cam_top.res[0]) * cam_top.pic_to_cm
+    X = (traj_2d_top[:minspan_len, 0] - 0.5 * cam_left.res[0]) * cam_left.pic_to_cm
+    Y = (traj_2d_top[:minspan_len, 1] - 0.5 * cam_top.res[0]) * cam_top.pic_to_cm
     Z = (traj_2d_left[:minspan_len, 1] - 0.5 * cam_left.res[1]) * cam_left.pic_to_cm
     return X, Y, Z
 

@@ -7,8 +7,8 @@ class Cam:
     """
     Class for the camera object
     """
-    def __init__(self, mtx, dist, R, T, picDir, firstPic, pic_to_cm, framerate, camRes, res, cropsize=0,
-                 origin=(0,0)):
+    def __init__(self, mtx=None, dist=None, R=None, T=None, picDir=None, firstPic=None, pic_to_cm=None,
+                 framerate=None, camRes=None, res=None, cropsize=0, origin=(0,0)):
         """Camera object initialisation
 
         :param mtx: camera intrinsinc matrix
@@ -24,11 +24,15 @@ class Cam:
         :param res: picture resolution (W, H)
         :param origin: pixel coordinate of the system origin
         """
-        self.mtx = np.loadtxt(mtx)
-        self.dist = np.loadtxt(dist)
+        if not(mtx is None):
+            self.mtx = np.loadtxt(mtx)
+        if not (dist is None):
+            self.dist = np.loadtxt(dist)
         self.R = np.zeros((3, 3))
-        cv2.Rodrigues(np.loadtxt(R), self.R)
-        self.T = np.loadtxt(T) #+ np.array([0.75, 0.75, 0])
+        if not (R is None):
+            cv2.Rodrigues(np.loadtxt(R), self.R)
+        if not(T is None):
+            self.T = np.loadtxt(T) #+ np.array([0.75, 0.75, 0])
         self.origin = origin
         self.dir = picDir
         self.firstPic = firstPic
@@ -60,3 +64,16 @@ class Cam:
                 cv2.imwrite(self.dir+'/corrected/'+elem.split('\\')[1], dst)
 
             self.dir = self.dir+"/corrected"
+
+    def set_mtx(self, mtx):
+        self.mtx = np.loadtxt(mtx)
+
+    def set_dist(self, dist):
+        self.dist = np.loadtxt(dist)
+
+    def set_R(self, R):
+        self.R = np.zeros((3, 3))
+        cv2.Rodrigues(np.loadtxt(R), self.R)
+
+    def set_T(self, T):
+        self.T = np.loadtxt(T)

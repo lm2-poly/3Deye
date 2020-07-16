@@ -82,7 +82,7 @@ def get_init_angle(X, Y, Z, t, cam_top, cam_left, plot=True):
 
     plt.xlim((0, cam_top.res[0]))
     plt.ylim((0, cam_top.res[1]))
-    plt.show()
+    plt.show(block=False)
 
     print("Horizontal angle: {:.02f}°".format(alpha))
     return alpha
@@ -106,6 +106,8 @@ def get_impact_position(X, Y, Z, cam_left, cam_top):
             cont = False
         else:
             i+=1
+
+    plt.figure(figsize=(8, 6))
     plot_supper(0, 10, cam_top)
     xt, yt = get_proj_list(X, Y, Z, cam_top)
     plt.plot(xt, yt, color="white", label="Shot trajectory")
@@ -114,7 +116,7 @@ def get_impact_position(X, Y, Z, cam_left, cam_top):
     plt.xlim((0, cam_top.res[0]))
     plt.ylim((0, cam_top.res[1]))
     plt.legend()
-    plt.show()
+    plt.show(block=False)
     print("Impact position: ({:.02f}, {:.02f}, {:.02f}) (cm)".format(X[i] - X0, Y[i] - Y0, Z[i] - Z0))
     return X[i] - X0, Y[i] - Y0, Z[i] - Z0
 
@@ -170,6 +172,7 @@ def get_velocity(t, X, Y, Z, thres=1.3):
         dat = np.polyfit(t[1:i], Y[1:i] - Y0, deg=1, full=True)
         new_score = float(dat[1])
 
+    plt.figure(figsize=(8,6))
     plt.plot(t[~np.isnan(X)] * 1000, X[~np.isnan(X)] - X0, marker=".", label="X")
     plt.plot(t[~np.isnan(X)] * 1000, Y[~np.isnan(X)] - Y0, marker=".", label="Y")
     plt.plot(t[~np.isnan(X)] * 1000, Z[~np.isnan(X)] - Z0, marker=".", label="Z")
@@ -190,7 +193,7 @@ def get_velocity(t, X, Y, Z, thres=1.3):
     dat = np.polyfit(t[i:i+lenVel], Y[i:i+lenVel] - Y0, deg=1, full=True)
     plt.plot(t[~np.isnan(X)][i:i+lenVel] * 1000, (dat[0][0] * t[~np.isnan(X)][i:i+lenVel] + dat[0][1]), label="Best linear fit (after impact)")
     plt.legend()
-    plt.show()
+    plt.show(block=False)
 
     VX_after = np.polyfit(t[i:i+lenVel], X[i:i+lenVel], deg=1)[0]
     VY_after = np.polyfit(t[i:i+lenVel], Y[i:i+lenVel], deg=1)[0]

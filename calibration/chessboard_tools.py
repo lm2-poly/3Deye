@@ -4,6 +4,8 @@ Various usefull function for chessboard calibration
 import cv2
 import numpy as np
 import glob
+import tkinter as tk
+from PIL import Image, ImageTk
 
 
 def draw(img, corners, imgpts):
@@ -47,7 +49,7 @@ def order_points(pts):
     return rect
 
 
-def get_chessboard_points(picDir, listPic, criteria):
+def get_chessboard_points(picDir, listPic, criteria, pic=None):
     """
     Finds the chessboard points to use in camera calibration function
     :param picDir:
@@ -83,7 +85,9 @@ def get_chessboard_points(picDir, listPic, criteria):
 
             # Draw and display the corners
             img = cv2.drawChessboardCorners(img, (7, 7), corners2, ret)
-            cv2.imshow('img', img)
-            cv2.waitKey(500)
-    cv2.destroyAllWindows()
+            if pic is None:
+                cv2.imshow('img', img)
+                cv2.waitKey(500)
+                cv2.destroyAllWindows()
+
     return objpoints, imgpoints, gray, img, objp, corners2
