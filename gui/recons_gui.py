@@ -110,19 +110,17 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
 
 
     top = makeform(top_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
-                             'Screen width', 'Screen height', "Acquisition width", "Acquisition height",
-                             "Banner crop size"],
+                             'Screen width', 'Screen height', "Acquisition width", "Acquisition height"],
                     ["calibration/res", "camTop", "0", '15000',
-                     "500", "500", "500", "500", "0"])
+                     "500", "500", "500", "500"])
 
     left_cam = tk.Frame(frame, width=250)
     titleLeft = tk.Label(left_cam, text="Left camera parameters")
     titleLeft.pack(side=tk.TOP)
     left = makeform(left_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
-                             'Screen width', 'Screen height', "Acquisition width", "Acquisition height",
-                             "Banner crop size"],
+                             'Screen width', 'Screen height', "Acquisition width", "Acquisition height"],
                     ["calibration/res", "camLeft", "0", '15000',
-                     "500", "500", "500", "500", "0"])
+                     "500", "500", "500", "500"])
 
     b1 = tk.Button(frame, text='Launch Analysis !',
                    command=(lambda t=top, l=left, n=notebook, wval=w, s=show_traj, ct=cam_top, cl=cam_left, traj=traj_3d:
@@ -203,7 +201,7 @@ def create_camera(entries, name, cam):
     cam.framerate = float(entries[3][1].get())
     cam.camRes = (int(entries[4][1].get()), int(entries[5][1].get()))
     cam.res = (int(entries[6][1].get()), int(entries[7][1].get()))
-    cam.cropSize = [0, 0, 0, int(entries[8][1].get())]
+    cam.set_crop_size()
     return cam
 
 

@@ -3,6 +3,7 @@ import cv2
 import glob
 import os
 import json
+from PIL import Image
 
 
 class Cam:
@@ -105,3 +106,8 @@ class Cam:
         self.T = np.matrix(json.loads(lines[13]))
         self.dir = lines[15]
         self.firstPic = int(lines[17])
+
+    def set_crop_size(self):
+        picList = glob.glob(self.dir + "/*.jpg")
+        testpic = np.array(Image.open(picList[0]))
+        self.cropSize = [0, 0, 0, testpic.shape[1] - self.res[1]]

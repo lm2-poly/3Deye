@@ -2,6 +2,5 @@
 - [ ] Improve calibration by detecting chessboard orientation
 - [ ] Batch treatment
 - [ ] Calibration check with multipoint projection
-- [ ] Crop size
 - [ ] Facteur sans perspective
 - [ ] Unify calibration file
