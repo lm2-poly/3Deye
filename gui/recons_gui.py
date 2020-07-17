@@ -10,6 +10,7 @@ from data_treat.make_report import make_report, load_data
 from data_treat.data_pp import get_init_angle, get_impact_position, get_velocity
 import numpy as np
 import json
+import os
 
 
 def start_gui():
@@ -114,6 +115,8 @@ def popupmsg(msg):
 
 def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     show_traj = tk.IntVar()
+    is_batch = tk.IntVar()
+
     cam_frames = tk.Frame(frame)
     top_cam = tk.Frame(cam_frames, width=250)
     left_cam = tk.Frame(cam_frames, width=250)
@@ -136,6 +139,20 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     cam_left_factor.insert(tk.END, '{:.04e}'.format(1 / 148.97))
     cam_left_factor.pack()
 
+    batch_options = tk.Frame(frame)
+    batch_label = tk.Label(batch_options, text="Batch folder path:")
+    batch_label.pack()
+    batch_folder = tk.Entry(batch_options, width=100)
+    batch_folder.pack()
+    batch_warning = tk.Label(batch_options,
+                             text="Each folder to analyse in the batch folder should contain two folders with "
+                                  "the name specified for the top and left camera above\nAll the report files will"
+                                  "be saved in a 'RESULT' folder created in the batch folder.")
+    batch_warning.pack()
+    batch_switch = tk.Checkbutton(option_box, text="Batch mode", variable=is_batch,
+                                  command=(lambda e=is_batch, bo=batch_options: batch_option_active(e, bo)))
+
+
     w = ttk.Combobox(option_box, values=['No perspective', 'Perspective simple', 'Perspective optimized'])
     w.bind("<<ComboboxSelected>>", (lambda val=w.get(), camf=cam_factors: method_change(val, camf)))
     w.insert(tk.END, 'Perspective simple')
@@ -143,7 +160,7 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
 
     top = makeform(top_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
                              'Screen width', 'Screen height', "Acquisition width", "Acquisition height"],
-                    ["calibration/res", "camTop", "0", '15000',
+                    ["calibration/res", "tests/single/camTop", "0", '15000',
                      "500", "500", "500", "500"])
 
 
@@ -151,17 +168,19 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     titleLeft.pack(side=tk.TOP)
     left = makeform(left_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
                              'Screen width', 'Screen height', "Acquisition width", "Acquisition height"],
-                    ["calibration/res", "camLeft", "0", '15000',
+                    ["calibration/res", "tests/single/camLeft", "0", '15000',
                      "500", "500", "500", "500"])
 
     b1 = tk.Button(frame, text='Launch Analysis !',
                    command=(lambda t=top, l=left, n=notebook, wval=w, s=show_traj, ct=cam_top,
-                                   cl=cam_left, traj=traj_3d, ratTop=cam_top_factor, ratLeft=cam_left_factor:
-                            launch_analysis(t, l, n, wval,ct, cl, traj, s, ratTop, ratLeft)))
+                                   cl=cam_left, traj=traj_3d, ratTop=cam_top_factor, ratLeft=cam_left_factor,
+                                   bo=is_batch, bf=batch_folder:
+                            launch_analysis(t, l, n, wval,ct, cl, traj, s, ratTop, ratLeft, bo, bf)))
 
     b1.pack(side=tk.BOTTOM, padx=5, pady=5)
     w.pack(side=tk.LEFT)
     cb.pack(side=tk.RIGHT)
+    batch_switch.pack(side=tk.RIGHT)
     option_box.pack(side=tk.BOTTOM)
     warning_label = tk.Label(frame, text="Warning, picture name must be in the following format: 'Name_number.jpg'")
     warning_label.pack(side=tk.BOTTOM)
@@ -169,6 +188,15 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     top_cam.pack(side=tk.LEFT, padx=5, pady=5)
     left_cam.pack(side=tk.LEFT, padx=5, pady=5)
     cam_frames.pack(side=tk.TOP)
+
+
+def batch_option_active(switch_val, batch_options):
+    if switch_val.get():
+        batch_options.pack(side=tk.TOP)
+    else:
+        batch_options.pack_forget()
+
+
 
 def method_change(val, cam_factors):
     if val.widget.get() == 'No perspective':
@@ -245,17 +273,15 @@ def create_camera(entries, name, cam, pic_to_cm=None):
     cam.framerate = float(entries[3][1].get())
     cam.camRes = (int(entries[4][1].get()), int(entries[5][1].get()))
     cam.res = (int(entries[6][1].get()), int(entries[7][1].get()))
-    cam.set_crop_size()
+
     if not pic_to_cm is None:
         cam.pic_to_cm = pic_to_cm
     return cam
 
 
-def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj, ratTop, ratLeft):
+def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj, ratTop, ratLeft, isbatch, batch_folder):
     plt.close()
-    create_camera(top_entry, 'top', cam_top, float(ratTop.get()))
-    create_camera(left_entry, 'left', cam_left, float(ratLeft.get()))
-    notebook.tab(3, state='normal')
+
     if method.get() == "No perspective":
         meth = 'no-persp'
     elif method.get() == "Perspective simple":
@@ -263,11 +289,40 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
     else:
         meth = 'persp-opti'
 
-    X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
-                                       splitSymb="_", numsplit=-1, method=meth, plotTraj=show_traj.get())
-    traj_3d.set_trajectory(timespan, X, Y, Z)
-    popupmsg("Analysis done")
+    if isbatch.get():
+        foldList = os.listdir(batch_folder.get())
+        ana_fold = batch_folder.get()+'/'
+        if 'RESULTS' in foldList:
+            foldList.remove('RESULTS')
+        os.system('cd ' + ana_fold + ' && mkdir RESULTS')
+    else:
+        foldList  = ['']
+        ana_fold = ''
 
+    notebook.tab(3, state='normal')
+
+    for elem in foldList:
+        print("************ "+elem)
+        create_camera(top_entry, 'top', cam_top, float(ratTop.get()))
+        create_camera(left_entry, 'left', cam_left, float(ratLeft.get()))
+        if not elem == '':
+            cam_top.dir = ana_fold + elem + '/' + cam_top.dir
+            cam_left.dir = ana_fold + elem + '/' + cam_left.dir
+        cam_top.set_crop_size()
+        cam_left.set_crop_size()
+
+        X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
+                                           splitSymb="_", numsplit=-1, method=meth, plotTraj=show_traj.get(), plot=not(isbatch.get()))
+        traj_3d.set_trajectory(timespan, X, Y, Z)
+
+        alpha = get_init_angle(X, Y, Z, timespan, cam_top, cam_left, plot=False)
+        xi, yi, zi = get_impact_position(X, Y, Z, cam_left, cam_top, plot=False)
+        Vinit, Vend = get_velocity(timespan, X, Y, Z, thres=1.3, plot=False)
+        if isbatch.get():
+            make_report(timespan, X, Y, Z, alpha, Vinit, Vend, [xi, yi, zi], cam_top, cam_left,
+                        ana_fold+'RESULTS/'+elem+'.txt', "data_treat/report_template.txt")
+
+    popupmsg("Analysis done")
 
 
 def makeform(root, fields, def_vals):

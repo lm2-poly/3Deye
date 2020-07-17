@@ -7,7 +7,7 @@ import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
-def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp", plotTraj=True, pic=None):
+def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp", plotTraj=True, pic=None, plot=True):
     """Reconstruct the 3D trajectory of a moving object filmed by 2 cameras with a given angle between them
 
     :param cam_top,cam_left: camera object for the top and left camera
@@ -32,7 +32,9 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
         X, Y, Z = get_3d_nopersp(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top)
     else:
         X, Y, Z = get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method)
-    plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left, pic)
+
+    if plot:
+        plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left, pic)
 
     return X, Y, Z, timespan_top[:minspan_len]
 

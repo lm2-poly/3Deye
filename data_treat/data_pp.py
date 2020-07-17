@@ -65,30 +65,31 @@ def get_init_angle(X, Y, Z, t, cam_top, cam_left, plot=True):
     proj_V_t = [xt[end] - xt[init], yt[end] - yt[init]]
     proj_V_l = [xl[end] - xl[init], yl[end] - yl[init]]
 
-    plt.figure(figsize=(14, 6))
-    plt.subplot(121)
-    plt.title("Left camera")
-    plot_supper(init, end, cam_left)
-    plt.quiver(xl[init], yl[init],
-               proj_V_l[0]/(numPic+1), proj_V_l[1]/(numPic+1), color=(1., 0., 0.), scale=50)
-    plt.xlim((0, cam_left.res[0]))
-    plt.ylim((0, cam_left.res[1]))
+    if plot:
+        plt.figure(figsize=(14, 6))
+        plt.subplot(121)
+        plt.title("Left camera")
+        plot_supper(init, end, cam_left)
+        plt.quiver(xl[init], yl[init],
+                   proj_V_l[0]/(numPic+1), proj_V_l[1]/(numPic+1), color=(1., 0., 0.), scale=50)
+        plt.xlim((0, cam_left.res[0]))
+        plt.ylim((0, cam_left.res[1]))
 
-    plt.subplot(122)
-    plt.title("Top camera")
-    plot_supper(init, end, cam_top)
-    plt.quiver([xt[init]], [yt[init]],
-               proj_V_t[0]/(numPic+1), proj_V_t[1]/(numPic+1), color=(1., 0., 0.), scale=50)
+        plt.subplot(122)
+        plt.title("Top camera")
+        plot_supper(init, end, cam_top)
+        plt.quiver([xt[init]], [yt[init]],
+                   proj_V_t[0]/(numPic+1), proj_V_t[1]/(numPic+1), color=(1., 0., 0.), scale=50)
 
-    plt.xlim((0, cam_top.res[0]))
-    plt.ylim((0, cam_top.res[1]))
-    plt.show(block=False)
+        plt.xlim((0, cam_top.res[0]))
+        plt.ylim((0, cam_top.res[1]))
+        plt.show(block=False)
 
-    print("Horizontal angle: {:.02f}°".format(alpha))
+        print("Horizontal angle: {:.02f}°".format(alpha))
     return alpha
 
 
-def get_impact_position(X, Y, Z, cam_left, cam_top):
+def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True):
     """Automatic detection of the moment of impact simply by taking the moment where Y changes direction
 
     :param X,Y,Z: reconstructed X, Y, and Z coordinates (ndarray)
@@ -106,18 +107,18 @@ def get_impact_position(X, Y, Z, cam_left, cam_top):
             cont = False
         else:
             i+=1
-
-    plt.figure(figsize=(8, 6))
-    plot_supper(0, 10, cam_top)
-    xt, yt = get_proj_list(X, Y, Z, cam_top)
-    plt.plot(xt, yt, color="white", label="Shot trajectory")
-    plt.plot(xt[i], yt[i], '.', ms=5, color="red", label="Detected impact position")
-    plt.title("Impact position detection")
-    plt.xlim((0, cam_top.res[0]))
-    plt.ylim((0, cam_top.res[1]))
-    plt.legend()
-    plt.show(block=False)
-    print("Impact position: ({:.02f}, {:.02f}, {:.02f}) (cm)".format(X[i] - X0, Y[i] - Y0, Z[i] - Z0))
+    if plot:
+        plt.figure(figsize=(8, 6))
+        plot_supper(0, 10, cam_top)
+        xt, yt = get_proj_list(X, Y, Z, cam_top)
+        plt.plot(xt, yt, color="white", label="Shot trajectory")
+        plt.plot(xt[i], yt[i], '.', ms=5, color="red", label="Detected impact position")
+        plt.title("Impact position detection")
+        plt.xlim((0, cam_top.res[0]))
+        plt.ylim((0, cam_top.res[1]))
+        plt.legend()
+        plt.show(block=False)
+        print("Impact position: ({:.02f}, {:.02f}, {:.02f}) (cm)".format(X[i] - X0, Y[i] - Y0, Z[i] - Z0))
     return X[i] - X0, Y[i] - Y0, Z[i] - Z0
 
 
@@ -146,7 +147,7 @@ def pos_screen_resize(x, y, cam):
     y -= (cam.camRes[1] / 2 - cam.res[1] / 2)
 
 
-def get_velocity(t, X, Y, Z, thres=1.3):
+def get_velocity(t, X, Y, Z, thres=1.3, plot=True):
     """Computes the shot velocity before and after the impact by linear fit.
     Before the impact, the functions continues adding the next acquisition point to the linear fit until the
     new points reduces the fit success score at less then the previous score * threshold. Then the first point with
@@ -172,18 +173,19 @@ def get_velocity(t, X, Y, Z, thres=1.3):
         dat = np.polyfit(t[1:i], Y[1:i] - Y0, deg=1, full=True)
         new_score = float(dat[1])
 
-    plt.figure(figsize=(8,6))
-    plt.plot(t[~np.isnan(X)] * 1000, X[~np.isnan(X)] - X0, marker=".", label="X")
-    plt.plot(t[~np.isnan(X)] * 1000, Y[~np.isnan(X)] - Y0, marker=".", label="Y")
-    plt.plot(t[~np.isnan(X)] * 1000, Z[~np.isnan(X)] - Z0, marker=".", label="Z")
-    plt.plot(t[~np.isnan(X)][:i] * 1000, (dat[0][0] * t[~np.isnan(X)][:i] + dat[0][1]), label="Best linear fit (initial)")
-
-
-
     VX = np.polyfit(t[1:i], X[1:i], deg=1)[0]
     VY = np.polyfit(t[1:i], Y[1:i], deg=1)[0]
     VZ = np.polyfit(t[1:i], Z[1:i], deg=1)[0]
-    print("Initial velocity: ({:.02f}, {:.02f}, {:.02f}) m/s".format(VX/100, VY/100, VZ/100))
+    if plot:
+        plt.figure(figsize=(8,6))
+        plt.plot(t[~np.isnan(X)] * 1000, X[~np.isnan(X)] - X0, marker=".", label="X")
+        plt.plot(t[~np.isnan(X)] * 1000, Y[~np.isnan(X)] - Y0, marker=".", label="Y")
+        plt.plot(t[~np.isnan(X)] * 1000, Z[~np.isnan(X)] - Z0, marker=".", label="Z")
+        plt.plot(t[~np.isnan(X)][:i] * 1000, (dat[0][0] * t[~np.isnan(X)][:i] + dat[0][1]), label="Best linear fit (initial)")
+        print("Initial velocity: ({:.02f}, {:.02f}, {:.02f}) m/s".format(VX / 100, VY / 100, VZ / 100))
+
+
+
     score_down = 1000.
     lenVel = i-1
     while score_down > score_actu:
@@ -191,13 +193,13 @@ def get_velocity(t, X, Y, Z, thres=1.3):
         dat = np.polyfit(t[i:i+lenVel], Y[i:i+lenVel] - Y0, deg=1, full=True)
         score_down = float(dat[1])
     dat = np.polyfit(t[i:i+lenVel], Y[i:i+lenVel] - Y0, deg=1, full=True)
-    plt.plot(t[~np.isnan(X)][i:i+lenVel] * 1000, (dat[0][0] * t[~np.isnan(X)][i:i+lenVel] + dat[0][1]), label="Best linear fit (after impact)")
-    plt.legend()
-    plt.show(block=False)
-
-    VX_after = np.polyfit(t[i:i+lenVel], X[i:i+lenVel], deg=1)[0]
-    VY_after = np.polyfit(t[i:i+lenVel], Y[i:i+lenVel], deg=1)[0]
-    VZ_after = np.polyfit(t[i:i+lenVel], Z[i:i+lenVel], deg=1)[0]
-    print("Velocity after impact: ({:.02f}, {:.02f}, {:.02f}) m/s".format(VX_after / 100, VY_after / 100, VZ_after / 100))
-
+    VX_after = np.polyfit(t[i:i + lenVel], X[i:i + lenVel], deg=1)[0]
+    VY_after = np.polyfit(t[i:i + lenVel], Y[i:i + lenVel], deg=1)[0]
+    VZ_after = np.polyfit(t[i:i + lenVel], Z[i:i + lenVel], deg=1)[0]
+    if plot:
+        plt.plot(t[~np.isnan(X)][i:i+lenVel] * 1000, (dat[0][0] * t[~np.isnan(X)][i:i+lenVel] + dat[0][1]), label="Best linear fit (after impact)")
+        plt.legend()
+        plt.show(block=False)
+        print("Velocity after impact: ({:.02f}, {:.02f}, {:.02f}) m/s".format(VX_after / 100, VY_after / 100,
+                                                                              VZ_after / 100))
     return [VX, VY, VZ], [VX_after, VY_after, VZ_after]
