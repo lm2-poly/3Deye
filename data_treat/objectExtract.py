@@ -15,15 +15,14 @@ def filter_val(pic, width, height, tol=10., lastVal = [0,0]):
 	:param lastVal: last barycenter value if several images are treated, used to return something when no values are above the threshold
 	:return: barycenter x and y coordinates and the number of pixels detected
 	"""
-	bary_x = 0
-	bary_y = 0
-	numvals = 0
-	for i in range(0, width):
-		for j in range(0, height):
-			if pic[i,j] > tol:
-				bary_x += float(i)
-				bary_y += float(j)
-				numvals += 1.
+	xi = list(range(0, width))
+	yi = list(range(0, height))
+	Y, X = np.meshgrid(xi, yi)
+	bool_tab = pic>tol
+	bary_x = float(np.sum(X[bool_tab]))
+	bary_y = float(np.sum(Y[bool_tab]))
+	numvals = np.sum(bool_tab)
+	
 	if not(numvals == 0):
 		bary_x /= numvals
 		bary_y /= numvals
@@ -58,19 +57,14 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 
 	firstPic_name = picList[0].split(num0*'0')[0] + num0 * '0'+str(cam.firstPic)+ '.' + picList[0].split('.')[1]
 	img = Image.open(firstPic_name).convert('LA')
-	#firstNum = int(cam.firstPic.split(splitSymb)[numsplit].split(".")[0])
 	firstNum = cam.firstPic
 
 	width, height = img.size
 	area = (cam.cropSize[0], cam.cropSize[2], width - cam.cropSize[1], height - cam.cropSize[3])
 	img = img.crop(area)
-	RGBPicRef = np.zeros((width, height))
+	RGBPicRef = np.array(img)[:, :, 0].T
 	if (plotTraj):
 		imSuper = np.array(img)[:,:,0]
-
-	for i in range(0, width - (cam.cropSize[0] + cam.cropSize[1])):
-		for j in range(0, height - (cam.cropSize[2] + cam.cropSize[3])):
-			RGBPicRef[i, j] = img.getpixel((i, j))[0]
 	img.close()
 
 	if firstPic_name in picList:
@@ -86,19 +80,16 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 	for k in range(0, lenDat):
 		img = Image.open(picList[k]).convert('LA')
 		img = img.crop(area)
-		for i in range(0, width - (cam.cropSize[0] + cam.cropSize[1])):
-			for j in range(0, height - (cam.cropSize[2] + cam.cropSize[3])):
-				RGBPic_actu[i, j] = img.getpixel((i, j))[0]
+		RGBPic_actu = np.array(img)[:, :, 0].T
 		if plotTraj:
 			imSuper += np.array(img)[:, :, 0]
 			imSuper = (imSuper/2).astype('uint8')
 		img.close()
+
 		numActu = int(picList[k].split(splitSymb)[numsplit].split(".")[0]) - firstNum - 1
 		bary_x, bary_y, num_pic = filter_val(abs(RGBPic_actu - RGBPicRef), width - (cam.cropSize[0]+cam.cropSize[1]),
 											 height - (cam.cropSize[2] + cam.cropSize[3]), lastVal=lastVal)
-		#plt.contourf(abs(RGBPic_actu - RGBPicRef))
-		#plt.colorbar()		
-		#plt.show()
+
 		lastVal = [bary_x, bary_y]
 		avgdif[numActu, 0] = bary_x
 		avgdif[numActu, 1] = bary_y
