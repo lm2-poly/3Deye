@@ -15,8 +15,8 @@ def filter_val(pic, width, height, tol=10., lastVal = [0,0]):
 	:param lastVal: last barycenter value if several images are treated, used to return something when no values are above the threshold
 	:return: barycenter x and y coordinates and the number of pixels detected
 	"""
-	xi = list(range(0, width))
-	yi = list(range(0, height))
+	xi = np.arange(width)
+	yi = np.arange(height)
 	Y, X = np.meshgrid(xi, yi)
 	bool_tab = pic>tol
 	bary_x = float(np.sum(X[bool_tab]))

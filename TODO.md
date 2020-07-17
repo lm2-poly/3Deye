@@ -1,3 +1,4 @@
 - [ ] Mask reflective surfaces
 - [ ] Improve calibration by detecting chessboard orientation
 - [ ] Add description / instructions
+- Attention, peut être confusion width/height dans "objectExtract"
