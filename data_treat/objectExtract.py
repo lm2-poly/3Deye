@@ -17,7 +17,7 @@ def filter_val(pic, width, height, tol=10., lastVal = [0,0]):
 	"""
 	xi = np.arange(width)
 	yi = np.arange(height)
-	Y, X = np.meshgrid(xi, yi)
+	Y, X = np.meshgrid(yi, xi)
 	bool_tab = pic>tol
 	bary_x = float(np.sum(X[bool_tab]))
 	bary_y = float(np.sum(Y[bool_tab]))
@@ -62,9 +62,9 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 	width, height = img.size
 	area = (cam.cropSize[0], cam.cropSize[2], width - cam.cropSize[1], height - cam.cropSize[3])
 	img = img.crop(area)
-	RGBPicRef = np.array(img)[:, :, 0].T
+	RGBPicRef = (np.array(img)[:, :, 0].T).astype(np.int16)
 	if (plotTraj):
-		imSuper = np.array(img)[:,:,0]
+		imSuper = (np.array(img)[:,:,0]).astype(np.int16)
 	img.close()
 
 	if firstPic_name in picList:
@@ -80,10 +80,10 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 	for k in range(0, lenDat):
 		img = Image.open(picList[k]).convert('LA')
 		img = img.crop(area)
-		RGBPic_actu = np.array(img)[:, :, 0].T
+		RGBPic_actu = (np.array(img)[:, :, 0].T).astype(np.int16)
 		if plotTraj:
-			imSuper += np.array(img)[:, :, 0]
-			imSuper = (imSuper/2).astype('uint8')
+			imSuper += (np.array(img)[:, :, 0]).astype(np.int16)
+			imSuper = (imSuper/2).astype(np.int16)
 		img.close()
 
 		numActu = int(picList[k].split(splitSymb)[numsplit].split(".")[0]) - firstNum - 1
@@ -97,12 +97,14 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 		if plotTraj:
 			plt.clf()
 			plt.imshow(imSuper, cmap='gray')
-			plt.plot([bary_x], [bary_y], '.', markersize=5, color="red", label="Detected position")
+			plt.plot([bary_x], [bary_y], '.', markersize=3, color="red", label="Detected position")
 			plt.xlim((0, cam.res[0]))
 			plt.ylim((0, cam.res[1]))
 			plt.legend()
+			plt.savefig("C:\\Users\\breum\\Desktop\\LM2_2020_07_28\\detection pic\\" + str(k) + ".jpg")
 			plt.draw()
 			plt.pause(0.1)
+
 
 	#avgdif *= cam.pic_to_cm
 

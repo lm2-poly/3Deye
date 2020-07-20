@@ -112,4 +112,4 @@ class Cam:
     def set_crop_size(self):
         picList = glob.glob(self.dir + "/*.jpg")
         testpic = np.array(Image.open(picList[0]))
-        self.cropSize = [0, 0, 0, testpic.shape[1] - self.res[1]]
+        self.cropSize = [0, 0, 0, testpic.shape[0] - self.res[1]]
