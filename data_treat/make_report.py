@@ -34,18 +34,16 @@ def load_data(fileName, trajectory, cam_top, cam_left):
     cam_left.load_from_string(cam_left_string)
 
 
-
-def data_save(t, X, Y, Z, fileName, cam_top, cam_left):
+def data_save(traj_3d, fileName, cam_top, cam_left):
     """Save position data after 3D trajectory reconstruction
 
-    :param t: time list
-    :param X,Y,Z: position lists
+    :param traj_3d: experiment object containing the 3D trajectory
     :return: write the position in a column text file
     """
-    lenX = X.shape[0]
+    lenX = traj_3d.X.shape[0]
     out_str = ''
     for i in range(0, lenX):
-        out_str += '\n{:.04E} {:.04E} {:.04E} {:.04E}'.format(t[i], X[i], Y[i], Z[i])
+        out_str += '\n{:.04E} {:.04E} {:.04E} {:.04E}'.format(traj_3d.t[i], traj_3d.X[i], traj_3d.Y[i], traj_3d.Z[i])
     out_str += "\n\n=== Calibration data\n"
     out_str += "==== Top camera\n" + cam_top.write_cam_data()
     out_str += "==== Left camera\n" + cam_left.write_cam_data()
@@ -55,7 +53,7 @@ def data_save(t, X, Y, Z, fileName, cam_top, cam_left):
     fichier.close()
 
 
-def make_report(t, X, Y, Z, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file_name, template):
+def make_report(traj_3d, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file_name, template):
     """Generates a report of the post-processed values as wel as the parameters used to extract the trajectory.
     Also saves the trajectory.
     
@@ -68,11 +66,12 @@ def make_report(t, X, Y, Z, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file
     :param file_name: name of the trajectory file generated
     """
     make_template_file(template, file_name,
-                       [file_name, cam_top.firstPic, cam_top.framerate, cam_top.res, alpha, Vinit[0]/100, Vinit[1]/100, Vinit[2]/100,
+                       [file_name, cam_top.firstPic, cam_top.framerate, cam_top.res, traj_3d.sample,
+                       traj_3d.shot, traj_3d.pressure, alpha, Vinit[0]/100, Vinit[1]/100, Vinit[2]/100,
                         Vend[0]/100, Vend[1]/100, Vend[2]/100, imp_pos[0], imp_pos[1], imp_pos[2]],
-                       ['testName', 'picName', 'fps', 'res', 'angle', 'VX', 'VY', 'VZ',
-                        'VXAfter', 'VYAfter', 'VZAfter', 'X', 'Y', 'Z'])
-    data_save(t, X, Y, Z, file_name, cam_top, cam_left)
+                       ['testName', 'picName', 'fps', 'res', 'sample', 'shot', 'pressure',
+                        'angle', 'VX', 'VY', 'VZ','VXAfter', 'VYAfter', 'VZAfter', 'X', 'Y', 'Z'])
+    data_save(traj_3d, file_name, cam_top, cam_left)
 
 
 def make_template_file(template, sortie, H, var_names):

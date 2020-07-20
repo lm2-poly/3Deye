@@ -5,6 +5,9 @@
 Picture name: $picName
 framerate: $fps
 resolution: $res
+Sample: $sample
+Shot type: $shot
+Input pressure (psi): $pressure
 
 === Test output
 

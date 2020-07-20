@@ -4,7 +4,7 @@ from PIL import Image, ImageTk
 from calibration.main import calibrate_stereo
 import matplotlib.pyplot as plt
 from data_treat.cam import Cam
-from data_treat.trajectory import Trajectory
+from data_treat.trajectory import Experiment
 from data_treat.reconstruction_3d import reconstruct_3d
 from data_treat.make_report import make_report, load_data
 from data_treat.data_pp import get_init_angle, get_impact_position, get_velocity
@@ -16,11 +16,11 @@ import os
 def start_gui():
     cam_top = Cam()
     cam_left = Cam()
-    traj_3d = Trajectory()
+    traj_3d = Experiment()
 
     root = tk.Tk()
     root.title("Eye3D")
-    root.geometry("1000x650")
+    root.geometry("1000x750")
     style = ttk.Style(root)
     style.configure("lefttab.TNotebook", tabposition="wn")
 
@@ -158,6 +158,11 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     w.insert(tk.END, 'Perspective simple')
     cb = tk.Checkbutton(option_box, text="Show detected points", variable=show_traj)
 
+    exp_params_fr = tk.Frame(frame)
+    exp_param = makeform(exp_params_fr, ['Shot type', 'Sample name', 'Input pressure (psi)'],
+                   ["0.5mm", "Aluminum 6050", "50"])
+
+
     top = makeform(top_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
                              'Screen width', 'Screen height', "Acquisition width", "Acquisition height"],
                     ["calibration/res", "tests/single/camTop", "0", '15000',
@@ -174,9 +179,10 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     b1 = tk.Button(frame, text='Launch Analysis !',
                    command=(lambda t=top, l=left, n=notebook, wval=w, s=show_traj, ct=cam_top,
                                    cl=cam_left, traj=traj_3d, ratTop=cam_top_factor, ratLeft=cam_left_factor,
-                                   bo=is_batch, bf=batch_folder:
-                            launch_analysis(t, l, n, wval,ct, cl, traj, s, ratTop, ratLeft, bo, bf)))
+                                   bo=is_batch, bf=batch_folder, ep=exp_param:
+                            launch_analysis(t, l, n, wval,ct, cl, traj, s, ratTop, ratLeft, bo, bf, ep)))
 
+    exp_params_fr.pack(side=tk.TOP)
     b1.pack(side=tk.BOTTOM, padx=5, pady=5)
     w.pack(side=tk.LEFT)
     cb.pack(side=tk.RIGHT)
@@ -232,9 +238,9 @@ def launch_pp(entries, cam_top, cam_left, T, traj_3d):
 
     log += 'Initial velocity (m/s): ({:.02f}, {:.02f} {:.02f})\n'.format(Vinit[0]/100., Vinit[1]/100., Vinit[2]/100.)
     log += 'Velocity after impact (m/s): ({:.02f}, {:.02f} {:.02f})\n'.format(Vend[0], Vend[1], Vend[2])
-    make_report(traj_3d.t, traj_3d.X, traj_3d.Y, traj_3d.Z, alpha, Vinit, Vend, [xi, yi, zi], cam_top, cam_left, entries[1][1].get(),
+    make_report(traj_3d, alpha, Vinit, Vend, [xi, yi, zi], cam_top, cam_left, entries[1][1].get(),
                 "data_treat/report_template.txt")
-    log += 'Report exported as Report.txt\nTrajectory exported as '+entries[1][1].get()
+    log += '\nTrajectory exported as '+entries[1][1].get()
     T.delete('1.0', tk.END)
     T.insert(tk.END, log)
 
@@ -262,10 +268,6 @@ def all_children(window) :
 
 
 def create_camera(entries, name, cam, pic_to_cm=None):
-    # cam.set_mtx(entries[0][1].get() + "/mtx_"+name)
-    # cam.set_dist(entries[0][1].get() + "/dist_"+name)
-    # cam.set_R(entries[0][1].get() + "/R_"+name)
-    # cam.set_T(entries[0][1].get() + "/T_"+name)
     cam.load_calibration_file(entries[0][1].get()+'/cam_'+name)
     cam.dir = entries[1][1].get()
     cam.firstPic = int(entries[2][1].get())
@@ -279,8 +281,10 @@ def create_camera(entries, name, cam, pic_to_cm=None):
     return cam
 
 
-def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj, ratTop, ratLeft, isbatch, batch_folder):
+def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj, ratTop, ratLeft, isbatch, batch_folder, exp_param):
     plt.close()
+
+    traj_3d.set_exp_params(exp_param[0][1].get(), exp_param[1][1].get(), exp_param[2][1].get())
 
     if method.get() == "No perspective":
         meth = 'no-persp'
@@ -319,7 +323,7 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
         xi, yi, zi = get_impact_position(X, Y, Z, cam_left, cam_top, plot=False)
         Vinit, Vend = get_velocity(timespan, X, Y, Z, thres=1.3, plot=False)
         if isbatch.get():
-            make_report(timespan, X, Y, Z, alpha, Vinit, Vend, [xi, yi, zi], cam_top, cam_left,
+            make_report(traj_3d, alpha, Vinit, Vend, [xi, yi, zi], cam_top, cam_left,
                         ana_fold+'RESULTS/'+elem+'.txt', "data_treat/report_template.txt")
 
     popupmsg("Analysis done")

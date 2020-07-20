@@ -5,6 +5,9 @@
 Picture name: 0
 framerate: 15000.000
 resolution: (500, 500)
+Sample: Aluminum 6050
+Shot type: 0.5mm
+Input pressure (psi): 50
 
 === Test output
 
