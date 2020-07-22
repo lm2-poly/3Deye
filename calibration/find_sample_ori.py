@@ -24,7 +24,7 @@ def get_transfo_mat(calib_pic_file, mtx, dist, chess_dim, chess_case_len, pic=No
     img_vect = np.reshape(np.array(imgpoints), (objpoints.shape[0] * objpoints.shape[1], 2))
     blobs = get_blob_position(img, img_vect, chess_dim)
     obj_vect = change_chess_ori(blobs, objpoints)
-    obj_vect[:, :2] -= 3 * chess_case_len
+
     ret, R, T = cv2.solvePnP(obj_vect, img_vect, mtx, dist)
     return R, T
 
