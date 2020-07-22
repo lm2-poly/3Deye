@@ -57,7 +57,8 @@ def get_init_angle(X, Y, Z, t, cam_top, cam_left, plot=True):
     alpha = math.acos(v[1]/vnorm)*180./math.pi
 
     xt, yt = get_proj_list(X, Y, Z, cam_top)
-    xl, yl = get_proj_list(-Y, X, Z, cam_left)
+    #xl, yl = get_proj_list(-Y, X, Z, cam_left)
+    xl, yl = get_proj_list(X, Y, Z, cam_left)
 
     pos_screen_resize(xt, yt, cam_top)
     pos_screen_resize(xl, yl, cam_left)

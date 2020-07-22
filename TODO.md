@@ -1,8 +1,4 @@
 - [ ] Mask reflective surfaces
-- [ ] Improve calibration by detecting chessboard orientation
-- [ ] Add description / instructions
-- [ ] BAtch post processing
+- [ ] Add description / instructions / Warnings
+- [ ] Batch post processing
 - [ ] Memorize last analysis
-
->[!WARNING] 
->Attention, peut être confusion width/height dans "objectExtract"

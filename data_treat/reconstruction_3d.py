@@ -68,7 +68,8 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, pic=None):
         :return:
         """
     x_top, y_top = get_proj_list(X, Y, Z, cam_top)
-    x_left, y_left = get_proj_list(-Y, X, Z, cam_left)
+    #x_left, y_left = get_proj_list(-Y, X, Z, cam_left)
+    x_left, y_left = get_proj_list(X, Y, Z, cam_left)
 
     my_dpi = 50
     figure = plt.figure(figsize=(900/my_dpi, 300/my_dpi), dpi=my_dpi)
@@ -199,7 +200,12 @@ def make_system_mat(cam_top, cam_left, pos_2d_left, pos_2d_top):
     #A[2, :] = [-cam_left.R[2, 2] * v2 + a_left[1, 2], -cam_left.R[2, 0] * v2 + a_left[1, 0],
     #           cam_left.R[2, 1] * v2 - a_left[1, 1]]
 
-    A[2, :] = [cam_left.R[2, 1] * v2 - a_left[1, 1], -cam_left.R[2, 0] * v2 + a_left[1, 0],
+    # A[2, :] = [cam_left.R[2, 1] * v2 - a_left[1, 1], -cam_left.R[2, 0] * v2 + a_left[1, 0],
+    #            cam_left.R[2, 2] * v2 - a_left[1, 2]]
+
+
+
+    A[2, :] = [cam_left.R[2, 0] * v2 - a_left[1, 0], cam_left.R[2, 1] * v2 - a_left[1, 1],
                cam_left.R[2, 2] * v2 - a_left[1, 2]]
 
     B[0, 0] = b_top[0, 0] - cam_top.T[2] * u1
@@ -258,7 +264,8 @@ def get_proj_error(var, cam_left, cam_top, pos_2d_left, pos_2d_top):
     """
     X, Y, Z = var
     pos_proj_top = get_proj_coords(X, Y, Z, cam_top)
-    pos_proj_left = get_proj_coords(-Y, X, Z, cam_left)
+    # pos_proj_left = get_proj_coords(-Y, X, Z, cam_left)
+    pos_proj_left = get_proj_coords(X, Y, Z, cam_left)
 
     if pos_proj_top.T[0, 2] == 0.:
         top_uv = pos_proj_top.T[0, :2]
