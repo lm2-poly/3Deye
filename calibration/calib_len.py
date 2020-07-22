@@ -11,7 +11,7 @@ def get_cam_matrix(calib_pics, chess_dim, chess_case_len, pic=None):
     :return: camera intrinsinc and distortion matrices
     """
     # termination criteria
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 1000, 1.e-9)
     objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pics, True, criteria, chess_dim, pic)
     objpoints = chess_case_len * np.array(objpoints)
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)

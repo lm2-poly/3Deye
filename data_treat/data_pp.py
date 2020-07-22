@@ -102,7 +102,7 @@ def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True):
     i = 0
     lenY = len(Y)
     cont = True
-    while i < lenY and cont:
+    while i < lenY-1 and cont:
         if Y[i+1] < Y[i]:
             cont = False
         else:

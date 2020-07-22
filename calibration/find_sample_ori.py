@@ -16,7 +16,7 @@ def get_transfo_mat(calib_pic_file, mtx, dist, chess_dim, chess_case_len, pic=No
     :return:
     """
     # termination criteria
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 1000, 1.e-9)
 
     objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pic_file, False, criteria, chess_dim,pic)
     objpoints = chess_case_len * np.array(objpoints)
@@ -26,7 +26,7 @@ def get_transfo_mat(calib_pic_file, mtx, dist, chess_dim, chess_case_len, pic=No
     return R, T
 
 
-def plot_proj_origin(chessPic, mtx, dist, R, T, ax, name, chess_dim, chess_case_len):
+def plot_proj_origin(chessPic, mtx, dist, R, T, name, chess_dim, chess_case_len):
     pic = Image.open(chessPic)
     Rmat = np.matrix(np.zeros((3,3)))
     cv2.Rodrigues(R, Rmat)
@@ -34,7 +34,7 @@ def plot_proj_origin(chessPic, mtx, dist, R, T, ax, name, chess_dim, chess_case_
     mat_pass[:, :3] = Rmat
     mat_pass[:, 3] = T
 
-    ax.imshow(pic, cmap="gray")
+    plt.imshow(pic, cmap="gray")
 
     x_grid = np.linspace(0., (chess_dim-1) * chess_case_len, chess_dim)
     y_grid = np.linspace(0., (chess_dim-1) * chess_case_len, chess_dim)
@@ -45,9 +45,9 @@ def plot_proj_origin(chessPic, mtx, dist, R, T, ax, name, chess_dim, chess_case_
             else:
                 vec_3D = np.matrix([-y_grid[i], x_grid[j], 0, 1]).T
             proj = mtx * mat_pass * vec_3D
-            ax.plot([float(proj[0] / proj[2])], [float(proj[1] / proj[2])], '.', color="blue")
-
+            plt.plot([float(proj[0] / proj[2])], [float(proj[1] / proj[2])], '.', color="blue")
+    plt.plot([float(proj[0] / proj[2])], [float(proj[1] / proj[2])], '.', color="blue", label="Projected point")
     vec_3D = np.matrix([0, 0, 0, 1]).T
     proj = mtx * mat_pass * vec_3D
-    ax.plot([float(proj[0]/proj[2])], [float(proj[1]/proj[2])], '.', color="red", label='Axis origin')
-    ax.legend()
+    plt.plot([float(proj[0]/proj[2])], [float(proj[1]/proj[2])], '.', color="red", label='Axis origin')
+    plt.legend()
