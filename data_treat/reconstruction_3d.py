@@ -7,7 +7,8 @@ import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
-def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp", plotTraj=True, pic=None, plot=True):
+def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp",
+                   plotTraj=True, pic=None, plot=True, threshold=10.):
     """Reconstruct the 3D trajectory of a moving object filmed by 2 cameras with a given angle between them
 
     :param cam_top,cam_left: camera object for the top and left camera
@@ -20,9 +21,9 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
 
     print("**** Shot position detection")
     print("** Top camera")
-    traj_2d_top, timespan_top = compute_2d_traj(cam_top, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj)
+    traj_2d_top, timespan_top = compute_2d_traj(cam_top, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj, threshold=threshold)
     print("** Left camera")
-    traj_2d_left, timespan_left = compute_2d_traj(cam_left, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj)
+    traj_2d_left, timespan_left = compute_2d_traj(cam_left, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj, threshold=threshold)
     minspan_len = min(len(timespan_top), len(timespan_left))
 
     traj_2d_top, traj_2d_left = cam_shift_resize(traj_2d_top, traj_2d_left, cam_top, cam_left)

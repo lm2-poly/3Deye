@@ -32,7 +32,7 @@ def filter_val(pic, width, height, tol=10., lastVal = [0,0]):
 	return bary_x, bary_y, numvals
 
 
-def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
+def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True, threshold=10.):
 	"""
 	Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,
 	by computing the difference of images with the object and without the object (initial state)
@@ -46,7 +46,7 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 	:param numsplit: place of the image number in the picture name after splitting (default 1)
 	:return: X,Y trajectory in the camera reference system and the time list
 	"""
-	picList = glob.glob(cam.dir + "/*.jpg")
+	picList = glob.glob(cam.dir + "/*.tif")
 	picList = sorted(picList)
 
 	firstNum = picList[0].split(splitSymb)[numsplit].split(".")[0]
@@ -88,7 +88,7 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 
 		numActu = int(picList[k].split(splitSymb)[numsplit].split(".")[0]) - firstNum - 1
 		bary_x, bary_y, num_pic = filter_val(abs(RGBPic_actu - RGBPicRef), width - (cam.cropSize[0]+cam.cropSize[1]),
-											 height - (cam.cropSize[2] + cam.cropSize[3]), lastVal=lastVal)
+											 height - (cam.cropSize[2] + cam.cropSize[3]), tol=threshold, lastVal=lastVal)
 
 		lastVal = [bary_x, bary_y]
 		avgdif[numActu, 0] = bary_x
@@ -101,7 +101,7 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 			plt.xlim((0, cam.res[0]))
 			plt.ylim((0, cam.res[1]))
 			plt.legend()
-			plt.savefig("C:\\Users\\breum\\Desktop\\LM2_2020_07_28\\detection pic\\" + str(k) + ".jpg")
+			plt.savefig("C:\\Users\\breum\\Desktop\\LM2_2020_07_28\\detection pic\\" + str(k) + ".tif")
 			plt.draw()
 			plt.pause(0.1)
 

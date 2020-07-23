@@ -1,4 +1,8 @@
 - [ ] Mask reflective surfaces
 - [ ] Add description / instructions / Warnings
-- [ ] Batch post processing
+- [ ] Batch post processing parameters
 - [ ] Memorize last analysis
+- [ ] Documentation
+- [ ] Code cleanups
+- [ ] PP picture save
+- [ ] Solve chd problem

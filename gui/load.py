@@ -9,7 +9,7 @@ def load_tab(root, frame, cam_top, cam_left, traj_3d, notebook):
     ent.insert(tk.END, 'Trajectory.txt')
     b1 = tk.Button(frame, text='Load data',
                    command=(
-                       lambda n=notebook, f=ent.get(), tra=traj_3d, ct=cam_top, cl=cam_left:
+                       lambda n=notebook, f=ent, tra=traj_3d, ct=cam_top, cl=cam_left:
                        start_load(n, f, tra, ct, cl)))
 
     lab.pack()
@@ -19,5 +19,5 @@ def load_tab(root, frame, cam_top, cam_left, traj_3d, notebook):
 
 def start_load(notebook, f, tra, ct, cl):
     notebook.tab(3, state='normal')
-    load_data(f, tra, ct, cl)
+    load_data(f.get(), tra, ct, cl)
     popupmsg('Data successfully loaded !')

@@ -12,7 +12,7 @@ def popupmsg(msg):
     popup.mainloop()
 
 
-def makeform(root, fields, def_vals):
+def makeform(root, fields, def_vals, pos=tk.TOP):
     entries = []
     rows = tk.Frame(root, width=100)
     i=0
@@ -25,5 +25,5 @@ def makeform(root, fields, def_vals):
         entries.append((field, ent))
         i+=1
 
-    rows.pack(side=tk.TOP, padx=5, pady=5)
+    rows.pack(side=pos, padx=5, pady=5)
     return entries

@@ -14,6 +14,13 @@ def load_data(fileName, trajectory, cam_top, cam_left):
     fichier.close()
 
     category = str_data.split("===")
+    test_params = category[1].split('\n')
+    fps = float(test_params[3].split(':')[1])
+    sample = test_params[5].split(':')[1]
+    shot = test_params[6].split(':')[1]
+    pressure = float(test_params[7].split(':')[1])
+    trajectory.set_exp_params(shot, sample, pressure)
+
     traj = category[3].split('\n')
     t = []
     X = []
@@ -30,8 +37,10 @@ def load_data(fileName, trajectory, cam_top, cam_left):
 
     cam_top_string = category[5].split("=")[1].split('Top camera\n')[1]
     cam_top.load_from_string(cam_top_string)
+    cam_top.framerate = fps
     cam_left_string = category[6].split("=")[1].split('Left camera\n')[1]
     cam_left.load_from_string(cam_left_string)
+    cam_left.framerate = fps
 
 
 def data_save(traj_3d, fileName, cam_top, cam_left):
@@ -67,8 +76,8 @@ def make_report(traj_3d, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file_na
     """
     make_template_file(template, file_name,
                        [file_name, cam_top.firstPic, cam_top.framerate, cam_top.res, traj_3d.sample,
-                       traj_3d.shot, traj_3d.pressure, alpha, Vinit[0]/100, Vinit[1]/100, Vinit[2]/100,
-                        Vend[0]/100, Vend[1]/100, Vend[2]/100, imp_pos[0], imp_pos[1], imp_pos[2]],
+                       traj_3d.shot, traj_3d.pressure, alpha, Vinit[0], Vinit[1], Vinit[2],
+                        Vend[0], Vend[1], Vend[2], imp_pos[0], imp_pos[1], imp_pos[2]],
                        ['testName', 'picName', 'fps', 'res', 'sample', 'shot', 'pressure',
                         'angle', 'VX', 'VY', 'VZ','VXAfter', 'VYAfter', 'VZAfter', 'X', 'Y', 'Z'])
     data_save(traj_3d, file_name, cam_top, cam_left)

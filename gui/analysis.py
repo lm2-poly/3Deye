@@ -51,6 +51,7 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     w.bind("<<ComboboxSelected>>", (lambda val=w.get(), camf=cam_factors: method_change(val, camf)))
     w.insert(tk.END, 'Perspective simple')
     cb = tk.Checkbutton(option_box, text="Show detected points", variable=show_traj)
+    thres = makeform(option_box, ['Detection threshold'], ['10.'])
 
     exp_params_fr = tk.Frame(frame)
     exp_param = makeform(exp_params_fr, ['Shot type', 'Sample name', 'Input pressure (psi)'],
@@ -73,8 +74,8 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     b1 = tk.Button(frame, text='Launch Analysis !',
                    command=(lambda t=top, l=left, n=notebook, wval=w, s=show_traj, ct=cam_top,
                                    cl=cam_left, traj=traj_3d, ratTop=cam_top_factor, ratLeft=cam_left_factor,
-                                   bo=is_batch, bf=batch_folder, ep=exp_param:
-                            launch_analysis(t, l, n, wval,ct, cl, traj, s, ratTop, ratLeft, bo, bf, ep)))
+                                   bo=is_batch, bf=batch_folder, ep=exp_param, th=thres:
+                            launch_analysis(t, l, n, wval,ct, cl, traj, s, ratTop, ratLeft, bo, bf, ep, th)))
 
     exp_params_fr.pack(side=tk.TOP)
     b1.pack(side=tk.BOTTOM, padx=5, pady=5)
@@ -119,7 +120,8 @@ def create_camera(entries, name, cam, pic_to_cm=None):
     return cam
 
 
-def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj, ratTop, ratLeft, isbatch, batch_folder, exp_param):
+def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj,
+                    ratTop, ratLeft, isbatch, batch_folder, exp_param, thres):
 
 
     traj_3d.set_exp_params(exp_param[0][1].get(), exp_param[1][1].get(), exp_param[2][1].get())
@@ -154,12 +156,13 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
         cam_left.set_crop_size()
 
         X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
-                                           splitSymb="_", numsplit=-1, method=meth, plotTraj=show_traj.get(), plot=not(isbatch.get()))
+                                           splitSymb="_", numsplit=-1, method=meth,
+                                           plotTraj=show_traj.get(), plot=not(isbatch.get()), threshold=float(thres[0][1].get()))
         traj_3d.set_trajectory(timespan, X, Y, Z)
 
-        alpha = get_init_angle(X, Y, Z, timespan, cam_top, cam_left, plot=False)
-        xi, yi, zi = get_impact_position(X, Y, Z, cam_left, cam_top, plot=False)
-        Vinit, Vend = get_velocity(timespan, X, Y, Z, thres=1.3, plot=False)
         if isbatch.get():
+            alpha = get_init_angle(X, Y, Z, timespan, cam_top, cam_left, plot=False, saveDir=ana_fold+'RESULTS\\'+elem+'-')
+            xi, yi, zi = get_impact_position(X, Y, Z, cam_left, cam_top, plot=False, saveDir=ana_fold+'RESULTS\\'+elem+'-')
+            Vinit, Vend = get_velocity(timespan, X, Y, Z, thres=1.1, plot=False, saveDir=ana_fold+'RESULTS\\'+elem+'-')
             make_report(traj_3d, alpha, Vinit, Vend, [xi, yi, zi], cam_top, cam_left,
                         ana_fold+'RESULTS/'+elem+'.txt', "data_treat/report_template.txt")
