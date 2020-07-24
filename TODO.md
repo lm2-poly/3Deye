@@ -5,4 +5,4 @@
 - [ ] Documentation
 - [ ] Code cleanups
 - [ ] PP picture save
-- [ ] Solve chd problem
+- [ ] Fix exemple script

@@ -73,7 +73,7 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, pic=None):
     x_left, y_left = get_proj_list(X, Y, Z, cam_left)
 
     my_dpi = 50
-    figure = plt.figure(figsize=(900/my_dpi, 300/my_dpi), dpi=my_dpi)
+    figure = plt.figure(figsize=(18,6))
     plt.title("Trajectory reprojection error")
     plt.subplot(131)
     plt.title("Top camera")

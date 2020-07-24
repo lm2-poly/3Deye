@@ -47,6 +47,7 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True, threshold=10.
 	:return: X,Y trajectory in the camera reference system and the time list
 	"""
 	picList = glob.glob(cam.dir + "/*.tif")
+	picList += glob.glob(cam.dir + "/*.jpg")
 	picList = sorted(picList)
 
 	firstNum = picList[0].split(splitSymb)[numsplit].split(".")[0]
@@ -101,7 +102,7 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True, threshold=10.
 			plt.xlim((0, cam.res[0]))
 			plt.ylim((0, cam.res[1]))
 			plt.legend()
-			plt.savefig("C:\\Users\\breum\\Desktop\\LM2_2020_07_28\\detection pic\\" + str(k) + ".tif")
+			plt.savefig("C:\\Users\\breum\\Desktop\\LM2_2020_07_28\\detection pic\\" + str(k) + ".jpg")
 			plt.draw()
 			plt.pause(0.1)
 

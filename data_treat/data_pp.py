@@ -5,6 +5,7 @@ import math
 from PIL import Image
 import os
 from data_treat.reconstruction_3d import get_proj_list
+import glob
 
 
 def result_plot(X, Y, Z, timespan):
@@ -140,11 +141,12 @@ def plot_supper(init, end, cam):
     :param init,end: start and stop indices for the addition
     :param cam: camera object to be used
     """
-    picList = os.listdir(cam.dir)
-    ver_pic = np.array(Image.open(cam.dir + '/' + picList[0]))
+    picList = glob.glob(cam.dir + "/*.tif")
+    picList += glob.glob(cam.dir + "/*.jpg")
+    ver_pic = np.array(Image.open(picList[0]))
     ver_pic = ver_pic[0:cam.res[0] - cam.cropSize[3], :]
     for i in range(init, end):
-        im_act = np.array(Image.open(cam.dir + '/' + picList[i]))
+        im_act = np.array(Image.open(picList[i]))
         ver_pic += im_act[0:cam.res[0] - cam.cropSize[3], :]
 
     plt.imshow(ver_pic, "gray")
