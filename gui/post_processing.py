@@ -35,7 +35,7 @@ def pp_tab(root,frame, cam_top, cam_left, traj_3d):
     params.pack(side=tk.TOP)
 
     save_frame = tk.Frame(frame)
-    file_save = makeform(save_frame, ['Output file name'], ["Trajectory.txt"], pos=tk.TOP)
+    file_save = makeform(save_frame, ['Output file name'], [traj_3d.save_dir], pos=tk.TOP)
     b1 = tk.Button(save_frame, text='Save results', command=(lambda fs=file_save:
                                                         save_res(cam_top, cam_left, T, traj_3d, fs)))
     b1.pack(side=tk.BOTTOM, padx=5, pady=5)
@@ -59,6 +59,9 @@ def save_res(cam_top, cam_left, T, traj_3d, fileSave):
 def launch_pp(vels, cam_top, cam_left, T, traj_3d, fileSave, ang, pos):
     plt.close()
     log = ''
+    fileSave[0][1].delete(0, tk.END)
+    fileSave[0][1].insert(tk.END, traj_3d.save_dir)
+
     alpha = get_init_angle(traj_3d.X, traj_3d.Y, traj_3d.Z, traj_3d.t, cam_top, cam_left,
                            init=int(ang[0][1].get()), end=int(ang[1][1].get()))
 

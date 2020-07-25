@@ -6,4 +6,3 @@
 - [ ] Code cleanups
 - [ ] PP picture save
 - [ ] Fix exemple script
-- [ ] get save directory at loading

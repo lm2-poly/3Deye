@@ -18,11 +18,13 @@ class Experiment:
         self.vinit = vinit
         self.vend = vend
         self.impact_pos = impact_pos
+        self.save_dir = ""
 
-    def set_exp_params(self, shot, sample, pressure):
+    def set_exp_params(self, shot, sample, pressure, fileName):
         self.shot = shot
         self.sample = sample
         self.pressure = pressure
+        self.save_dir = fileName
 
     def set_pp(self, alpha, vinit, vend, impact_pos):
         self.alpha = alpha

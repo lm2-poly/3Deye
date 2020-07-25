@@ -124,7 +124,7 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
                     ratTop, ratLeft, isbatch, batch_folder, exp_param, thres):
 
 
-    traj_3d.set_exp_params(exp_param[0][1].get(), exp_param[1][1].get(), exp_param[2][1].get())
+    traj_3d.set_exp_params(exp_param[0][1].get(), exp_param[1][1].get(), exp_param[2][1].get(), "Trajectory.txt")
 
     if method.get() == "No perspective":
         meth = 'no-persp'

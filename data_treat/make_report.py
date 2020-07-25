@@ -19,7 +19,7 @@ def load_data(fileName, trajectory, cam_top, cam_left):
     sample = test_params[5].split(':')[1]
     shot = test_params[6].split(':')[1]
     pressure = float(test_params[7].split(':')[1])
-    trajectory.set_exp_params(shot, sample, pressure)
+    trajectory.set_exp_params(shot, sample, pressure, fileName)
 
     traj = category[3].split('\n')
     t = []
