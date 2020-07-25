@@ -4,5 +4,4 @@
 - [ ] Memorize last analysis
 - [ ] Documentation
 - [ ] Code cleanups
-- [ ] PP picture save
 - [ ] Fix exemple script

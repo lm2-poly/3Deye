@@ -165,5 +165,5 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
             xi, yi, zi = get_impact_position(X, Y, Z, cam_left, cam_top, plot=False, saveDir=ana_fold+'RESULTS\\'+elem+'-')
             Vinit, Vend = get_velocity(timespan, X, Y, Z, thres=1.1, plot=False, saveDir=ana_fold+'RESULTS\\'+elem+'-')
             traj_3d.set_pp(alpha, Vinit, Vend, [xi, yi, zi])
-            make_report(traj_3d, cam_top, cam_left,
-                        ana_fold+'RESULTS/'+elem+'.txt', "data_treat/report_template.txt")
+            traj_3d.save_dir = ana_fold+'RESULTS/'+elem+'.txt'
+            make_report(traj_3d, cam_top, cam_left, "data_treat/report_template.txt")

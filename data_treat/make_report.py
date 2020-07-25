@@ -2,7 +2,7 @@ import numpy as np
 from string import Template
 from data_treat.cam import Cam
 import json
-
+from gui.gui_utils import popupmsg
 
 def load_data(fileName, trajectory, cam_top, cam_left):
     """Load existing data from file
@@ -43,12 +43,13 @@ def load_data(fileName, trajectory, cam_top, cam_left):
     cam_left.framerate = fps
 
 
-def data_save(traj_3d, fileName, cam_top, cam_left):
+def data_save(traj_3d, cam_top, cam_left):
     """Save position data after 3D trajectory reconstruction
 
     :param traj_3d: experiment object containing the 3D trajectory
     :return: write the position in a column text file
     """
+
     lenX = traj_3d.X.shape[0]
     out_str = ''
     for i in range(0, lenX):
@@ -57,30 +58,31 @@ def data_save(traj_3d, fileName, cam_top, cam_left):
     out_str += "==== Top camera\n" + cam_top.write_cam_data()
     out_str += "==== Left camera\n" + cam_left.write_cam_data()
 
-    fichier = open(fileName, 'a')
+    fichier = open(traj_3d.save_dir, 'a')
     fichier.write(out_str)
     fichier.close()
+    return 1
 
 
-def make_report(traj_3d, cam_top, cam_left, file_name, template):
+def make_report(traj_3d, cam_top, cam_left, template):
     """Generates a report of the post-processed values as wel as the parameters used to extract the trajectory.
     Also saves the trajectory.
     
     :param t: timespan vector
-    :param X,Y,Z: estimated 3D trajectory nd arrays
-    :param alpha: Shot horizontal angle
-    :param Vinit,Vend: shot velocity before and after the impact
-    :param imp_pos: x,y,z coordinate list of the impact position
+    :param traj_3d: trajectory object
     :param cam_top,cam_left: camera objects used for the trajectory determination
-    :param file_name: name of the trajectory file generated
     """
-    make_template_file(template, file_name,
-                       [file_name, cam_top.firstPic, cam_top.framerate, cam_top.res, traj_3d.sample,
+    if traj_3d.save_dir == '':
+        popupmsg('Empty file name')
+        return 0
+
+    make_template_file(template, traj_3d.save_dir,
+                       [traj_3d.save_dir, cam_top.firstPic, cam_top.framerate, cam_top.res, traj_3d.sample,
                        traj_3d.shot, traj_3d.pressure, traj_3d.alpha, traj_3d.vinit[0], traj_3d.vinit[1], traj_3d.vinit[2],
                         traj_3d.vend[0], traj_3d.vend[1], traj_3d.vend[2], traj_3d.impact_pos[0], traj_3d.impact_pos[1], traj_3d.impact_pos[2]],
                        ['testName', 'picName', 'fps', 'res', 'sample', 'shot', 'pressure',
                         'angle', 'VX', 'VY', 'VZ','VXAfter', 'VYAfter', 'VZAfter', 'X', 'Y', 'Z'])
-    data_save(traj_3d, file_name, cam_top, cam_left)
+    data_save(traj_3d, cam_top, cam_left)
 
 
 def make_template_file(template, sortie, H, var_names):

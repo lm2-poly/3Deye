@@ -37,7 +37,7 @@ def result_plot(X, Y, Z, timespan):
     plt.show()
 
 
-def get_init_angle(Xi, Yi, Zi, ti, cam_top, cam_left, plot=True, saveDir = None, init=0, end=2):
+def get_init_angle(Xi, Yi, Zi, ti, cam_top, cam_left, plot=True, saveDir='data_treat/', init=0, end=2):
     """Compute the shot trajectory angle relatively to teh shooting axis
     :param X,Y,Z: reconstructed X, Y, and Z coordinates (ndarray)
     :param timespan: time point list
@@ -96,7 +96,7 @@ def get_init_angle(Xi, Yi, Zi, ti, cam_top, cam_left, plot=True, saveDir = None,
     return alpha
 
 
-def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True, saveDir = None, threshold=0.9):
+def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True, saveDir='data_treat/', threshold=0.9):
     """Automatic detection of the moment of impact simply by taking the moment where Y changes direction
 
     :param X,Y,Z: reconstructed X, Y, and Z coordinates (ndarray)
@@ -162,7 +162,7 @@ def pos_screen_resize(x, y, cam):
     y -= (cam.camRes[1] / 2 - cam.res[1] / 2)
 
 
-def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir = None, init= 0, pt_num=2):
+def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir='data_treat/', init= 0, pt_num=2):
     """Computes the shot velocity before and after the impact by linear fit.
     Before the impact, the functions continues adding the next acquisition point to the linear fit until the
     new points reduces the fit success score at less then the previous score * threshold. Then the first point with

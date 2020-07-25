@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from data_treat.make_report import make_report, load_data
 from data_treat.data_pp import get_init_angle, get_impact_position, get_velocity
 from gui.gui_utils import makeform, popupmsg
+import os
+import platform
 
 
 def pp_tab(root,frame, cam_top, cam_left, traj_3d):
@@ -47,13 +49,42 @@ def pp_tab(root,frame, cam_top, cam_left, traj_3d):
     b1.pack(side=tk.BOTTOM, padx=5, pady=5)
 
 
-
-
 def save_res(cam_top, cam_left, T, traj_3d, fileSave):
-    make_report(traj_3d, cam_top, cam_left, fileSave[0][1].get(),
-                "data_treat/report_template.txt")
-    log = '\nTrajectory exported as ' + fileSave[0][1].get()
+    list_pic = os.listdir('data_treat')
+    traj_3d.save_dir = fileSave[0][1].get()
+    if 'Angle.png' in list_pic:
+        move_file('data_treat/Angle.png', parse_dir(traj_3d.save_dir))
+    if 'Impact_position.png' in list_pic:
+        move_file('data_treat/Impact_position.png', parse_dir(traj_3d.save_dir))
+    if 'Velocity.png' in list_pic:
+        move_file('data_treat/Velocity.png', parse_dir(traj_3d.save_dir))
+
+    make_report(traj_3d, cam_top, cam_left, "data_treat/report_template.txt")
+    log = '\nTrajectory exported as ' + traj_3d.save_dir
     T.insert(tk.END, log)
+
+
+def parse_dir(save_dir):
+    dir_list = save_dir.split('/')
+    dir = '.'
+    if len(dir_list) == 1:
+        dir_list = dir_list[0].split('\\')
+    if not(len(dir_list) == 1):
+        for elem in dir_list[:-1]:
+            dir += '/' + elem
+
+    return dir
+
+
+def move_file(init, end):
+    if platform.system() == 'Windows':
+        init = init.replace('/', '\\')
+        end = end.replace('/', '\\')
+        os.system('copy '+init+' '+end)
+    elif platform.system() == 'Linux':
+        os.system('scp -r '+init+' '+end)
+    else:
+        popupmsg("Unknown OS, I cannot save the pictures. You may find them in the data_treat folder directly...")
 
 
 def launch_pp(vels, cam_top, cam_left, T, traj_3d, fileSave, ang, pos):
