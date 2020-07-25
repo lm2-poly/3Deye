@@ -62,7 +62,7 @@ def data_save(traj_3d, fileName, cam_top, cam_left):
     fichier.close()
 
 
-def make_report(traj_3d, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file_name, template):
+def make_report(traj_3d, cam_top, cam_left, file_name, template):
     """Generates a report of the post-processed values as wel as the parameters used to extract the trajectory.
     Also saves the trajectory.
     
@@ -76,8 +76,8 @@ def make_report(traj_3d, alpha, Vinit, Vend, imp_pos, cam_top, cam_left, file_na
     """
     make_template_file(template, file_name,
                        [file_name, cam_top.firstPic, cam_top.framerate, cam_top.res, traj_3d.sample,
-                       traj_3d.shot, traj_3d.pressure, alpha, Vinit[0], Vinit[1], Vinit[2],
-                        Vend[0], Vend[1], Vend[2], imp_pos[0], imp_pos[1], imp_pos[2]],
+                       traj_3d.shot, traj_3d.pressure, traj_3d.alpha, traj_3d.vinit[0], traj_3d.vinit[1], traj_3d.vinit[2],
+                        traj_3d.vend[0], traj_3d.vend[1], traj_3d.vend[2], traj_3d.impact_pos[0], traj_3d.impact_pos[1], traj_3d.impact_pos[2]],
                        ['testName', 'picName', 'fps', 'res', 'sample', 'shot', 'pressure',
                         'angle', 'VX', 'VY', 'VZ','VXAfter', 'VYAfter', 'VZAfter', 'X', 'Y', 'Z'])
     data_save(traj_3d, file_name, cam_top, cam_left)

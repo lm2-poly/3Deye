@@ -33,10 +33,27 @@ def pp_tab(root,frame, cam_top, cam_left, traj_3d):
     pos_frame.pack(side=tk.LEFT)
 
     params.pack(side=tk.TOP)
-    file_save = makeform(frame, ['Output file name'], ["Trajectory.txt"], pos=tk.BOTTOM)
+
+    save_frame = tk.Frame(frame)
+    file_save = makeform(save_frame, ['Output file name'], ["Trajectory.txt"], pos=tk.TOP)
+    b1 = tk.Button(save_frame, text='Save results', command=(lambda fs=file_save:
+                                                        save_res(cam_top, cam_left, T, traj_3d, fs)))
+    b1.pack(side=tk.BOTTOM, padx=5, pady=5)
+    save_frame.pack(side=tk.BOTTOM)
+
+
     b1 = tk.Button(frame, text='Launch Analysis !', command=(lambda x=vels, fs=file_save, ang=angles, ps=pos:
                                                              launch_pp(x, cam_top, cam_left, T, traj_3d, fs, ang, ps)))
     b1.pack(side=tk.BOTTOM, padx=5, pady=5)
+
+
+
+
+def save_res(cam_top, cam_left, T, traj_3d, fileSave):
+    make_report(traj_3d, cam_top, cam_left, fileSave[0][1].get(),
+                "data_treat/report_template.txt")
+    log = '\nTrajectory exported as ' + fileSave[0][1].get()
+    T.insert(tk.END, log)
 
 
 def launch_pp(vels, cam_top, cam_left, T, traj_3d, fileSave, ang, pos):
@@ -54,9 +71,9 @@ def launch_pp(vels, cam_top, cam_left, T, traj_3d, fileSave, ang, pos):
 
     log += 'Initial velocity (m/s): ({:.02f}, {:.02f} {:.02f})\n'.format(Vinit[0], Vinit[1], Vinit[2])
     log += 'Velocity after impact (m/s): ({:.02f}, {:.02f} {:.02f})\n'.format(Vend[0], Vend[1], Vend[2])
-    make_report(traj_3d, alpha, Vinit, Vend, [xi, yi, zi], cam_top, cam_left, fileSave[0][1].get(),
-                "data_treat/report_template.txt")
-    log += '\nTrajectory exported as '+fileSave[0][1].get()
+
+    traj_3d.set_pp(alpha, Vinit, Vend, [xi, yi, zi])
+
     T.delete('1.0', tk.END)
     T.insert(tk.END, log)
     
