@@ -88,15 +88,11 @@ def make_template_file(template, sortie, H, var_names):
     len_vars = len(H)
     to_rmv = []
     for i in range(0, len_vars):
-        if not(type(H[i]) == tuple)  and not(type(H[i]) == str) and np.isnan(H[i]):
-            to_rmv.append(var_names[i])
         if type(H[i]) == float or type(H[i]) == np.float64:
             H[i] = '{:.03f}'.format(H[i])
 
     for elem in to_rmv:
         var_names.remove(elem)
-    while 'nan' in H:
-        H.remove('nan')
 
     len_vars = len(H)
     fichier = open(template,'r');

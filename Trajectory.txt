@@ -11,10 +11,10 @@ Input pressure (psi): 50
 
 === Test output
 
-Horizontal angle: $angle °
-Initial velocity (m/s): ($VX, $VY, $VZ)
-Velocity after impact (m/s): ($VXAfter, $VYAfter, $VZAfter)
-Impact position (cm, relative to initial position): ($X, $Y, $Z)
+Horizontal angle: 6.355 °
+Initial velocity (m/s): (1.620, 82.725, -9.105)
+Velocity after impact (m/s): (1.622, 82.669, -9.062)
+Impact position (cm, relative to initial position): (nan, nan, nan)
 
 === Trajectory
 t(ms)	X(cm)	Y(cm)	Z(cm)

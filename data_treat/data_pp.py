@@ -185,8 +185,9 @@ def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir = None, init= 0, 
     X0 = X[0]
     Y0 = Y[0]
     Z0 = Z[0]
+    len_dat = len(t)
 
-    while new_score < thres * score_actu:
+    while i < len_dat and new_score < thres * score_actu:
         score_actu = new_score
         i+=1
         dat = np.polyfit(t[init:i], Y[init:i] - Y0, deg=1, full=True)
@@ -209,7 +210,7 @@ def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir = None, init= 0, 
 
     score_down = 1000.
     lenVel = max(i, 3)
-    while score_down > 1.e-4:
+    while i + lenVel + 1 < len_dat and score_down > 1.e-4:
         i += 1
         dat = np.polyfit(t[i:i+lenVel], Y[i:i+lenVel] - Y0, deg=1, full=True)
         if dat[0][0] < 0.:
