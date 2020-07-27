@@ -96,7 +96,7 @@ def get_init_angle(Xi, Yi, Zi, ti, cam_top, cam_left, plot=True, saveDir='data_t
     return alpha
 
 
-def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True, saveDir='data_treat/', threshold=0.9):
+def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True, saveDir='data_treat/', threshold=0.995):
     """Automatic detection of the moment of impact simply by taking the moment where Y changes direction
 
     :param X,Y,Z: reconstructed X, Y, and Z coordinates (ndarray)

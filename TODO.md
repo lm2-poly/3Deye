@@ -1,7 +1,7 @@
 - [ ] Mask reflective surfaces
 - [ ] Add description / instructions / Warnings
 - [ ] Batch post processing parameters
-- [ ] Memorize last analysis
+- [ ] Set default
 - [ ] Documentation
 - [ ] Code cleanups
 - [ ] Fix exemple script

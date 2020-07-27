@@ -28,7 +28,7 @@ def pp_tab(root,frame, cam_top, cam_left, traj_3d):
     pos_frame = tk.Frame(params)
     title = tk.Label(angle_frame, text="Impact position parameters")
     title.pack(side=tk.TOP)
-    pos = makeform(angle_frame, ['Threshold'], ["0.95"])
+    pos = makeform(angle_frame, ['Threshold'], ["0.995"])
 
     vel_frame.pack(side=tk.LEFT)
     angle_frame.pack(side=tk.LEFT)
@@ -66,12 +66,12 @@ def save_res(cam_top, cam_left, T, traj_3d, fileSave):
 
 def parse_dir(save_dir):
     dir_list = save_dir.split('/')
-    dir = '.'
+    dir = ''
     if len(dir_list) == 1:
         dir_list = dir_list[0].split('\\')
     if not(len(dir_list) == 1):
         for elem in dir_list[:-1]:
-            dir += '/' + elem
+            dir += elem + '/'
 
     return dir
 
