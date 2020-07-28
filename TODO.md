@@ -1,7 +1,5 @@
-- [ ] Mask reflective surfaces
 - [ ] Add description / instructions / Warnings
 - [ ] Set default
 - [ ] Documentation
 - [ ] Code cleanups
 - [ ] Fix exemple script
-- [ ] Different threshold er camera

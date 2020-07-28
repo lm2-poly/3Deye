@@ -5,6 +5,14 @@ from data_treat.make_report import make_report, load_data
 from data_treat.data_pp import get_init_angle, get_impact_position, get_velocity
 import os
 from gui.gui_utils import makeform, popupmsg
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
+# Implement the default Matplotlib key bindings.
+from matplotlib.backend_bases import key_press_handler
+from matplotlib.figure import Figure
+from PIL import Image
+import glob
+import numpy as np
 
 
 def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
@@ -15,23 +23,21 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     top_cam = tk.Frame(cam_frames, width=250)
     left_cam = tk.Frame(cam_frames, width=250)
 
-    titleTop = tk.Label(top_cam, text="Top camera parameters")
-    titleTop.pack(side=tk.TOP)
     option_box = tk.Frame(frame)
 
     cam_factors = tk.Frame(frame)
     cam_factors.hidden = 1
     cam_top_lab = tk.Label(cam_factors, text="Top pixel to cm ratio")
-    cam_top_lab.pack()
+    cam_top_lab.pack(side=tk.LEFT)
     cam_top_factor = tk.Entry(cam_factors)
     cam_top_factor.insert(tk.END, '{:.04e}'.format(1 / 141.1))
-    cam_top_factor.pack()
+    cam_top_factor.pack(side=tk.LEFT)
 
     cam_left_lab = tk.Label(cam_factors, text="Left pixel to cm ratio")
-    cam_left_lab.pack()
+    cam_left_lab.pack(side=tk.LEFT)
     cam_left_factor = tk.Entry(cam_factors)
     cam_left_factor.insert(tk.END, '{:.04e}'.format(1 / 148.97))
-    cam_left_factor.pack()
+    cam_left_factor.pack(side=tk.LEFT)
 
     batch_options = tk.Frame(frame)
     batch_label = tk.Label(batch_options, text="Batch folder path:")
@@ -44,7 +50,7 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
                                   "be saved in a 'RESULT' folder created in the batch folder.")
     batch_warning.pack()
     batch_params = tk.Button(batch_options, text="Batch set-up", command=(lambda t3d=traj_3d: set_pp_params(t3d)))
-    batch_params.pack()
+    batch_params.pack(side=tk.RIGHT)
     batch_switch = tk.Checkbutton(option_box, text="Batch mode", variable=is_batch,
                                   command=(lambda e=is_batch, bo=batch_options: batch_option_active(e, bo)))
 
@@ -58,21 +64,29 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     exp_param = makeform(exp_params_fr, ['Shot type', 'Sample name', 'Input pressure (psi)'],
                    ["0.5mm", "Aluminum 6050", "50"])
 
-
+    top_base = tk.Frame(top_cam)
+    titleTop = tk.Label(top_base, text="Top camera parameters")
+    titleTop.pack(side=tk.LEFT)
     top = makeform(top_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
                              'Screen width', 'Screen height', "Acquisition width", "Acquisition height",
                              'Detection threshold'],
                     ["calibration/res", "tests/single/camTop", "0", '15000',
-                     "1280", "800", "1280", "800", "20."])
+                     "1280", "800", "1280", "800", "20."], pos=tk.BOTTOM)
+    b1 = tk.Button(top_base, text='Set mask', command=(lambda ct=cam_top, t=top: set_mask(ct, t)))
+    b1.pack(side=tk.RIGHT)
+    top_base.pack(side=tk.TOP)
 
-
-    titleLeft = tk.Label(left_cam, text="Left camera parameters")
-    titleLeft.pack(side=tk.TOP)
+    left_base = tk.Frame(left_cam)
+    titleLeft = tk.Label(left_base, text="Left camera parameters")
+    titleLeft.pack(side=tk.LEFT)
     left = makeform(left_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
                              'Screen width', 'Screen height', "Acquisition width", "Acquisition height",
                                'Detection threshold'],
                     ["calibration/res", "tests/single/camLeft", "0", '15000',
-                     "1280", "800", "1280", "800", '20.'])
+                     "1280", "800", "1280", "800", '20.'], pos=tk.BOTTOM)
+    b1 = tk.Button(left_base, text='Set mask', command=(lambda cl=cam_left, l=left: set_mask(cl, l)))
+    b1.pack(side=tk.RIGHT)
+    left_base.pack(side=tk.TOP)
 
     b1 = tk.Button(frame, text='Launch Analysis !',
                    command=(lambda t=top, l=left, n=notebook, wval=w, s=show_traj, ct=cam_top,
@@ -90,8 +104,62 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     warning_label.pack(side=tk.BOTTOM)
 
     top_cam.pack(side=tk.LEFT, padx=5, pady=5)
-    left_cam.pack(side=tk.LEFT, padx=5, pady=5)
+    left_cam.pack(side=tk.RIGHT, padx=5, pady=5)
     cam_frames.pack(side=tk.TOP)
+
+
+def set_mask(cam, form):
+    mask_w = tk.IntVar()
+    mask_h = tk.IntVar()
+    root = tk.Tk()
+    root.title("Set mask")
+    root.geometry("600x600")
+    cam_pics = glob.glob(form[1][1].get() + "/*.tif")
+    if len(cam_pics) == 0:
+        cam_pics = glob.glob(form[1][1].get() + "/*.jpg")
+    im_act = Image.open(cam_pics[5])
+    fig = Figure(figsize=(5,4), dpi=100)
+    im_act = np.array(im_act)
+    fig_plot = fig.add_subplot(111).imshow(im_act, cmap='gray')
+    canvas = FigureCanvasTkAgg(fig, master=root)
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    toolbar = NavigationToolbar2Tk(canvas, root)
+    toolbar.update()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+    wd_lab = tk.Label(root, text="width")
+    mask_val_w = tk.Scale(root, from_=0, to=im_act.shape[1], orient=tk.HORIZONTAL, variable=mask_w,
+                        command=(lambda ma=mask_w, p=im_act, c=canvas: update_fig(ma, p, c, 0)))
+    wd_lab.pack(side=tk.LEFT)
+    mask_val_w.pack(side=tk.LEFT)
+
+    hi_lab = tk.Label(root, text="height")
+    mask_val_h = tk.Scale(root, from_=0, to=im_act.shape[0], orient=tk.HORIZONTAL, variable=mask_h,
+                        command=(lambda ma=mask_h, p=im_act, c=canvas: update_fig(ma, p, c, 1)))
+    hi_lab.pack(side=tk.LEFT)
+    mask_val_h.pack(side=tk.LEFT)
+
+    b1 = tk.Button(root, text='Set mask',
+                   command=(lambda r=root, c=cam, mw=mask_val_w, mh=mask_val_h: set_cam_mask(r, c, mw, mh)))
+    b1.pack()
+
+
+def set_cam_mask(root, cam, mask_w, mask_h):
+    cam.set_mask(int(mask_w.get()), int(mask_h.get()))
+    root.destroy()
+
+
+
+def update_fig(mask, im_act, canvas, ind):
+    pic_act = np.copy(im_act)
+    if ind == 0:
+        pic_act[:, :int(mask)] = 0
+    elif ind == 1:
+        pic_act[im_act.shape[0] - int(mask):, :] = 0
+    canvas.figure.clear()
+    canvas.figure.add_subplot(111).imshow(pic_act, cmap='gray')
+    canvas.draw()
 
 
 def set_pp_params(traj_3d):

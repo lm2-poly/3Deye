@@ -62,10 +62,13 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 
 	width, height = img.size
 	area = (cam.cropSize[0], cam.cropSize[2], width - cam.cropSize[1], height - cam.cropSize[3])
-	img = img.crop(area)
+	#img = img.crop(area)
 	RGBPicRef = (np.array(img)[:, :, 0].T).astype(np.int16)
+	RGBPicRef[:int(cam.mask_w), :] = 0
+	RGBPicRef[:, RGBPicRef.shape[1] - int(cam.mask_h):] = 0
+	RGBPicRef = RGBPicRef[:, :height - cam.cropSize[3]]
 	if (plotTraj):
-		imSuper = (np.array(img)[:,:,0]).astype(np.int16)
+		imSuper = np.copy(RGBPicRef.T)
 	img.close()
 
 	if firstPic_name in picList:
@@ -80,11 +83,14 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 	lastVal = [0., 0.]
 	for k in range(0, lenDat):
 		img = Image.open(picList[k]).convert('LA')
-		img = img.crop(area)
+		#img = img.crop(area)
 		RGBPic_actu = (np.array(img)[:, :, 0].T).astype(np.int16)
+		RGBPic_actu[:int(cam.mask_w), :] = 0
+		RGBPic_actu[:, RGBPic_actu.shape[1] - int(cam.mask_h):] = 0
+		RGBPic_actu = RGBPic_actu[:, :height - cam.cropSize[3]]
 		if plotTraj:
-			imSuper += (np.array(img)[:, :, 0]).astype(np.int16)
-			imSuper = (imSuper/2).astype(np.int16)
+			imSuper = np.copy(RGBPic_actu.T)
+			#imSuper = (imSuper/2).astype(np.int16)
 		img.close()
 
 		numActu = int(picList[k].split(splitSymb)[numsplit].split(".")[0]) - firstNum - 1

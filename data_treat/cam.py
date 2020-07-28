@@ -34,6 +34,8 @@ class Cam:
         self.res = res
         self.camRes = camRes
         self.cam_thres = cam_thres
+        self.mask_w = 0
+        self.mask_h = 0
 
     def undistort(self):
         """
@@ -56,6 +58,10 @@ class Cam:
                 cv2.imwrite(self.dir+'/corrected/'+elem.split('\\')[1], dst)
 
             self.dir = self.dir+"/corrected"
+
+    def set_mask(self, mask_w, mask_h):
+        self.mask_w = mask_w
+        self.mask_h = mask_h
 
     def set_mtx(self, mtx):
         self.mtx = np.loadtxt(mtx)
