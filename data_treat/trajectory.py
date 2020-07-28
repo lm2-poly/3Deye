@@ -19,6 +19,12 @@ class Experiment:
         self.vend = vend
         self.impact_pos = impact_pos
         self.save_dir = ""
+        self.vel_det_fac = 1.3
+        self.vel_init_ind = 1
+        self.vel_min_pt = 2
+        self.ang_min_ind = 0
+        self.ang_end_ind = 3
+        self.imp_thres = 0.995
 
     def set_exp_params(self, shot, sample, pressure, fileName):
         self.shot = shot

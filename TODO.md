@@ -1,6 +1,5 @@
 - [ ] Mask reflective surfaces
 - [ ] Add description / instructions / Warnings
-- [ ] Batch post processing parameters
 - [ ] Set default
 - [ ] Documentation
 - [ ] Code cleanups

@@ -43,6 +43,8 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
                                   "the name specified for the top and left camera above\nAll the report files will"
                                   "be saved in a 'RESULT' folder created in the batch folder.")
     batch_warning.pack()
+    batch_params = tk.Button(batch_options, text="Batch set-up", command=(lambda t3d=traj_3d: set_pp_params(t3d)))
+    batch_params.pack()
     batch_switch = tk.Checkbutton(option_box, text="Batch mode", variable=is_batch,
                                   command=(lambda e=is_batch, bo=batch_options: batch_option_active(e, bo)))
 
@@ -89,6 +91,46 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     top_cam.pack(side=tk.LEFT, padx=5, pady=5)
     left_cam.pack(side=tk.LEFT, padx=5, pady=5)
     cam_frames.pack(side=tk.TOP)
+
+
+def set_pp_params(traj_3d):
+    param_win = tk.Tk()
+    param_win.title("Batch post-processing parameters")
+    param_win.geometry("600x400")
+
+    vel_frame = tk.Frame(param_win)
+    title = tk.Label(vel_frame, text="Velocity determination parameters")
+    title.pack(side=tk.TOP)
+    vels = makeform(vel_frame, ['Velocity detection factor', 'Initial index', 'Minimum number of points'],
+                    [traj_3d.vel_det_fac, traj_3d.vel_init_ind, traj_3d.vel_min_pt])
+
+    angle_frame = tk.Frame(param_win)
+    title = tk.Label(angle_frame, text="Angle determination parameters")
+    title.pack(side=tk.TOP)
+    angles = makeform(angle_frame, ['Initial index', 'End index'], [traj_3d.ang_min_ind, traj_3d.ang_end_ind])
+
+    pos_frame = tk.Frame(param_win)
+    title = tk.Label(angle_frame, text="Impact position parameters")
+    title.pack(side=tk.TOP)
+    pos = makeform(angle_frame, ['Threshold'], [traj_3d.imp_thres])
+
+    vel_frame.pack(side=tk.TOP)
+    angle_frame.pack(side=tk.TOP)
+    pos_frame.pack(side=tk.TOP)
+
+    b1 = tk.Button(param_win, text='Ok', command=(lambda t3d=traj_3d, v=vels, a=angles, p=pos, f=param_win:
+                                                             save_pp_params(t3d, v, a, p, f)))
+    b1.pack(side=tk.BOTTOM, padx=5, pady=5)
+
+
+def save_pp_params(traj_3d, vels, angles, pos, param_win):
+    traj_3d.vel_det_fac = float(vels[0][1].get())
+    traj_3d.vel_init_ind = int(vels[1][1].get())
+    traj_3d.vel_min_pt = int(vels[2][1].get())
+    traj_3d.ang_min_ind = int(angles[0][1].get())
+    traj_3d.ang_end_ind = int(angles[1][1].get())
+    traj_3d.imp_thres = float(pos[0][1].get())
+    param_win.destroy()
 
 
 def batch_option_active(switch_val, batch_options):
@@ -161,9 +203,12 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
         traj_3d.set_trajectory(timespan, X, Y, Z)
 
         if isbatch.get():
-            alpha = get_init_angle(X, Y, Z, timespan, cam_top, cam_left, plot=False, saveDir=ana_fold+'RESULTS\\'+elem+'-')
-            xi, yi, zi = get_impact_position(X, Y, Z, cam_left, cam_top, plot=False, saveDir=ana_fold+'RESULTS\\'+elem+'-')
-            Vinit, Vend = get_velocity(timespan, X, Y, Z, thres=1.1, plot=False, saveDir=ana_fold+'RESULTS\\'+elem+'-')
+            alpha = get_init_angle(X, Y, Z, timespan, cam_top, cam_left, plot=False,
+                                   saveDir=ana_fold+'RESULTS\\'+elem+'-', init=traj_3d.ang_min_ind, end=traj_3d.ang_end_ind)
+            xi, yi, zi = get_impact_position(X, Y, Z, cam_left, cam_top, plot=False,
+                                             saveDir=ana_fold+'RESULTS\\'+elem+'-', threshold= traj_3d.imp_thres)
+            Vinit, Vend = get_velocity(timespan, X, Y, Z, thres=traj_3d.vel_det_fac, plot=False,
+                                       saveDir=ana_fold+'RESULTS\\'+elem+'-', init=traj_3d.vel_init_ind, pt_num=traj_3d.vel_min_pt)
             traj_3d.set_pp(alpha, Vinit, Vend, [xi, yi, zi])
             traj_3d.save_dir = ana_fold+'RESULTS/'+elem+'.txt'
             make_report(traj_3d, cam_top, cam_left, "data_treat/report_template.txt")
