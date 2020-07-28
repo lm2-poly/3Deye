@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0
+                1.0
               </div>
             
           
@@ -84,8 +84,27 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Getting started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/getting_started.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#calibration">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#post-processing">Post-processing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html">Camera object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-calibration.main">Camera calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.reconstruction_3d">3D Trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.data_pp">Trajectory post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.make_report">Report generation and save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-gui.recons_gui">GUI fonctions</a></li>
+</ul>
+
             
           
         </div>
@@ -154,26 +173,23 @@
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 
 
-<div class="viewcode-block" id="filter_val"><a class="viewcode-back" href="../../index.html#data_treat.objectExtract.filter_val">[docs]</a><span class="k">def</span> <span class="nf">filter_val</span><span class="p">(</span><span class="n">pic</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">lastVal</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]):</span>
-	<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">	Compute the barycenter of a point cloud which pixel grey value is above a given threshold</span>
+<div class="viewcode-block" id="filter_val"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.objectExtract.filter_val">[docs]</a><span class="k">def</span> <span class="nf">filter_val</span><span class="p">(</span><span class="n">pic</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">20.</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Compute the barycenter of a point cloud which pixel grey value is above a given threshold</span>
 
 <span class="sd">	:param pic: picture array grey values</span>
 <span class="sd">	:param width: picture width</span>
 <span class="sd">	:param height: picture height</span>
-<span class="sd">	:param tol: filter tolerance (default 100)</span>
-<span class="sd">	:param lastVal: last barycenter value if several images are treated, used to return something when no values are above the threshold</span>
+<span class="sd">	:param tol: filter tolerance (default 20)</span>
 <span class="sd">	:return: barycenter x and y coordinates and the number of pixels detected</span>
 <span class="sd">	&quot;&quot;&quot;</span>
-	<span class="n">bary_x</span> <span class="o">=</span> <span class="mi">0</span>
-	<span class="n">bary_y</span> <span class="o">=</span> <span class="mi">0</span>
-	<span class="n">numvals</span> <span class="o">=</span> <span class="mi">0</span>
-	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
-		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
-			<span class="k">if</span> <span class="n">pic</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
-				<span class="n">bary_x</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-				<span class="n">bary_y</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
-				<span class="n">numvals</span> <span class="o">+=</span> <span class="mf">1.</span>
+	<span class="n">xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+	<span class="n">yi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
+	<span class="n">Y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">yi</span><span class="p">,</span> <span class="n">xi</span><span class="p">)</span>
+	<span class="n">bool_tab</span> <span class="o">=</span> <span class="n">pic</span><span class="o">&gt;</span><span class="n">tol</span>
+	<span class="n">bary_x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">bool_tab</span><span class="p">]))</span>
+	<span class="n">bary_y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">bool_tab</span><span class="p">]))</span>
+	<span class="n">numvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">bool_tab</span><span class="p">)</span>
+	
 	<span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">numvals</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
 		<span class="n">bary_x</span> <span class="o">/=</span> <span class="n">numvals</span>
 		<span class="n">bary_y</span> <span class="o">/=</span> <span class="n">numvals</span>
@@ -183,75 +199,74 @@
 	<span class="k">return</span> <span class="n">bary_x</span><span class="p">,</span> <span class="n">bary_y</span><span class="p">,</span> <span class="n">numvals</span></div>
 
 
-<div class="viewcode-block" id="compute_2d_traj"><a class="viewcode-back" href="../../index.html#data_treat.objectExtract.compute_2d_traj">[docs]</a><span class="k">def</span> <span class="nf">compute_2d_traj</span><span class="p">(</span><span class="n">cam</span><span class="p">,</span> <span class="n">splitSymb</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">numsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">plotTraj</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">	Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,</span>
+<div class="viewcode-block" id="compute_2d_traj"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.objectExtract.compute_2d_traj">[docs]</a><span class="k">def</span> <span class="nf">compute_2d_traj</span><span class="p">(</span><span class="n">cam</span><span class="p">,</span> <span class="n">splitSymb</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">numsplit</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">plotTraj</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,</span>
 <span class="sd">	by computing the difference of images with the object and without the object (initial state)</span>
 
-<span class="sd">	:param dir: directory name containing the picture</span>
-<span class="sd">	:param firstPicEnd: name of the first picture (should not contain the moving object)</span>
-<span class="sd">	:param cropSizes: Size to crop from the picture (bottom), use if the images have a banner</span>
-<span class="sd">	:param pic_to_cm: pixel to centimeter size ratio</span>
-<span class="sd">	:param framerate: camera framerate</span>
+<span class="sd">	:param cam: camera object</span>
 <span class="sd">	:param splitSymb: symbol to use to split the picture names (default &quot;_&quot;)</span>
-<span class="sd">	:param numsplit: place of the image number in the picture name after splitting (default 1)</span>
+<span class="sd">	:param numsplit: place of the image number in the picture name after splitting (default -1)</span>
+<span class="sd">	:param plotTraj: TRue or False, indicate if the detected point should be plotted</span>
 <span class="sd">	:return: X,Y trajectory in the camera reference system and the time list</span>
 <span class="sd">	&quot;&quot;&quot;</span>
-	<span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">cam</span><span class="o">.</span><span class="n">firstPic</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;LA&#39;</span><span class="p">)</span>
-	<span class="n">firstNum</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">firstPic</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">splitSymb</span><span class="p">)[</span><span class="n">numsplit</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-	<span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">size</span>
-	<span class="n">area</span> <span class="o">=</span> <span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">width</span> <span class="o">-</span> <span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">height</span> <span class="o">-</span> <span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-	<span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">area</span><span class="p">)</span>
-	<span class="n">RGBPicRef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">plotTraj</span><span class="p">):</span>
-		<span class="n">imSuper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">)[:,:,</span><span class="mi">0</span><span class="p">]</span>
-	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">width</span> <span class="o">-</span> <span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
-		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span> <span class="o">-</span> <span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">3</span><span class="p">])):</span>
-			<span class="n">RGBPicRef</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">getpixel</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-
-	<span class="n">img</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-	<span class="n">picList</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">dir</span><span class="o">+</span><span class="s2">&quot;/*.jpg&quot;</span><span class="p">)</span>
-	<span class="k">if</span> <span class="n">cam</span><span class="o">.</span><span class="n">dir</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">cam</span><span class="o">.</span><span class="n">firstPic</span> <span class="ow">in</span> <span class="n">picList</span><span class="p">:</span>
-		<span class="n">picList</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">dir</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">cam</span><span class="o">.</span><span class="n">firstPic</span><span class="p">)</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="n">picList</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">dir</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="o">+</span><span class="n">cam</span><span class="o">.</span><span class="n">firstPic</span><span class="p">)</span>
+	<span class="n">picList</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">dir</span> <span class="o">+</span> <span class="s2">&quot;/*.tif&quot;</span><span class="p">)</span>
+	<span class="n">picList</span> <span class="o">+=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">dir</span> <span class="o">+</span> <span class="s2">&quot;/*.jpg&quot;</span><span class="p">)</span>
 	<span class="n">picList</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">picList</span><span class="p">)</span>
+
+	<span class="n">firstNum</span> <span class="o">=</span> <span class="n">picList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">splitSymb</span><span class="p">)[</span><span class="n">numsplit</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">firstNum</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">num0</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">firstNum</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">num0</span> <span class="o">=</span> <span class="p">(</span><span class="n">firstNum</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">firstPic</span><span class="p">))))</span>
+
+	<span class="n">firstPic_name</span> <span class="o">=</span> <span class="n">picList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">num0</span><span class="o">*</span><span class="s1">&#39;0&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">num0</span> <span class="o">*</span> <span class="s1">&#39;0&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">firstPic</span><span class="p">)</span><span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">picList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+	<span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">firstPic_name</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;LA&#39;</span><span class="p">)</span>
+	<span class="n">firstNum</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">firstPic</span>
+
+	<span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">size</span>
+	<span class="n">RGBPicRef</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+	<span class="n">RGBPicRef</span><span class="p">[:</span><span class="nb">int</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">mask_w</span><span class="p">),</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">RGBPicRef</span><span class="p">[:,</span> <span class="n">RGBPicRef</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">mask_h</span><span class="p">):]</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">RGBPicRef</span> <span class="o">=</span> <span class="n">RGBPicRef</span><span class="p">[:,</span> <span class="p">:</span><span class="n">height</span> <span class="o">-</span> <span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">plotTraj</span><span class="p">):</span>
+		<span class="n">imSuper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">RGBPicRef</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+	<span class="n">img</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+	<span class="k">if</span> <span class="n">firstPic_name</span> <span class="ow">in</span> <span class="n">picList</span><span class="p">:</span>
+		<span class="n">picList</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">firstPic_name</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">picList</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">firstPic_name</span><span class="p">)</span>
+
 	<span class="n">lenDat</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">picList</span><span class="p">)</span>
 	<span class="n">avgdif</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">lenDat</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-	<span class="n">RGBPic_actu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
 	<span class="n">timespan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lenDat</span><span class="p">,</span> <span class="n">lenDat</span><span class="p">)</span> <span class="o">/</span> <span class="n">cam</span><span class="o">.</span><span class="n">framerate</span>
-	<span class="n">lastVal</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]</span>
+
 	<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lenDat</span><span class="p">):</span>
 		<span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">picList</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;LA&#39;</span><span class="p">)</span>
-		<span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">area</span><span class="p">)</span>
-		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">width</span> <span class="o">-</span> <span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
-			<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span> <span class="o">-</span> <span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">3</span><span class="p">])):</span>
-				<span class="n">RGBPic_actu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">getpixel</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">RGBPic_actu</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+		<span class="n">RGBPic_actu</span><span class="p">[:</span><span class="nb">int</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">mask_w</span><span class="p">),</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="n">RGBPic_actu</span><span class="p">[:,</span> <span class="n">RGBPic_actu</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">mask_h</span><span class="p">):]</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="n">RGBPic_actu</span> <span class="o">=</span> <span class="n">RGBPic_actu</span><span class="p">[:,</span> <span class="p">:</span><span class="n">height</span> <span class="o">-</span> <span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
 		<span class="k">if</span> <span class="n">plotTraj</span><span class="p">:</span>
-			<span class="n">imSuper</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
-			<span class="n">imSuper</span> <span class="o">=</span> <span class="p">(</span><span class="n">imSuper</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+			<span class="n">imSuper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">RGBPic_actu</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 		<span class="n">img</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
 		<span class="n">numActu</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">picList</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">splitSymb</span><span class="p">)[</span><span class="n">numsplit</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">firstNum</span> <span class="o">-</span> <span class="mi">1</span>
 		<span class="n">bary_x</span><span class="p">,</span> <span class="n">bary_y</span><span class="p">,</span> <span class="n">num_pic</span> <span class="o">=</span> <span class="n">filter_val</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">RGBPic_actu</span> <span class="o">-</span> <span class="n">RGBPicRef</span><span class="p">),</span> <span class="n">width</span> <span class="o">-</span> <span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
-											 <span class="n">height</span> <span class="o">-</span> <span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="n">lastVal</span><span class="o">=</span><span class="n">lastVal</span><span class="p">)</span>
-		<span class="c1">#plt.contourf(abs(RGBPic_actu - RGBPicRef))</span>
-		<span class="c1">#plt.colorbar()		</span>
-		<span class="c1">#plt.show()</span>
-		<span class="n">lastVal</span> <span class="o">=</span> <span class="p">[</span><span class="n">bary_x</span><span class="p">,</span> <span class="n">bary_y</span><span class="p">]</span>
+											 <span class="n">height</span> <span class="o">-</span> <span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">cam</span><span class="o">.</span><span class="n">cropSize</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="n">tol</span><span class="o">=</span><span class="n">cam</span><span class="o">.</span><span class="n">cam_thres</span><span class="p">)</span>
+
 		<span class="n">avgdif</span><span class="p">[</span><span class="n">numActu</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bary_x</span>
 		<span class="n">avgdif</span><span class="p">[</span><span class="n">numActu</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bary_y</span>
 
 		<span class="k">if</span> <span class="n">plotTraj</span><span class="p">:</span>
 			<span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 			<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">imSuper</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
-			<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">bary_x</span><span class="p">],</span> <span class="p">[</span><span class="n">bary_y</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Detected position&quot;</span><span class="p">)</span>
+			<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">bary_x</span><span class="p">],</span> <span class="p">[</span><span class="n">bary_y</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Detected position&quot;</span><span class="p">)</span>
 			<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">cam</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 			<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">cam</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 			<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 			<span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 			<span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-
-	<span class="c1">#avgdif *= cam.pic_to_cm</span>
 
 	<span class="k">return</span> <span class="n">avgdif</span><span class="p">,</span> <span class="n">timespan</span></div>
 </pre></div>

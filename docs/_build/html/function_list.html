@@ -1,0 +1,1276 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Camera object &mdash; 3Drecons 1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> 3Drecons
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Camera object</a></li>
+<li><a class="reference internal" href="#module-calibration.main">Camera calibration</a></li>
+<li><a class="reference internal" href="#module-data_treat.reconstruction_3d">3D Trajectory reconstruction</a></li>
+<li><a class="reference internal" href="#module-data_treat.data_pp">Trajectory post-processing</a></li>
+<li><a class="reference internal" href="#module-data_treat.make_report">Report generation and save</a></li>
+<li><a class="reference internal" href="#module-gui.recons_gui">GUI fonctions</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">3Drecons</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Camera object</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/function_list.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-data_treat.cam">
+<span id="camera-object"></span><h1>Camera object<a class="headerlink" href="#module-data_treat.cam" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="data_treat.cam.Cam">
+<em class="property">class </em><code class="sig-prename descclassname">data_treat.cam.</code><code class="sig-name descname">Cam</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">calib_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">picDir</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">firstPic</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pic_to_cm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">framerate</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">camRes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">res</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cropsize</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">cam_thres</span><span class="o">=</span><span class="default_value">20.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/cam.html#Cam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.cam.Cam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for the camera object</p>
+<dl class="py method">
+<dt id="data_treat.cam.Cam.load_calibration_file">
+<code class="sig-name descname">load_calibration_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/cam.html#Cam.load_calibration_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.cam.Cam.load_calibration_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load camera intrinsic, distorsion and transformation matrices from a calibration file</p>
+<p>:param f_name:calibration file path</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="data_treat.cam.Cam.load_from_string">
+<code class="sig-name descname">load_from_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/cam.html#Cam.load_from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.cam.Cam.load_from_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a camera object from a formatted string such as produced by write_cam_data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – formated string to parse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="data_treat.cam.Cam.set_R">
+<code class="sig-name descname">set_R</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">R</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/cam.html#Cam.set_R"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.cam.Cam.set_R" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set camera rotation matrix for a given Rodrigues vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>R</strong> – camera rotation Rodrigues vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="data_treat.cam.Cam.set_R_by_matrix">
+<code class="sig-name descname">set_R_by_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">R</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/cam.html#Cam.set_R_by_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.cam.Cam.set_R_by_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set camera rotation matrix for a given matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>R</strong> – camera rotation matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="data_treat.cam.Cam.set_T">
+<code class="sig-name descname">set_T</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/cam.html#Cam.set_T"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.cam.Cam.set_T" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set camera Translation vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> – camera Translation vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="data_treat.cam.Cam.set_crop_size">
+<code class="sig-name descname">set_crop_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/cam.html#Cam.set_crop_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.cam.Cam.set_crop_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set camera crop size to remove the banner according to the picture effective resolution and the picture target resolution (cam.res)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="data_treat.cam.Cam.set_dist">
+<code class="sig-name descname">set_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dist</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/cam.html#Cam.set_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.cam.Cam.set_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set camera distorsion matrix for a given path name (deprecated)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dist</strong> – camera distorsion matrix file name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="data_treat.cam.Cam.set_mask">
+<code class="sig-name descname">set_mask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mask_w</span></em>, <em class="sig-param"><span class="n">mask_h</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/cam.html#Cam.set_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.cam.Cam.set_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set black mask to apply on each picture to remove reflexive surfaces</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mask_h</strong> (<em>mask_w</em><em>,</em>) – mask width and height in pixels</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="data_treat.cam.Cam.set_mtx">
+<code class="sig-name descname">set_mtx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mtx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/cam.html#Cam.set_mtx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.cam.Cam.set_mtx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set camera intrinsic matrix for a given path name (deprecated)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mtx</strong> – camera intrinsic matrix file name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="data_treat.cam.Cam.undistort">
+<code class="sig-name descname">undistort</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/cam.html#Cam.undistort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.cam.Cam.undistort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undistort the camera pictures and change the picture file to the undistorted one</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="data_treat.cam.Cam.write_cam_data">
+<code class="sig-name descname">write_cam_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/cam.html#Cam.write_cam_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.cam.Cam.write_cam_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes all camera data into a formated tring</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>String containing all relevant camera data</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-calibration.main">
+<span id="camera-calibration"></span><h1>Camera calibration<a class="headerlink" href="#module-calibration.main" title="Permalink to this headline">¶</a></h1>
+<p>Finds the top and left cameras intrinsinc and distortion matrices and the rotation/translation matrix between the
+cameras and the sample</p>
+<dl class="py function">
+<dt id="calibration.main.calibrate_stereo">
+<code class="sig-prename descclassname">calibration.main.</code><code class="sig-name descname">calibrate_stereo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">left_lens</span></em>, <em class="sig-param"><span class="n">right_lens</span></em>, <em class="sig-param"><span class="n">left_pos</span></em>, <em class="sig-param"><span class="n">right_pos</span></em>, <em class="sig-param"><span class="n">calib_folder</span></em>, <em class="sig-param"><span class="n">chess_dim</span></em>, <em class="sig-param"><span class="n">chess_case_len</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration/main.html#calibrate_stereo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.main.calibrate_stereo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calibrate a stereocamera system given calibration file names</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left_lens</strong><strong>,</strong><strong>right_lens</strong> – path of the right and left camera lens calibration pictures</p></li>
+<li><p><strong>left_pos</strong><strong>,</strong><strong>right_pos</strong> – path of the right and left camera position pictures</p></li>
+<li><p><strong>calib_folder</strong> – calibration result folder</p></li>
+<li><p><strong>chess_dim</strong> – Number of chess cases -1</p></li>
+<li><p><strong>chess_case_len</strong> – chess case length</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nothing but generates the camera calibration files in the “res folder” mtx_top,mtx_left (camera intrinsinc matrix), dist_top,dist_left (passage matrix from the sample to</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="calibration.main.write_calibration_file">
+<code class="sig-prename descclassname">calibration.main.</code><code class="sig-name descname">write_calibration_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_name</span></em>, <em class="sig-param"><span class="n">mtx</span></em>, <em class="sig-param"><span class="n">dist</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration/main.html#write_calibration_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.main.write_calibration_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a single camera calibration file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f_name</strong> – calibration file name to save</p></li>
+<li><p><strong>mtx</strong> – camera intrinsic matrix</p></li>
+<li><p><strong>dist</strong> – camera distorsion matrix</p></li>
+<li><p><strong>R</strong> – Rotation between the camera and the sample coordinate system (Rodrigues vector)</p></li>
+<li><p><strong>T</strong> – Translation vector between the camera and the sample coordinate system</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-calibration.calib_len"></span><dl class="py function">
+<dt id="calibration.calib_len.get_cam_matrix">
+<code class="sig-prename descclassname">calibration.calib_len.</code><code class="sig-name descname">get_cam_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">calib_pics</span></em>, <em class="sig-param"><span class="n">chess_dim</span></em>, <em class="sig-param"><span class="n">chess_case_len</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration/calib_len.html#get_cam_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.calib_len.get_cam_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the camera intrinsinc and distortion matrices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calib_pics</strong> – calibration chessboard pictures</p></li>
+<li><p><strong>chess_dim</strong> – Number of chess cases -1</p></li>
+<li><p><strong>chess_case_len</strong> – chess case length</p></li>
+<li><p><strong>pic</strong> – default None, picture frame to print in the gui</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>camera intrinsinc and distortion matrices</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-calibration.find_sample_ori"></span><dl class="py function">
+<dt id="calibration.find_sample_ori.get_quiver">
+<code class="sig-prename descclassname">calibration.find_sample_ori.</code><code class="sig-name descname">get_quiver</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">mtx</span></em>, <em class="sig-param"><span class="n">mat_pass</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration/find_sample_ori.html#get_quiver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.find_sample_ori.get_quiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the projection of a vector on a give camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> – vector to project</p></li>
+<li><p><strong>mtx</strong> – camera intrinsic matrix</p></li>
+<li><p><strong>mat_pass</strong> – camera transformation matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="calibration.find_sample_ori.get_transfo_mat">
+<code class="sig-prename descclassname">calibration.find_sample_ori.</code><code class="sig-name descname">get_transfo_mat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">calib_pic_file</span></em>, <em class="sig-param"><span class="n">mtx</span></em>, <em class="sig-param"><span class="n">dist</span></em>, <em class="sig-param"><span class="n">chess_dim</span></em>, <em class="sig-param"><span class="n">chess_case_len</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration/find_sample_ori.html#get_transfo_mat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.find_sample_ori.get_transfo_mat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the transformation matrix between the camera’s frame and the sample</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calib_pic_file</strong> – picture file of the chessboard</p></li>
+<li><p><strong>mtx</strong> – camera intrinsinc matrix</p></li>
+<li><p><strong>dist</strong> – camera distorsion matrix</p></li>
+<li><p><strong>chess_dim</strong> – Number of cases per chess side minus one</p></li>
+<li><p><strong>chess_case_len</strong> – real life lenth of the chess square</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>R, T Rotation Rodrigues vector and Translation vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="calibration.find_sample_ori.plot_proj_origin">
+<code class="sig-prename descclassname">calibration.find_sample_ori.</code><code class="sig-name descname">plot_proj_origin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chessPic</span></em>, <em class="sig-param"><span class="n">mtx</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">chess_dim</span></em>, <em class="sig-param"><span class="n">chess_case_len</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration/find_sample_ori.html#plot_proj_origin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.find_sample_ori.plot_proj_origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the chessboard point projection and chessboard coordinate system axis on a camera for visual calibration check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chessPic</strong> – Chessboard picture path</p></li>
+<li><p><strong>mtx</strong> – camera intrinsic matrix</p></li>
+<li><p><strong>R</strong> – camera Rotation Rodrigues vector</p></li>
+<li><p><strong>T</strong> – camera translation vector</p></li>
+<li><p><strong>chess_dim</strong> – Number of cases per chess side minus one</p></li>
+<li><p><strong>chess_case_len</strong> – real life lenth of the chess square</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-calibration.chessboard_tools"></span><p>Various usefull function for chessboard calibration</p>
+<dl class="py function">
+<dt id="calibration.chessboard_tools.change_chess_ori">
+<code class="sig-prename descclassname">calibration.chessboard_tools.</code><code class="sig-name descname">change_chess_ori</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">blobs</span></em>, <em class="sig-param"><span class="n">objpoints</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration/chessboard_tools.html#change_chess_ori"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.chessboard_tools.change_chess_ori" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns the object point array according to the detected blobs position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blobs</strong> – Detected blobs positions</p></li>
+<li><p><strong>objpoints</strong> – object point array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>transformed object point array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="calibration.chessboard_tools.draw">
+<code class="sig-prename descclassname">calibration.chessboard_tools.</code><code class="sig-name descname">draw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">img</span></em>, <em class="sig-param"><span class="n">corners</span></em>, <em class="sig-param"><span class="n">imgpts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration/chessboard_tools.html#draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.chessboard_tools.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>draw chessboard corners</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> – chessboard picture</p></li>
+<li><p><strong>corners</strong> – chessboard corner points</p></li>
+<li><p><strong>imgpts</strong> – chessboard points</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="calibration.chessboard_tools.get_blob_position">
+<code class="sig-prename descclassname">calibration.chessboard_tools.</code><code class="sig-name descname">get_blob_position</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">img</span></em>, <em class="sig-param"><span class="n">corners</span></em>, <em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration/chessboard_tools.html#get_blob_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.chessboard_tools.get_blob_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the grid position of the chessboard circles required to get the chessboard orientation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> – chessboard picture</p></li>
+<li><p><strong>corners</strong> – detected corner list</p></li>
+<li><p><strong>dim</strong> – chessboard dimension</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>blob position in index coordinates</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="calibration.chessboard_tools.get_chessboard_points">
+<code class="sig-prename descclassname">calibration.chessboard_tools.</code><code class="sig-name descname">get_chessboard_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">picDir</span></em>, <em class="sig-param"><span class="n">listPic</span></em>, <em class="sig-param"><span class="n">criteria</span></em>, <em class="sig-param"><span class="n">chess_dim</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration/chessboard_tools.html#get_chessboard_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.chessboard_tools.get_chessboard_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the chessboard points to use in camera calibration function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>picDir</strong> – chessboard picture directory path or single picture name (tif and jpg supported)</p></li>
+<li><p><strong>listPic</strong> – True if picDir is the path to a list of pictures, False if it is a single picture name</p></li>
+<li><p><strong>criteria</strong> – Chessboard position CV2 convergence criteria</p></li>
+<li><p><strong>pic</strong> – default None, picture frame to print in the gui</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>objpoints (checkboard coordinates), imgpoints (picture coordinates), gray (chess gray picture), img, objp, corners2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="calibration.chessboard_tools.order_points">
+<code class="sig-prename descclassname">calibration.chessboard_tools.</code><code class="sig-name descname">order_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calibration/chessboard_tools.html#order_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.chessboard_tools.order_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an ordered list of points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pts</strong> – initial list of points</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-data_treat.reconstruction_3d">
+<span id="d-trajectory-reconstruction"></span><h1>3D Trajectory reconstruction<a class="headerlink" href="#module-data_treat.reconstruction_3d" title="Permalink to this headline">¶</a></h1>
+<p>functions to reconstruct the object 3D trajectory</p>
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.cam_shift_resize">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">cam_shift_resize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">traj_2d_top</span></em>, <em class="sig-param"><span class="n">traj_2d_left</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/reconstruction_3d.html#cam_shift_resize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.cam_shift_resize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the 2D screen trajectory in the unresized picture frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>traj_2d_left</strong> (<em>traj_2d_top</em><em>,</em>) – screen trajectory for the top and left cameras</p></li>
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – top and left camera objects</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>shift_2d_top, shift_2d_left trajectory list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.get_3d_coor">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">get_3d_coor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">minspan_len</span></em>, <em class="sig-param"><span class="n">traj_2d_left</span></em>, <em class="sig-param"><span class="n">traj_2d_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'persp'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/reconstruction_3d.html#get_3d_coor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.get_3d_coor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the shot 3D trajectory from each cameras parameters and 2D trajectories</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>minspan_len</strong> – number of time points</p></li>
+<li><p><strong>traj_2d_left</strong> – trajectory found by the left camera</p></li>
+<li><p><strong>traj_2d_top</strong> – trajectory found by the right camera</p></li>
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – camera object for the top and left camera</p></li>
+<li><p><strong>method</strong> – “persp” (default) or “persp-opti” - use analytical expression or least square optimisation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.get_3d_nopersp">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">get_3d_nopersp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">minspan_len</span></em>, <em class="sig-param"><span class="n">traj_2d_left</span></em>, <em class="sig-param"><span class="n">traj_2d_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">cam_top</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/reconstruction_3d.html#get_3d_nopersp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.get_3d_nopersp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the 3D trajectory of the ball by orthographic projection nor camera exact positions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>minspan_len</strong> – number of time points</p></li>
+<li><p><strong>traj_2d_left</strong> – trajectory found by the left camera</p></li>
+<li><p><strong>traj_2d_top</strong> – trajectory found by the right camera</p></li>
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – camera object for the top and left camera</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>X,Y,Z coordinate list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.get_proj_coords">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">get_proj_coords</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">Z</span></em>, <em class="sig-param"><span class="n">cam</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/reconstruction_3d.html#get_proj_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.get_proj_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the projection of 3D coordinates on a camera screen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong><strong>,</strong><strong>Y</strong><strong>,</strong><strong>Z</strong> – 3D coordinates to be projected</p></li>
+<li><p><strong>cam</strong> – camera object used for projection</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.get_proj_error">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">get_proj_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">pos_2d_left</span></em>, <em class="sig-param"><span class="n">pos_2d_top</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/reconstruction_3d.html#get_proj_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.get_proj_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the projection error between the projection of a guessed 3D coordinate vector and the actual screen point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – 3D coordinate triplet</p></li>
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – camera object for the top and left camera</p></li>
+<li><p><strong>pos_2d_left</strong> – position found by the left camera</p></li>
+<li><p><strong>pos_2d_top</strong> – position found by the right camera</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>projection error vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.get_proj_list">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">get_proj_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">Z</span></em>, <em class="sig-param"><span class="n">cam</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/reconstruction_3d.html#get_proj_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.get_proj_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the projection of a list of points in the 3D space onto the camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong><strong>,</strong><strong>Y</strong><strong>,</strong><strong>Z</strong> – list of 3D coordinates</p></li>
+<li><p><strong>cam</strong> – cam object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>two_lists x and y with the camera 2D projected coordinates</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.make_alpha_beta">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">make_alpha_beta</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/reconstruction_3d.html#make_alpha_beta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.make_alpha_beta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute necessary coefficients for the 3D coordinate system matrix AX=b for better code readability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cam</strong> – camera object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.make_system_mat">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">make_system_mat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">pos_2d_left</span></em>, <em class="sig-param"><span class="n">pos_2d_top</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/reconstruction_3d.html#make_system_mat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.make_system_mat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the matrix A, b of the equation system AX = b where X is the shot 3D coordinates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – camera object for the top and left camera</p></li>
+<li><p><strong>pos_2d_left</strong> – position found by the left camera</p></li>
+<li><p><strong>pos_2d_top</strong> – position found by the right camera</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.plot_proj_error">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">plot_proj_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">traj_top</span></em>, <em class="sig-param"><span class="n">traj_left</span></em>, <em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">Z</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/reconstruction_3d.html#plot_proj_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.plot_proj_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the reprojected trajectory for each camera to check for the trajectory errors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>traj_top</strong><strong>,</strong><strong>traj_left</strong> – screen trajectory for the top and left cameras</p></li>
+<li><p><strong>X</strong><strong>,</strong><strong>Y</strong><strong>,</strong><strong>Z</strong> – computed 3D trajectory</p></li>
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – top and left camera objects</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.plot_square">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">plot_square</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/reconstruction_3d.html#plot_square"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.plot_square" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a square repreentive the cropped camera screen</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cam</strong> – camera object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.reconstruct_3d">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">reconstruct_3d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">splitSymb</span><span class="o">=</span><span class="default_value">'_'</span></em>, <em class="sig-param"><span class="n">numsplit</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'no-persp'</span></em>, <em class="sig-param"><span class="n">plotTraj</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/reconstruction_3d.html#reconstruct_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.reconstruct_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reconstruct the 3D trajectory of a moving object filmed by 2 cameras with a given angle between them</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – camera object for the top and left camera</p></li>
+<li><p><strong>splitSymb</strong> – split symbol used in the images name between name and image number</p></li>
+<li><p><strong>numsplit</strong> – index corresponding to the image number after the name was split (default 1)</p></li>
+<li><p><strong>method</strong> – “persp”, “persp-opti” or “no-persp” (default) - using the camera intrinsinc matrix for 3D trajectory or not, using analytical expression or least square optimisation</p></li>
+<li><p><strong>plotTraj</strong> – Boolean, if True the detected shot position will be plotted</p></li>
+<li><p><strong>plot</strong> – Boolean, if true the reprojection error will be plotted</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-data_treat.objectExtract"></span><dl class="py function">
+<dt id="data_treat.objectExtract.compute_2d_traj">
+<code class="sig-prename descclassname">data_treat.objectExtract.</code><code class="sig-name descname">compute_2d_traj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam</span></em>, <em class="sig-param"><span class="n">splitSymb</span><span class="o">=</span><span class="default_value">'_'</span></em>, <em class="sig-param"><span class="n">numsplit</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">plotTraj</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/objectExtract.html#compute_2d_traj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.objectExtract.compute_2d_traj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,
+by computing the difference of images with the object and without the object (initial state)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cam</strong> – camera object</p></li>
+<li><p><strong>splitSymb</strong> – symbol to use to split the picture names (default “_”)</p></li>
+<li><p><strong>numsplit</strong> – place of the image number in the picture name after splitting (default -1)</p></li>
+<li><p><strong>plotTraj</strong> – TRue or False, indicate if the detected point should be plotted</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>X,Y trajectory in the camera reference system and the time list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.objectExtract.filter_val">
+<code class="sig-prename descclassname">data_treat.objectExtract.</code><code class="sig-name descname">filter_val</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pic</span></em>, <em class="sig-param"><span class="n">width</span></em>, <em class="sig-param"><span class="n">height</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">20.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/objectExtract.html#filter_val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.objectExtract.filter_val" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the barycenter of a point cloud which pixel grey value is above a given threshold</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pic</strong> – picture array grey values</p></li>
+<li><p><strong>width</strong> – picture width</p></li>
+<li><p><strong>height</strong> – picture height</p></li>
+<li><p><strong>tol</strong> – filter tolerance (default 20)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>barycenter x and y coordinates and the number of pixels detected</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-data_treat.data_pp">
+<span id="trajectory-post-processing"></span><h1>Trajectory post-processing<a class="headerlink" href="#module-data_treat.data_pp" title="Permalink to this headline">¶</a></h1>
+<p>Several post processing functions to provide the shot velocity before and after impact, the impact angle and position…</p>
+<dl class="py function">
+<dt id="data_treat.data_pp.get_impact_position">
+<code class="sig-prename descclassname">data_treat.data_pp.</code><code class="sig-name descname">get_impact_position</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">Z</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">saveDir</span><span class="o">=</span><span class="default_value">'data_treat/'</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.995</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/data_pp.html#get_impact_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.data_pp.get_impact_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatic detection of the moment of impact simply by taking the moment where Y changes direction, within a given threshold</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong><strong>,</strong><strong>Y</strong><strong>,</strong><strong>Z</strong> – reconstructed X, Y, and Z coordinates (ndarray)</p></li>
+<li><p><strong>cam_left</strong><strong>,</strong><strong>cam_top</strong> – left and top camera objects.</p></li>
+<li><p><strong>plot</strong> – True or False indicate if should plot a verification picture</p></li>
+<li><p><strong>saveDir</strong> – Directory to save the picture to</p></li>
+<li><p><strong>threshold</strong> – impact detection threshold</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>impact X,Y,Z position relative to the first detected shot picture position.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.data_pp.get_init_angle">
+<code class="sig-prename descclassname">data_treat.data_pp.</code><code class="sig-name descname">get_init_angle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Xi</span></em>, <em class="sig-param"><span class="n">Yi</span></em>, <em class="sig-param"><span class="n">Zi</span></em>, <em class="sig-param"><span class="n">ti</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">saveDir</span><span class="o">=</span><span class="default_value">'data_treat/'</span></em>, <em class="sig-param"><span class="n">init</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">end</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/data_pp.html#get_init_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.data_pp.get_init_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the shot trajectory angle relatively to the shooting axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong><strong>,</strong><strong>Y</strong><strong>,</strong><strong>Z</strong> – reconstructed X, Y, and Z coordinates (ndarray)</p></li>
+<li><p><strong>timespan</strong> – time point list</p></li>
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – camera objects</p></li>
+<li><p><strong>plot</strong> – True or False indicate if should plot a verification picture</p></li>
+<li><p><strong>saveDir</strong> – Directory to save the picture to</p></li>
+<li><p><strong>init</strong><strong>,</strong><strong>end</strong> – initial and final array index used to average the angle value (default: 0 and 2)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.data_pp.get_velocity">
+<code class="sig-prename descclassname">data_treat.data_pp.</code><code class="sig-name descname">get_velocity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ti</span></em>, <em class="sig-param"><span class="n">Xi</span></em>, <em class="sig-param"><span class="n">Yi</span></em>, <em class="sig-param"><span class="n">Zi</span></em>, <em class="sig-param"><span class="n">thres</span><span class="o">=</span><span class="default_value">1.3</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">saveDir</span><span class="o">=</span><span class="default_value">'data_treat/'</span></em>, <em class="sig-param"><span class="n">init</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">pt_num</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/data_pp.html#get_velocity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.data_pp.get_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the shot velocity before and after the impact by linear fit.
+Before the impact, the functions continues adding the next acquisition point to the linear fit until the
+new points reduces the fit success score at less then the previous score * threshold. Then the first point with
+constant velocity after the impact is searched so that lienar fit with the same number of points as before the
+impact yields a better score than before the impact. It is based on the assumption that there will always be
+more acquisition point after the impact than before.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> – time vector</p></li>
+<li><p><strong>Xi</strong><strong>,</strong><strong>Yi</strong><strong>,</strong><strong>Zi</strong> – 3D coordinates (ndarray)</p></li>
+<li><p><strong>thres</strong> – threshold for the accepted residual difference (default 1.3)</p></li>
+<li><p><strong>plot</strong> – True or False indicate if should plot a verification picture</p></li>
+<li><p><strong>saveDir</strong> – Directory to save the picture to</p></li>
+<li><p><strong>init</strong> – initial index to compute the initial velocity</p></li>
+<li><p><strong>pt_num</strong> – minimum number of points to use to compute the velocity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>VX,VY,VZ initial velocity vector coordinates</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.data_pp.plot_supper">
+<code class="sig-prename descclassname">data_treat.data_pp.</code><code class="sig-name descname">plot_supper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">init</span></em>, <em class="sig-param"><span class="n">end</span></em>, <em class="sig-param"><span class="n">cam</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/data_pp.html#plot_supper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.data_pp.plot_supper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the superposition (addition) of a cam shot picture between picture init and end</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>init</strong><strong>,</strong><strong>end</strong> – start and stop indices for the addition</p></li>
+<li><p><strong>cam</strong> – camera object to be used</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.data_pp.pos_screen_resize">
+<code class="sig-prename descclassname">data_treat.data_pp.</code><code class="sig-name descname">pos_screen_resize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">cam</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/data_pp.html#pos_screen_resize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.data_pp.pos_screen_resize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the coordinate in the resized screen given the coordinates in the usnresized creen (when cropping for higher fps)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong><strong>,</strong><strong>y</strong> – ndarray containing unresized scree coordinates</p></li>
+<li><p><strong>cam</strong> – cam object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nothing but changes x and y values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.data_pp.result_plot">
+<code class="sig-prename descclassname">data_treat.data_pp.</code><code class="sig-name descname">result_plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">Z</span></em>, <em class="sig-param"><span class="n">timespan</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/data_pp.html#result_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.data_pp.result_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the recovered shot trajectory and velocity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong><strong>,</strong><strong>Y</strong><strong>,</strong><strong>Z</strong> – reconstructed X, Y, and Z coordinates (ndarray)</p></li>
+<li><p><strong>timespan</strong> – time point list</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-data_treat.make_report">
+<span id="report-generation-and-save"></span><h1>Report generation and save<a class="headerlink" href="#module-data_treat.make_report" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="data_treat.make_report.data_save">
+<code class="sig-prename descclassname">data_treat.make_report.</code><code class="sig-name descname">data_save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">traj_3d</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/make_report.html#data_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.make_report.data_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save experiment data after 3D trajectory reconstruction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>traj_3d</strong> – experiment object to save</p></li>
+<li><p><strong>cam_left</strong> (<em>cam_top</em><em>,</em>) – top and left camera object to save</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>1 if success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.make_report.load_data">
+<code class="sig-prename descclassname">data_treat.make_report.</code><code class="sig-name descname">load_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fileName</span></em>, <em class="sig-param"><span class="n">trajectory</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/make_report.html#load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.make_report.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load existing data from file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fileName</strong> – name of the file to load</p></li>
+<li><p><strong>trajectory</strong> – Experiment object to initialize</p></li>
+<li><p><strong>cam_left</strong> (<em>cam_top</em><em>,</em>) – top and left camera object to initialize</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.make_report.make_report">
+<code class="sig-prename descclassname">data_treat.make_report.</code><code class="sig-name descname">make_report</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">traj_3d</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">template</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/make_report.html#make_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.make_report.make_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a report of the post-processed values as well as the parameters used to extract the trajectory.
+Also saves the trajectory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>traj_3d</strong> – Experiment object</p></li>
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – camera objects used for the trajectory determination</p></li>
+<li><p><strong>template</strong> – name of the template to use for the report</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.make_report.make_template_file">
+<code class="sig-prename descclassname">data_treat.make_report.</code><code class="sig-name descname">make_template_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">template</span></em>, <em class="sig-param"><span class="n">sortie</span></em>, <em class="sig-param"><span class="n">H</span></em>, <em class="sig-param"><span class="n">var_names</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_treat/make_report.html#make_template_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.make_report.make_template_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a file from a given template file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>template</strong> – template file name</p></li>
+<li><p><strong>sortie</strong> – output file name</p></li>
+<li><p><strong>H</strong> – variable values</p></li>
+<li><p><strong>var_names</strong> – variable names</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gui.recons_gui">
+<span id="gui-fonctions"></span><h1>GUI fonctions<a class="headerlink" href="#module-gui.recons_gui" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="gui.recons_gui.start_gui">
+<code class="sig-prename descclassname">gui.recons_gui.</code><code class="sig-name descname">start_gui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/recons_gui.html#start_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.recons_gui.start_gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the main guI window</p>
+</dd></dl>
+
+<span class="target" id="module-gui.calibration"></span><dl class="py function">
+<dt id="gui.calibration.calib_tab">
+<code class="sig-prename descclassname">gui.calibration.</code><code class="sig-name descname">calib_tab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">frame</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/calibration.html#calib_tab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.calibration.calib_tab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup teh calibration tab content</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> – tk root window</p></li>
+<li><p><strong>frame</strong> – calibration tab frame object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.calibration.launch_calib">
+<code class="sig-prename descclassname">gui.calibration.</code><code class="sig-name descname">launch_calib</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">entries</span></em>, <em class="sig-param"><span class="n">numcase</span></em>, <em class="sig-param"><span class="n">lencase</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/calibration.html#launch_calib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.calibration.launch_calib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch calibration procedure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entries</strong> – calibration form entries</p></li>
+<li><p><strong>numcase</strong> – number of checkboard case form object</p></li>
+<li><p><strong>lencase</strong> – length of a checkboard case form object</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-gui.load"></span><dl class="py function">
+<dt id="gui.load.load_tab">
+<code class="sig-prename descclassname">gui.load.</code><code class="sig-name descname">load_tab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">frame</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">traj_3d</span></em>, <em class="sig-param"><span class="n">notebook</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/load.html#load_tab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.load.load_tab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the loading tab</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> – tk root window</p></li>
+<li><p><strong>frame</strong> – calibration tab frame object</p></li>
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – top and left camera objects</p></li>
+<li><p><strong>traj_3d</strong> – Experiment object</p></li>
+<li><p><strong>notebook</strong> – notebook object the tab belongs to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.load.start_load">
+<code class="sig-prename descclassname">gui.load.</code><code class="sig-name descname">start_load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">notebook</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">tra</span></em>, <em class="sig-param"><span class="n">ct</span></em>, <em class="sig-param"><span class="n">cl</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/load.html#start_load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.load.start_load" title="Permalink to this definition">¶</a></dt>
+<dd><p>loads an analysis by initializing the cameras and experiment objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>notebook</strong> – notebook object the tab belongs to (enables the pp mode)</p></li>
+<li><p><strong>f</strong> – form entries</p></li>
+<li><p><strong>tra</strong> – Experiment object</p></li>
+<li><p><strong>ct</strong><strong>,</strong><strong>cl</strong> – camera_top and left objects</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-gui.analysis"></span><dl class="py function">
+<dt id="gui.analysis.ana_tab">
+<code class="sig-prename descclassname">gui.analysis.</code><code class="sig-name descname">ana_tab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">frame</span></em>, <em class="sig-param"><span class="n">notebook</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">traj_3d</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/analysis.html#ana_tab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.analysis.ana_tab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the analysis tab</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> – root tk window</p></li>
+<li><p><strong>frame</strong> – frame of the tab to draw in</p></li>
+<li><p><strong>notebook</strong> – notebook object the tab belongs to</p></li>
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – top and left camera objects</p></li>
+<li><p><strong>traj_3d</strong> – Experiment object</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.analysis.batch_option_active">
+<code class="sig-prename descclassname">gui.analysis.</code><code class="sig-name descname">batch_option_active</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">switch_val</span></em>, <em class="sig-param"><span class="n">batch_options</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/analysis.html#batch_option_active"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.analysis.batch_option_active" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the batch mode was activate and plots the batch options accordingly</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>switch_val</strong> – batch mode switch</p></li>
+<li><p><strong>batch_options</strong> – batch option tk Frame</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.analysis.create_camera">
+<code class="sig-prename descclassname">gui.analysis.</code><code class="sig-name descname">create_camera</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">entries</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">cam</span></em>, <em class="sig-param"><span class="n">pic_to_cm</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/analysis.html#create_camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.analysis.create_camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a camera object based on the values filled in the form</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entries</strong> – form entries</p></li>
+<li><p><strong>name</strong> – camera name (top or left)</p></li>
+<li><p><strong>cam</strong> – camera object</p></li>
+<li><p><strong>pic_to_cm</strong> – picture to cm ratio if the no-perspective mode is used</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>initialized camera object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.analysis.launch_analysis">
+<code class="sig-prename descclassname">gui.analysis.</code><code class="sig-name descname">launch_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">top_entry</span></em>, <em class="sig-param"><span class="n">left_entry</span></em>, <em class="sig-param"><span class="n">notebook</span></em>, <em class="sig-param"><span class="n">method</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">traj_3d</span></em>, <em class="sig-param"><span class="n">show_traj</span></em>, <em class="sig-param"><span class="n">ratTop</span></em>, <em class="sig-param"><span class="n">ratLeft</span></em>, <em class="sig-param"><span class="n">isbatch</span></em>, <em class="sig-param"><span class="n">batch_folder</span></em>, <em class="sig-param"><span class="n">exp_param</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/analysis.html#launch_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.analysis.launch_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch a 3D trajectory analysis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>top_entry</strong><strong>,</strong><strong>left_entry</strong> – form entries for the top and left cameras</p></li>
+<li><p><strong>notebook</strong> – GUI notebook object (to enable the pp tab at the end</p></li>
+<li><p><strong>method</strong> – analysis method combobox object</p></li>
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – camera top and left objects</p></li>
+<li><p><strong>traj_3d</strong> – Experiment object</p></li>
+<li><p><strong>show_traj</strong> – Trajectory display checkbox object</p></li>
+<li><p><strong>ratTop</strong><strong>,</strong><strong>ratLeft</strong> – pixel to cm ratio form objects for the top and left cameras</p></li>
+<li><p><strong>isbatch</strong> – checkbox object enabling (or not) batch mode</p></li>
+<li><p><strong>batch_folder</strong> – batch folder path form object</p></li>
+<li><p><strong>exp_param</strong> – experimental parameter form object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.analysis.method_change">
+<code class="sig-prename descclassname">gui.analysis.</code><code class="sig-name descname">method_change</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span></em>, <em class="sig-param"><span class="n">cam_factors</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/analysis.html#method_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.analysis.method_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the method was changed to no-perspective and changes the GUI accordingly</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>val</strong> – method choice tk combobox object</p></li>
+<li><p><strong>cam_factors</strong> – method parameters to display</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.analysis.save_pp_params">
+<code class="sig-prename descclassname">gui.analysis.</code><code class="sig-name descname">save_pp_params</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">traj_3d</span></em>, <em class="sig-param"><span class="n">vels</span></em>, <em class="sig-param"><span class="n">angles</span></em>, <em class="sig-param"><span class="n">pos</span></em>, <em class="sig-param"><span class="n">param_win</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/analysis.html#save_pp_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.analysis.save_pp_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>saves PP parameters in an Experiment object and closes the window</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>traj_3d</strong> – Experiment object</p></li>
+<li><p><strong>vels</strong> – velocity determination parameters</p></li>
+<li><p><strong>angles</strong> – angle determination parameters</p></li>
+<li><p><strong>pos</strong> – impact position determination parameters</p></li>
+<li><p><strong>param_win</strong> – PP parameter window to shut down</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.analysis.set_cam_mask">
+<code class="sig-prename descclassname">gui.analysis.</code><code class="sig-name descname">set_cam_mask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">cam</span></em>, <em class="sig-param"><span class="n">mask_w</span></em>, <em class="sig-param"><span class="n">mask_h</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/analysis.html#set_cam_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.analysis.set_cam_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>sets the camera mask and closes the mask selection window</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.analysis.set_mask">
+<code class="sig-prename descclassname">gui.analysis.</code><code class="sig-name descname">set_mask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam</span></em>, <em class="sig-param"><span class="n">form</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/analysis.html#set_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.analysis.set_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the subwindow to set a camera mask</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cam</strong> – camera object</p></li>
+<li><p><strong>form</strong> – camera form values to get the first picture path</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.analysis.set_pp_params">
+<code class="sig-prename descclassname">gui.analysis.</code><code class="sig-name descname">set_pp_params</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">traj_3d</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/analysis.html#set_pp_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.analysis.set_pp_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the batch PP parameter subwindow</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>traj_3d</strong> – Experience object to change</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.analysis.update_fig">
+<code class="sig-prename descclassname">gui.analysis.</code><code class="sig-name descname">update_fig</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">im_act</span></em>, <em class="sig-param"><span class="n">canvas</span></em>, <em class="sig-param"><span class="n">ind</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/analysis.html#update_fig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.analysis.update_fig" title="Permalink to this definition">¶</a></dt>
+<dd><p>update the mask selection picture as the slider moves</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mask</strong> – mask value</p></li>
+<li><p><strong>im_act</strong> – plotted image ndarray</p></li>
+<li><p><strong>canvas</strong> – canvas to plot the modified image onto</p></li>
+<li><p><strong>ind</strong> – 0 for the mask to act on the pictur width, 1 for the picture height</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-gui.post_processing"></span><dl class="py function">
+<dt id="gui.post_processing.launch_pp">
+<code class="sig-prename descclassname">gui.post_processing.</code><code class="sig-name descname">launch_pp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vels</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">traj_3d</span></em>, <em class="sig-param"><span class="n">fileSave</span></em>, <em class="sig-param"><span class="n">ang</span></em>, <em class="sig-param"><span class="n">pos</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/post_processing.html#launch_pp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.post_processing.launch_pp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch a post-processing analysis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vels</strong> – velocity parameter form</p></li>
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – top and left camera objects</p></li>
+<li><p><strong>T</strong> – Text canvas to log the results</p></li>
+<li><p><strong>traj_3d</strong> – Experiment object</p></li>
+<li><p><strong>fileSave</strong> – report save directory</p></li>
+<li><p><strong>ang</strong> – angle parameter form</p></li>
+<li><p><strong>pos</strong> – impact position parameter form</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.post_processing.move_file">
+<code class="sig-prename descclassname">gui.post_processing.</code><code class="sig-name descname">move_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">init</span></em>, <em class="sig-param"><span class="n">end</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/post_processing.html#move_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.post_processing.move_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves a file using either batch or shell command according to the current os (Windows or Linux only)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>init</strong> – path of the file to move</p></li>
+<li><p><strong>end</strong> – target directory path</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.post_processing.parse_dir">
+<code class="sig-prename descclassname">gui.post_processing.</code><code class="sig-name descname">parse_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/post_processing.html#parse_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.post_processing.parse_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the save directoryto get only the directory (without the file name) to save the pictures to</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>save_dir</strong> – save directory string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>save directory string without the file name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.post_processing.pp_tab">
+<code class="sig-prename descclassname">gui.post_processing.</code><code class="sig-name descname">pp_tab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">frame</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">traj_3d</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/post_processing.html#pp_tab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.post_processing.pp_tab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the post-processing tab</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> – tk root window</p></li>
+<li><p><strong>frame</strong> – calibration tab frame object</p></li>
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – top and left camera objects</p></li>
+<li><p><strong>traj_3d</strong> – Experiment object</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.post_processing.save_res">
+<code class="sig-prename descclassname">gui.post_processing.</code><code class="sig-name descname">save_res</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">traj_3d</span></em>, <em class="sig-param"><span class="n">fileSave</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/post_processing.html#save_res"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.post_processing.save_res" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the results and make a report</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cam_top</strong><strong>,</strong><strong>cam_left</strong> – top and left camera objects</p></li>
+<li><p><strong>T</strong> – Text canvas to log the results</p></li>
+<li><p><strong>traj_3d</strong> – Experiment object</p></li>
+<li><p><strong>fileSave</strong> – report save directory</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-gui.gui_utils"></span><dl class="py function">
+<dt id="gui.gui_utils.makeform">
+<code class="sig-prename descclassname">gui.gui_utils.</code><code class="sig-name descname">makeform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">fields</span></em>, <em class="sig-param"><span class="n">def_vals</span></em>, <em class="sig-param"><span class="n">pos</span><span class="o">=</span><span class="default_value">'top'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/gui_utils.html#makeform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui_utils.makeform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a form with several entries</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> – tk Frame object to put the form in</p></li>
+<li><p><strong>fields</strong> – field name strings (list)</p></li>
+<li><p><strong>def_vals</strong> – default values string (list)</p></li>
+<li><p><strong>pos</strong> – tkinter constant position value (tk.TOP, LEFT, RIGHT, BOTTOM)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list with each field name (column 0) and entry object (column 1)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.gui_utils.popupmsg">
+<code class="sig-prename descclassname">gui.gui_utils.</code><code class="sig-name descname">popupmsg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/gui_utils.html#popupmsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui_utils.popupmsg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate a popup with a message and an “ok” button</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>msg</strong> – pop-up string message</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019, S.Breumier
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

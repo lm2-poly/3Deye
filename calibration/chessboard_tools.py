@@ -83,7 +83,7 @@ def get_blob_position(img, corners, dim):
     :param img: chessboard picture
     :param corners: detected corner list
     :param dim: chessboard dimension
-    :return : blob position in index coordinates
+    :return: blob position in index coordinates
     """
     point_grid = np.reshape(corners, (dim, dim, 2))
     params = cv2.SimpleBlobDetector_Params()

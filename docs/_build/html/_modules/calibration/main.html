@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0
+                1.0
               </div>
             
           
@@ -84,8 +84,27 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Getting started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/getting_started.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#calibration">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#post-processing">Post-processing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html">Camera object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-calibration.main">Camera calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.reconstruction_3d">3D Trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.data_pp">Trajectory post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.make_report">Report generation and save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-gui.recons_gui">GUI fonctions</a></li>
+</ul>
+
             
           
         </div>
@@ -153,34 +172,64 @@
 <span class="sd">cameras and the sample</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">calibration.calib_len</span> <span class="kn">import</span> <span class="n">get_cam_matrix</span>
-<span class="kn">from</span> <span class="nn">calibration.find_sample_ori</span> <span class="kn">import</span> <span class="n">get_transfo_mat</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">calibration.find_sample_ori</span> <span class="kn">import</span> <span class="n">get_transfo_mat</span><span class="p">,</span> <span class="n">plot_proj_origin</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">json</span>
 
 
-<div class="viewcode-block" id="calibrate_stereo"><a class="viewcode-back" href="../../index.html#calibration.main.calibrate_stereo">[docs]</a><span class="k">def</span> <span class="nf">calibrate_stereo</span><span class="p">(</span><span class="n">left_lens</span><span class="p">,</span> <span class="n">right_lens</span><span class="p">,</span> <span class="n">left_pos</span><span class="p">,</span> <span class="n">right_pos</span><span class="p">):</span>
+<div class="viewcode-block" id="calibrate_stereo"><a class="viewcode-back" href="../../contents/function_list.html#calibration.main.calibrate_stereo">[docs]</a><span class="k">def</span> <span class="nf">calibrate_stereo</span><span class="p">(</span><span class="n">left_lens</span><span class="p">,</span> <span class="n">right_lens</span><span class="p">,</span> <span class="n">left_pos</span><span class="p">,</span> <span class="n">right_pos</span><span class="p">,</span> <span class="n">calib_folder</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">,</span><span class="n">chess_case_len</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calibrate a stereocamera system given calibration file names</span>
 
 <span class="sd">    :param left_lens,right_lens: path of the right and left camera lens calibration pictures</span>
 <span class="sd">    :param left_pos,right_pos: path of the right and left camera position pictures</span>
+<span class="sd">    :param calib_folder: calibration result folder</span>
+<span class="sd">    :param chess_dim: Number of chess cases -1</span>
+<span class="sd">    :param chess_case_len: chess case length</span>
 <span class="sd">    :return: nothing but generates the camera calibration files in the &quot;res folder&quot; mtx_top,mtx_left (camera intrinsinc matrix), dist_top,dist_left (passage matrix from the sample to</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Getting cameras matrix&quot;</span><span class="p">)</span>
-    <span class="n">mtx_top</span><span class="p">,</span> <span class="n">dist_top</span> <span class="o">=</span> <span class="n">get_cam_matrix</span><span class="p">(</span><span class="n">left_lens</span><span class="p">)</span>
-    <span class="n">mtx_left</span><span class="p">,</span> <span class="n">dist_left</span> <span class="o">=</span> <span class="n">get_cam_matrix</span><span class="p">(</span><span class="n">right_lens</span><span class="p">)</span>
+    <span class="n">mtx_top</span><span class="p">,</span> <span class="n">dist_top</span> <span class="o">=</span> <span class="n">get_cam_matrix</span><span class="p">(</span><span class="n">left_lens</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">,</span> <span class="n">chess_case_len</span><span class="p">)</span>
+    <span class="n">mtx_left</span><span class="p">,</span> <span class="n">dist_left</span> <span class="o">=</span> <span class="n">get_cam_matrix</span><span class="p">(</span><span class="n">right_lens</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">,</span> <span class="n">chess_case_len</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Getting reference frame transformations&quot;</span><span class="p">)</span>
-    <span class="n">R_top</span><span class="p">,</span> <span class="n">T_top</span> <span class="o">=</span> <span class="n">get_transfo_mat</span><span class="p">(</span><span class="n">left_pos</span><span class="p">,</span> <span class="n">mtx_top</span><span class="p">,</span> <span class="n">dist_top</span><span class="p">)</span>
-    <span class="n">R_left</span><span class="p">,</span> <span class="n">T_left</span> <span class="o">=</span> <span class="n">get_transfo_mat</span><span class="p">(</span><span class="n">right_pos</span><span class="p">,</span> <span class="n">mtx_left</span><span class="p">,</span> <span class="n">dist_left</span><span class="p">)</span>
+    <span class="n">R_top</span><span class="p">,</span> <span class="n">T_top</span> <span class="o">=</span> <span class="n">get_transfo_mat</span><span class="p">(</span><span class="n">left_pos</span><span class="p">,</span> <span class="n">mtx_top</span><span class="p">,</span> <span class="n">dist_top</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">,</span> <span class="n">chess_case_len</span><span class="p">)</span>
+    <span class="n">R_left</span><span class="p">,</span> <span class="n">T_left</span> <span class="o">=</span> <span class="n">get_transfo_mat</span><span class="p">(</span><span class="n">right_pos</span><span class="p">,</span> <span class="n">mtx_left</span><span class="p">,</span> <span class="n">dist_left</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">,</span> <span class="n">chess_case_len</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Check system coordinate consistency&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Top camera&quot;</span><span class="p">)</span>
+    <span class="n">plot_proj_origin</span><span class="p">(</span><span class="n">left_pos</span><span class="p">,</span> <span class="n">mtx_top</span><span class="p">,</span> <span class="n">R_top</span><span class="p">,</span> <span class="n">T_top</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">,</span> <span class="n">chess_case_len</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Left camera&quot;</span><span class="p">)</span>
+    <span class="n">plot_proj_origin</span><span class="p">(</span><span class="n">right_pos</span><span class="p">,</span> <span class="n">mtx_left</span><span class="p">,</span> <span class="n">R_left</span><span class="p">,</span> <span class="n">T_left</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">,</span> <span class="n">chess_case_len</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saving results in res&quot;</span><span class="p">)</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;calibration/res/mtx_top&quot;</span><span class="p">,</span> <span class="n">mtx_top</span><span class="p">)</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;calibration/res/mtx_left&quot;</span><span class="p">,</span> <span class="n">mtx_left</span><span class="p">)</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;calibration/res/dist_top&quot;</span><span class="p">,</span> <span class="n">dist_top</span><span class="p">)</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;calibration/res/dist_left&quot;</span><span class="p">,</span> <span class="n">dist_left</span><span class="p">)</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;calibration/res/R_top&quot;</span><span class="p">,</span> <span class="n">R_top</span><span class="p">)</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;calibration/res/R_left&quot;</span><span class="p">,</span> <span class="n">R_left</span><span class="p">)</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;calibration/res/T_top&quot;</span><span class="p">,</span> <span class="n">T_top</span><span class="p">)</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;calibration/res/T_left&quot;</span><span class="p">,</span> <span class="n">T_left</span><span class="p">)</span></div>
+    <span class="n">write_calibration_file</span><span class="p">(</span><span class="n">calib_folder</span> <span class="o">+</span> <span class="s1">&#39;/cam_top&#39;</span><span class="p">,</span> <span class="n">mtx_top</span><span class="p">,</span> <span class="n">dist_top</span><span class="p">,</span> <span class="n">R_top</span><span class="p">,</span> <span class="n">T_top</span><span class="p">)</span>
+    <span class="n">write_calibration_file</span><span class="p">(</span><span class="n">calib_folder</span> <span class="o">+</span> <span class="s1">&#39;/cam_left&#39;</span><span class="p">,</span> <span class="n">mtx_left</span><span class="p">,</span> <span class="n">dist_left</span><span class="p">,</span> <span class="n">R_left</span><span class="p">,</span> <span class="n">T_left</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="write_calibration_file"><a class="viewcode-back" href="../../contents/function_list.html#calibration.main.write_calibration_file">[docs]</a><span class="k">def</span> <span class="nf">write_calibration_file</span><span class="p">(</span><span class="n">f_name</span><span class="p">,</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write a single camera calibration file</span>
+
+<span class="sd">    :param f_name: calibration file name to save</span>
+<span class="sd">    :param mtx: camera intrinsic matrix</span>
+<span class="sd">    :param dist: camera distorsion matrix</span>
+<span class="sd">    :param R: Rotation between the camera and the sample coordinate system (Rodrigues vector)</span>
+<span class="sd">    :param T: Translation vector between the camera and the sample coordinate system</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;Intrisinc matrix:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">mtx</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;Distorsion matrix:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dist</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;Rotation vector(Rodrigues):</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;Translation vector:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">fichier</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">fichier</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out_str</span><span class="p">)</span>
+    <span class="n">fichier</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

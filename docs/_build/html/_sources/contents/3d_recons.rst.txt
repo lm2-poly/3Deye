@@ -1,0 +1,18 @@
+3D trajectory reconstruction
+==================================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Shot detection:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Without perspective:
+   
+.. toctree::
+   :maxdepth: 2
+   :caption: Accounting for perspective:
+   
+.. toctree::
+   :maxdepth: 2
+   :caption: Using the GUI:

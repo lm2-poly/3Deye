@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0
+                1.0
               </div>
             
           
@@ -84,8 +84,27 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Getting started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/getting_started.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#calibration">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#post-processing">Post-processing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html">Camera object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-calibration.main">Camera calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.reconstruction_3d">3D Trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.data_pp">Trajectory post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.make_report">Report generation and save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-gui.recons_gui">GUI fonctions</a></li>
+</ul>
+
             
           
         </div>
@@ -150,59 +169,117 @@
   <h1>Source code for data_treat.make_report</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">Template</span>
+<span class="kn">from</span> <span class="nn">gui.gui_utils</span> <span class="kn">import</span> <span class="n">popupmsg</span>
 
-<div class="viewcode-block" id="load_data"><a class="viewcode-back" href="../../index.html#data_treat.make_report.load_data">[docs]</a><span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="n">fileName</span><span class="p">):</span>
+
+<div class="viewcode-block" id="load_data"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.make_report.load_data">[docs]</a><span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Load existing data from file</span>
 
 <span class="sd">    :param fileName: name of the file to load</span>
+<span class="sd">    :param trajectory: Experiment object to initialize</span>
+<span class="sd">    :param cam_top, cam_left: top and left camera object to initialize</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span> <span class="n">unpack</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span></div>
+    <span class="n">fichier</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+    <span class="n">str_data</span> <span class="o">=</span> <span class="n">fichier</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">fichier</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">category</span> <span class="o">=</span> <span class="n">str_data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;===&quot;</span><span class="p">)</span>
+    <span class="n">test_params</span> <span class="o">=</span> <span class="n">category</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">fps</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">test_params</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">test_params</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">shot</span> <span class="o">=</span> <span class="n">test_params</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">pressure</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">test_params</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">trajectory</span><span class="o">.</span><span class="n">set_exp_params</span><span class="p">(</span><span class="n">shot</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">fileName</span><span class="p">)</span>
+
+    <span class="n">traj</span> <span class="o">=</span> <span class="n">category</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">traj</span><span class="p">[</span><span class="mi">2</span><span class="p">:]:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">==</span> <span class="mi">4</span><span class="p">):</span>
+            <span class="n">ti</span><span class="p">,</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">ti</span><span class="p">))</span>
+        <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">xi</span><span class="p">))</span>
+        <span class="n">Y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">yi</span><span class="p">))</span>
+        <span class="n">Z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">zi</span><span class="p">))</span>
+    <span class="n">trajectory</span><span class="o">.</span><span class="n">set_trajectory</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Z</span><span class="p">))</span>
+
+    <span class="n">cam_top_string</span> <span class="o">=</span> <span class="n">category</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;Top camera</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">cam_top</span><span class="o">.</span><span class="n">load_from_string</span><span class="p">(</span><span class="n">cam_top_string</span><span class="p">)</span>
+    <span class="n">cam_top</span><span class="o">.</span><span class="n">framerate</span> <span class="o">=</span> <span class="n">fps</span>
+    <span class="n">cam_left_string</span> <span class="o">=</span> <span class="n">category</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;Left camera</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">cam_left</span><span class="o">.</span><span class="n">load_from_string</span><span class="p">(</span><span class="n">cam_left_string</span><span class="p">)</span>
+    <span class="n">cam_left</span><span class="o">.</span><span class="n">framerate</span> <span class="o">=</span> <span class="n">fps</span></div>
 
 
-<div class="viewcode-block" id="data_save"><a class="viewcode-back" href="../../index.html#data_treat.make_report.data_save">[docs]</a><span class="k">def</span> <span class="nf">data_save</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">fileName</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Save position data after 3D trajectory reconstruction</span>
+<div class="viewcode-block" id="data_save"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.make_report.data_save">[docs]</a><span class="k">def</span> <span class="nf">data_save</span><span class="p">(</span><span class="n">traj_3d</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Save experiment data after 3D trajectory reconstruction</span>
 
-<span class="sd">    :param t: time list</span>
-<span class="sd">    :param X,Y,Z: position lists</span>
-<span class="sd">    :return: write the position in a column text file</span>
+<span class="sd">    :param traj_3d: experiment object to save</span>
+<span class="sd">    :param cam_top, cam_left: top and left camera object to save</span>
+<span class="sd">    :return: 1 if success</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">fileName</span><span class="o">+</span><span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
-                                           <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+    <span class="n">lenX</span> <span class="o">=</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">out_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lenX</span><span class="p">):</span>
+        <span class="n">out_str</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{:.04E}</span><span class="s1"> </span><span class="si">{:.04E}</span><span class="s1"> </span><span class="si">{:.04E}</span><span class="s1"> </span><span class="si">{:.04E}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">Z</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">=== Calibration data</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;==== Top camera</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">write_cam_data</span><span class="p">()</span>
+    <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;==== Left camera</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">write_cam_data</span><span class="p">()</span>
+
+    <span class="n">fichier</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
+    <span class="n">fichier</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out_str</span><span class="p">)</span>
+    <span class="n">fichier</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="mi">1</span></div>
 
 
-<div class="viewcode-block" id="make_report"><a class="viewcode-back" href="../../index.html#data_treat.make_report.make_report">[docs]</a><span class="k">def</span> <span class="nf">make_report</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">Vinit</span><span class="p">,</span> <span class="n">Vend</span><span class="p">,</span> <span class="n">imp_pos</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generates a report of the post-processed values as wel as the parameters used to extract the trajectory.</span>
+<div class="viewcode-block" id="make_report"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.make_report.make_report">[docs]</a><span class="k">def</span> <span class="nf">make_report</span><span class="p">(</span><span class="n">traj_3d</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates a report of the post-processed values as well as the parameters used to extract the trajectory.</span>
 <span class="sd">    Also saves the trajectory.</span>
-<span class="sd">    </span>
-<span class="sd">    :param t: timespan vector</span>
-<span class="sd">    :param X,Y,Z: estimated 3D trajectory nd arrays</span>
-<span class="sd">    :param alpha: Shot horizontal angle</span>
-<span class="sd">    :param Vinit,Vend: shot velocity before and after the impact</span>
-<span class="sd">    :param imp_pos: x,y,z coordinate list of the impact position</span>
+
+<span class="sd">    :param traj_3d: Experiment object</span>
 <span class="sd">    :param cam_top,cam_left: camera objects used for the trajectory determination</span>
-<span class="sd">    :param file_name: name of the trajectory file generated</span>
+<span class="sd">    :param template: name of the template to use for the report</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">data_save</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
-    <span class="n">make_template_file</span><span class="p">(</span><span class="s2">&quot;data_treat/report_template.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;Report.txt&quot;</span><span class="p">,</span>
-                       <span class="p">[</span><span class="n">file_name</span><span class="p">,</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">firstPic</span><span class="p">,</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">framerate</span><span class="p">,</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">res</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">Vinit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span> <span class="n">Vinit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span> <span class="n">Vinit</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span>
-                        <span class="n">Vend</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span> <span class="n">Vend</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span> <span class="n">Vend</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span> <span class="n">imp_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">imp_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">imp_pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
-                       <span class="p">[</span><span class="s1">&#39;testName&#39;</span><span class="p">,</span> <span class="s1">&#39;picName&#39;</span><span class="p">,</span> <span class="s1">&#39;fps&#39;</span><span class="p">,</span> <span class="s1">&#39;res&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="s1">&#39;VX&#39;</span><span class="p">,</span> <span class="s1">&#39;VY&#39;</span><span class="p">,</span> <span class="s1">&#39;VZ&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;VXAfter&#39;</span><span class="p">,</span> <span class="s1">&#39;VYAfter&#39;</span><span class="p">,</span> <span class="s1">&#39;VZAfter&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">])</span></div>
+    <span class="k">if</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">save_dir</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">popupmsg</span><span class="p">(</span><span class="s1">&#39;Empty file name&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="n">make_template_file</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span>
+                       <span class="p">[</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">firstPic</span><span class="p">,</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">framerate</span><span class="p">,</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">res</span><span class="p">,</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span>
+                       <span class="n">traj_3d</span><span class="o">.</span><span class="n">shot</span><span class="p">,</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">vinit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">vinit</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">vinit</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                        <span class="n">traj_3d</span><span class="o">.</span><span class="n">vend</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">vend</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">vend</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">impact_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">impact_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">impact_pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                       <span class="p">[</span><span class="s1">&#39;testName&#39;</span><span class="p">,</span> <span class="s1">&#39;picName&#39;</span><span class="p">,</span> <span class="s1">&#39;fps&#39;</span><span class="p">,</span> <span class="s1">&#39;res&#39;</span><span class="p">,</span> <span class="s1">&#39;sample&#39;</span><span class="p">,</span> <span class="s1">&#39;shot&#39;</span><span class="p">,</span> <span class="s1">&#39;pressure&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="s1">&#39;VX&#39;</span><span class="p">,</span> <span class="s1">&#39;VY&#39;</span><span class="p">,</span> <span class="s1">&#39;VZ&#39;</span><span class="p">,</span><span class="s1">&#39;VXAfter&#39;</span><span class="p">,</span> <span class="s1">&#39;VYAfter&#39;</span><span class="p">,</span> <span class="s1">&#39;VZAfter&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">])</span>
+    <span class="n">data_save</span><span class="p">(</span><span class="n">traj_3d</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="make_template_file"><a class="viewcode-back" href="../../index.html#data_treat.make_report.make_template_file">[docs]</a><span class="k">def</span> <span class="nf">make_template_file</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">sortie</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">var_names</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create a file from a given template file&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="make_template_file"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.make_report.make_template_file">[docs]</a><span class="k">def</span> <span class="nf">make_template_file</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">sortie</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">var_names</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a file from a given template file</span>
+
+<span class="sd">    :param template: template file name</span>
+<span class="sd">    :param sortie: output file name</span>
+<span class="sd">    :param H: variable values</span>
+<span class="sd">    :param var_names: variable names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">len_vars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+    <span class="n">to_rmv</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">len_vars</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="nb">float</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span>
             <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:.03f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">to_rmv</span><span class="p">:</span>
+        <span class="n">var_names</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+
+    <span class="n">len_vars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
     <span class="n">fichier</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">template</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">);</span>
     <span class="n">contenu</span> <span class="o">=</span> <span class="n">fichier</span><span class="o">.</span><span class="n">read</span><span class="p">();</span>
     <span class="n">modif_dic</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">len_vars</span><span class="p">):</span>
         <span class="n">modif_dic</span><span class="p">[</span><span class="n">var_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="n">contenu_modif</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">contenu</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">modif_dic</span><span class="p">);</span>
+    <span class="n">contenu_modif</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">contenu</span><span class="p">)</span><span class="o">.</span><span class="n">safe_substitute</span><span class="p">(</span><span class="n">modif_dic</span><span class="p">);</span>
     <span class="n">fichier</span><span class="o">.</span><span class="n">close</span><span class="p">();</span>
     <span class="n">fichier</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">sortie</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">);</span>
     <span class="n">fichier</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">contenu_modif</span><span class="p">);</span>

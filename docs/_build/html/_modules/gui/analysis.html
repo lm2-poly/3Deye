@@ -1,0 +1,565 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gui.analysis &mdash; 3Drecons 1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> 3Drecons
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/getting_started.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#calibration">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#post-processing">Post-processing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html">Camera object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-calibration.main">Camera calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.reconstruction_3d">3D Trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.data_pp">Trajectory post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.make_report">Report generation and save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-gui.recons_gui">GUI fonctions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">3Drecons</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>gui.analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gui.analysis</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
+<span class="kn">from</span> <span class="nn">data_treat.reconstruction_3d</span> <span class="kn">import</span> <span class="n">reconstruct_3d</span>
+<span class="kn">from</span> <span class="nn">data_treat.make_report</span> <span class="kn">import</span> <span class="n">make_report</span>
+<span class="kn">from</span> <span class="nn">data_treat.data_pp</span> <span class="kn">import</span> <span class="n">get_init_angle</span><span class="p">,</span> <span class="n">get_impact_position</span><span class="p">,</span> <span class="n">get_velocity</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">gui.gui_utils</span> <span class="kn">import</span> <span class="n">makeform</span>
+<span class="kn">from</span> <span class="nn">matplotlib.backends.backend_tkagg</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FigureCanvasTkAgg</span><span class="p">,</span> <span class="n">NavigationToolbar2Tk</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">matplotlib.figure</span> <span class="kn">import</span> <span class="n">Figure</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="ana_tab"><a class="viewcode-back" href="../../contents/function_list.html#gui.analysis.ana_tab">[docs]</a><span class="k">def</span> <span class="nf">ana_tab</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="n">frame</span><span class="p">,</span> <span class="n">notebook</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">traj_3d</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Setup the analysis tab</span>
+
+<span class="sd">    :param root: root tk window</span>
+<span class="sd">    :param frame: frame of the tab to draw in</span>
+<span class="sd">    :param notebook: notebook object the tab belongs to</span>
+<span class="sd">    :param cam_top,cam_left: top and left camera objects</span>
+<span class="sd">    :param traj_3d: Experiment object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">show_traj</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">IntVar</span><span class="p">()</span>
+    <span class="n">is_batch</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">IntVar</span><span class="p">()</span>
+
+    <span class="n">cam_frames</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+    <span class="n">top_cam</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">cam_frames</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+    <span class="n">left_cam</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">cam_frames</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+
+    <span class="n">option_box</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="n">cam_factors</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+    <span class="n">cam_factors</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">cam_top_lab</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">cam_factors</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Top pixel to cm ratio&quot;</span><span class="p">)</span>
+    <span class="n">cam_top_lab</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+    <span class="n">cam_top_factor</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">cam_factors</span><span class="p">)</span>
+    <span class="n">cam_top_factor</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{:.04e}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">141.1</span><span class="p">))</span>
+    <span class="n">cam_top_factor</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+
+    <span class="n">cam_left_lab</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">cam_factors</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Left pixel to cm ratio&quot;</span><span class="p">)</span>
+    <span class="n">cam_left_lab</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+    <span class="n">cam_left_factor</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">cam_factors</span><span class="p">)</span>
+    <span class="n">cam_left_factor</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{:.04e}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">148.97</span><span class="p">))</span>
+    <span class="n">cam_left_factor</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+
+    <span class="n">batch_options</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+    <span class="n">batch_label</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">batch_options</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Batch folder path:&quot;</span><span class="p">)</span>
+    <span class="n">batch_label</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+    <span class="n">batch_folder</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">batch_options</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">batch_folder</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+    <span class="n">batch_warning</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">batch_options</span><span class="p">,</span>
+                             <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Each folder to analyse in the batch folder should contain two folders with &quot;</span>
+                                  <span class="s2">&quot;the name specified for the top and left camera above</span><span class="se">\n</span><span class="s2">All the report files will&quot;</span>
+                                  <span class="s2">&quot;be saved in a &#39;RESULT&#39; folder created in the batch folder.&quot;</span><span class="p">)</span>
+    <span class="n">batch_warning</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+    <span class="n">batch_params</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">batch_options</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Batch set-up&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t3d</span><span class="o">=</span><span class="n">traj_3d</span><span class="p">:</span> <span class="n">set_pp_params</span><span class="p">(</span><span class="n">t3d</span><span class="p">)))</span>
+    <span class="n">batch_params</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+    <span class="n">batch_switch</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">option_box</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Batch mode&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">is_batch</span><span class="p">,</span>
+                                  <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="o">=</span><span class="n">is_batch</span><span class="p">,</span> <span class="n">bo</span><span class="o">=</span><span class="n">batch_options</span><span class="p">:</span> <span class="n">batch_option_active</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">bo</span><span class="p">)))</span>
+
+
+    <span class="n">w</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Combobox</span><span class="p">(</span><span class="n">option_box</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;No perspective&#39;</span><span class="p">,</span> <span class="s1">&#39;Perspective simple&#39;</span><span class="p">,</span> <span class="s1">&#39;Perspective optimized&#39;</span><span class="p">])</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ComboboxSelected&gt;&gt;&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">val</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">camf</span><span class="o">=</span><span class="n">cam_factors</span><span class="p">:</span> <span class="n">method_change</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">camf</span><span class="p">)))</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">,</span> <span class="s1">&#39;Perspective simple&#39;</span><span class="p">)</span>
+    <span class="n">cb</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">option_box</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Show detected points&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">show_traj</span><span class="p">)</span>
+
+    <span class="n">exp_params_fr</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+    <span class="n">exp_param</span> <span class="o">=</span> <span class="n">makeform</span><span class="p">(</span><span class="n">exp_params_fr</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Shot type&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample name&#39;</span><span class="p">,</span> <span class="s1">&#39;Input pressure (psi)&#39;</span><span class="p">],</span>
+                   <span class="p">[</span><span class="s2">&quot;0.5mm&quot;</span><span class="p">,</span> <span class="s2">&quot;Aluminum 6050&quot;</span><span class="p">,</span> <span class="s2">&quot;50&quot;</span><span class="p">])</span>
+
+    <span class="n">top_base</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">top_cam</span><span class="p">)</span>
+    <span class="n">titleTop</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">top_base</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Top camera parameters&quot;</span><span class="p">)</span>
+    <span class="n">titleTop</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">makeform</span><span class="p">(</span><span class="n">top_cam</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Calibration folder&#39;</span><span class="p">,</span><span class="s2">&quot;Picture folder&quot;</span><span class="p">,</span> <span class="s1">&#39;First picture ID&#39;</span><span class="p">,</span> <span class="s1">&#39;framerate&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Screen width&#39;</span><span class="p">,</span> <span class="s1">&#39;Screen height&#39;</span><span class="p">,</span> <span class="s2">&quot;Acquisition width&quot;</span><span class="p">,</span> <span class="s2">&quot;Acquisition height&quot;</span><span class="p">,</span>
+                             <span class="s1">&#39;Detection threshold&#39;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;calibration/res&quot;</span><span class="p">,</span> <span class="s2">&quot;tests/single/camTop&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s1">&#39;15000&#39;</span><span class="p">,</span>
+                     <span class="s2">&quot;1280&quot;</span><span class="p">,</span> <span class="s2">&quot;800&quot;</span><span class="p">,</span> <span class="s2">&quot;1280&quot;</span><span class="p">,</span> <span class="s2">&quot;800&quot;</span><span class="p">,</span> <span class="s2">&quot;20.&quot;</span><span class="p">],</span> <span class="n">pos</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">)</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">top_base</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Set mask&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">ct</span><span class="o">=</span><span class="n">cam_top</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">top</span><span class="p">:</span> <span class="n">set_mask</span><span class="p">(</span><span class="n">ct</span><span class="p">,</span> <span class="n">t</span><span class="p">)))</span>
+    <span class="n">b1</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+    <span class="n">top_base</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">)</span>
+
+    <span class="n">left_base</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">left_cam</span><span class="p">)</span>
+    <span class="n">titleLeft</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">left_base</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Left camera parameters&quot;</span><span class="p">)</span>
+    <span class="n">titleLeft</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+    <span class="n">left</span> <span class="o">=</span> <span class="n">makeform</span><span class="p">(</span><span class="n">left_cam</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Calibration folder&#39;</span><span class="p">,</span><span class="s2">&quot;Picture folder&quot;</span><span class="p">,</span> <span class="s1">&#39;First picture ID&#39;</span><span class="p">,</span> <span class="s1">&#39;framerate&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Screen width&#39;</span><span class="p">,</span> <span class="s1">&#39;Screen height&#39;</span><span class="p">,</span> <span class="s2">&quot;Acquisition width&quot;</span><span class="p">,</span> <span class="s2">&quot;Acquisition height&quot;</span><span class="p">,</span>
+                               <span class="s1">&#39;Detection threshold&#39;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;calibration/res&quot;</span><span class="p">,</span> <span class="s2">&quot;tests/single/camLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s1">&#39;15000&#39;</span><span class="p">,</span>
+                     <span class="s2">&quot;1280&quot;</span><span class="p">,</span> <span class="s2">&quot;800&quot;</span><span class="p">,</span> <span class="s2">&quot;1280&quot;</span><span class="p">,</span> <span class="s2">&quot;800&quot;</span><span class="p">,</span> <span class="s1">&#39;20.&#39;</span><span class="p">],</span> <span class="n">pos</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">)</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">left_base</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Set mask&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">cl</span><span class="o">=</span><span class="n">cam_left</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">left</span><span class="p">:</span> <span class="n">set_mask</span><span class="p">(</span><span class="n">cl</span><span class="p">,</span> <span class="n">l</span><span class="p">)))</span>
+    <span class="n">b1</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+    <span class="n">left_base</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">)</span>
+
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Launch Analysis !&#39;</span><span class="p">,</span>
+                   <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="o">=</span><span class="n">top</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">left</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">notebook</span><span class="p">,</span> <span class="n">wval</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">show_traj</span><span class="p">,</span> <span class="n">ct</span><span class="o">=</span><span class="n">cam_top</span><span class="p">,</span>
+                                   <span class="n">cl</span><span class="o">=</span><span class="n">cam_left</span><span class="p">,</span> <span class="n">traj</span><span class="o">=</span><span class="n">traj_3d</span><span class="p">,</span> <span class="n">ratTop</span><span class="o">=</span><span class="n">cam_top_factor</span><span class="p">,</span> <span class="n">ratLeft</span><span class="o">=</span><span class="n">cam_left_factor</span><span class="p">,</span>
+                                   <span class="n">bo</span><span class="o">=</span><span class="n">is_batch</span><span class="p">,</span> <span class="n">bf</span><span class="o">=</span><span class="n">batch_folder</span><span class="p">,</span> <span class="n">ep</span><span class="o">=</span><span class="n">exp_param</span><span class="p">:</span>
+                            <span class="n">launch_analysis</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">wval</span><span class="p">,</span><span class="n">ct</span><span class="p">,</span> <span class="n">cl</span><span class="p">,</span> <span class="n">traj</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">ratTop</span><span class="p">,</span> <span class="n">ratLeft</span><span class="p">,</span> <span class="n">bo</span><span class="p">,</span> <span class="n">bf</span><span class="p">,</span> <span class="n">ep</span><span class="p">)))</span>
+
+    <span class="n">exp_params_fr</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">)</span>
+    <span class="n">b1</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+    <span class="n">cb</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+    <span class="n">batch_switch</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+    <span class="n">option_box</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">)</span>
+    <span class="n">warning_label</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Warning, picture name must be in the following format: &#39;Name_number.jpg&#39;&quot;</span><span class="p">)</span>
+    <span class="n">warning_label</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">)</span>
+
+    <span class="n">top_cam</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">left_cam</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">cam_frames</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_mask"><a class="viewcode-back" href="../../contents/function_list.html#gui.analysis.set_mask">[docs]</a><span class="k">def</span> <span class="nf">set_mask</span><span class="p">(</span><span class="n">cam</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate the subwindow to set a camera mask</span>
+
+<span class="sd">    :param cam: camera object</span>
+<span class="sd">    :param form: camera form values to get the first picture path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mask_w</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">IntVar</span><span class="p">()</span>
+    <span class="n">mask_h</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">IntVar</span><span class="p">()</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Set mask&quot;</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s2">&quot;600x600&quot;</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">wm_iconbitmap</span><span class="p">(</span><span class="s1">&#39;gui/logo-lm2-f_0.ico&#39;</span><span class="p">)</span>
+    <span class="n">cam_pics</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;/*.tif&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cam_pics</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">cam_pics</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;/*.jpg&quot;</span><span class="p">)</span>
+    <span class="n">im_act</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">cam_pics</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">im_act</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">im_act</span><span class="p">)</span>
+    <span class="n">fig_plot</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">im_act</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">canvas</span> <span class="o">=</span> <span class="n">FigureCanvasTkAgg</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">master</span><span class="o">=</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">get_tk_widget</span><span class="p">()</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">BOTH</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">toolbar</span> <span class="o">=</span> <span class="n">NavigationToolbar2Tk</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+    <span class="n">toolbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">get_tk_widget</span><span class="p">()</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">BOTH</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">wd_lab</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;width&quot;</span><span class="p">)</span>
+    <span class="n">mask_val_w</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="n">im_act</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">orient</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">mask_w</span><span class="p">,</span>
+                        <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">ma</span><span class="o">=</span><span class="n">mask_w</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">im_act</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">canvas</span><span class="p">:</span> <span class="n">update_fig</span><span class="p">(</span><span class="n">ma</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+    <span class="n">wd_lab</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+    <span class="n">mask_val_w</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+
+    <span class="n">hi_lab</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;height&quot;</span><span class="p">)</span>
+    <span class="n">mask_val_h</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="n">im_act</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">orient</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">mask_h</span><span class="p">,</span>
+                        <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">ma</span><span class="o">=</span><span class="n">mask_h</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">im_act</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">canvas</span><span class="p">:</span> <span class="n">update_fig</span><span class="p">(</span><span class="n">ma</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+    <span class="n">hi_lab</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+    <span class="n">mask_val_h</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Set mask&#39;</span><span class="p">,</span>
+                   <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">cam</span><span class="p">,</span> <span class="n">mw</span><span class="o">=</span><span class="n">mask_val_w</span><span class="p">,</span> <span class="n">mh</span><span class="o">=</span><span class="n">mask_val_h</span><span class="p">:</span> <span class="n">set_cam_mask</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">mh</span><span class="p">)))</span>
+    <span class="n">b1</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="set_cam_mask"><a class="viewcode-back" href="../../contents/function_list.html#gui.analysis.set_cam_mask">[docs]</a><span class="k">def</span> <span class="nf">set_cam_mask</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">cam</span><span class="p">,</span> <span class="n">mask_w</span><span class="p">,</span> <span class="n">mask_h</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;sets the camera mask and closes the mask selection window&quot;&quot;&quot;</span>
+    <span class="n">cam</span><span class="o">.</span><span class="n">set_mask</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">mask_w</span><span class="o">.</span><span class="n">get</span><span class="p">()),</span> <span class="nb">int</span><span class="p">(</span><span class="n">mask_h</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="update_fig"><a class="viewcode-back" href="../../contents/function_list.html#gui.analysis.update_fig">[docs]</a><span class="k">def</span> <span class="nf">update_fig</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">im_act</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;update the mask selection picture as the slider moves</span>
+
+<span class="sd">    :param mask: mask value</span>
+<span class="sd">    :param im_act: plotted image ndarray</span>
+<span class="sd">    :param canvas: canvas to plot the modified image onto</span>
+<span class="sd">    :param ind: 0 for the mask to act on the pictur width, 1 for the picture height</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pic_act</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">im_act</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ind</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">pic_act</span><span class="p">[:,</span> <span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">mask</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">ind</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">pic_act</span><span class="p">[</span><span class="n">im_act</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">mask</span><span class="p">):,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">pic_act</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="set_pp_params"><a class="viewcode-back" href="../../contents/function_list.html#gui.analysis.set_pp_params">[docs]</a><span class="k">def</span> <span class="nf">set_pp_params</span><span class="p">(</span><span class="n">traj_3d</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate the batch PP parameter subwindow</span>
+
+<span class="sd">    :param traj_3d: Experience object to change</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">param_win</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">param_win</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Batch post-processing parameters&quot;</span><span class="p">)</span>
+    <span class="n">param_win</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s2">&quot;600x400&quot;</span><span class="p">)</span>
+    <span class="n">param_win</span><span class="o">.</span><span class="n">wm_iconbitmap</span><span class="p">(</span><span class="s1">&#39;gui/logo-lm2-f_0.ico&#39;</span><span class="p">)</span>
+
+    <span class="n">vel_frame</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">param_win</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">vel_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Velocity determination parameters&quot;</span><span class="p">)</span>
+    <span class="n">title</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">)</span>
+    <span class="n">vels</span> <span class="o">=</span> <span class="n">makeform</span><span class="p">(</span><span class="n">vel_frame</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Velocity detection factor&#39;</span><span class="p">,</span> <span class="s1">&#39;Initial index&#39;</span><span class="p">,</span> <span class="s1">&#39;Minimum number of points&#39;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">vel_det_fac</span><span class="p">,</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">vel_init_ind</span><span class="p">,</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">vel_min_pt</span><span class="p">])</span>
+
+    <span class="n">angle_frame</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">param_win</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">angle_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Angle determination parameters&quot;</span><span class="p">)</span>
+    <span class="n">title</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">)</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">makeform</span><span class="p">(</span><span class="n">angle_frame</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Initial index&#39;</span><span class="p">,</span> <span class="s1">&#39;End index&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">ang_min_ind</span><span class="p">,</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">ang_end_ind</span><span class="p">])</span>
+
+    <span class="n">pos_frame</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">param_win</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">angle_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Impact position parameters&quot;</span><span class="p">)</span>
+    <span class="n">title</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">)</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">makeform</span><span class="p">(</span><span class="n">angle_frame</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Threshold&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">imp_thres</span><span class="p">])</span>
+
+    <span class="n">vel_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">)</span>
+    <span class="n">angle_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">)</span>
+    <span class="n">pos_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">)</span>
+
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">param_win</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Ok&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t3d</span><span class="o">=</span><span class="n">traj_3d</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">vels</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">angles</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">param_win</span><span class="p">:</span>
+                                                             <span class="n">save_pp_params</span><span class="p">(</span><span class="n">t3d</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">f</span><span class="p">)))</span>
+    <span class="n">b1</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_pp_params"><a class="viewcode-back" href="../../contents/function_list.html#gui.analysis.save_pp_params">[docs]</a><span class="k">def</span> <span class="nf">save_pp_params</span><span class="p">(</span><span class="n">traj_3d</span><span class="p">,</span> <span class="n">vels</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">param_win</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;saves PP parameters in an Experiment object and closes the window</span>
+
+<span class="sd">    :param traj_3d: Experiment object</span>
+<span class="sd">    :param vels: velocity determination parameters</span>
+<span class="sd">    :param angles: angle determination parameters</span>
+<span class="sd">    :param pos: impact position determination parameters</span>
+<span class="sd">    :param param_win: PP parameter window to shut down</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">traj_3d</span><span class="o">.</span><span class="n">vel_det_fac</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vels</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">traj_3d</span><span class="o">.</span><span class="n">vel_init_ind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">vels</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">traj_3d</span><span class="o">.</span><span class="n">vel_min_pt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">vels</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">traj_3d</span><span class="o">.</span><span class="n">ang_min_ind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">traj_3d</span><span class="o">.</span><span class="n">ang_end_ind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">traj_3d</span><span class="o">.</span><span class="n">imp_thres</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">param_win</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="batch_option_active"><a class="viewcode-back" href="../../contents/function_list.html#gui.analysis.batch_option_active">[docs]</a><span class="k">def</span> <span class="nf">batch_option_active</span><span class="p">(</span><span class="n">switch_val</span><span class="p">,</span> <span class="n">batch_options</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if the batch mode was activate and plots the batch options accordingly</span>
+
+<span class="sd">    :param switch_val: batch mode switch</span>
+<span class="sd">    :param batch_options: batch option tk Frame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">switch_val</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+        <span class="n">batch_options</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">batch_options</span><span class="o">.</span><span class="n">pack_forget</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="method_change"><a class="viewcode-back" href="../../contents/function_list.html#gui.analysis.method_change">[docs]</a><span class="k">def</span> <span class="nf">method_change</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">cam_factors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Checks if the method was changed to no-perspective and changes the GUI accordingly</span>
+
+<span class="sd">    :param val: method choice tk combobox object</span>
+<span class="sd">    :param cam_factors: method parameters to display</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;No perspective&#39;</span><span class="p">:</span>
+        <span class="n">cam_factors</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cam_factors</span><span class="o">.</span><span class="n">pack_forget</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="create_camera"><a class="viewcode-back" href="../../contents/function_list.html#gui.analysis.create_camera">[docs]</a><span class="k">def</span> <span class="nf">create_camera</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">cam</span><span class="p">,</span> <span class="n">pic_to_cm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a camera object based on the values filled in the form</span>
+
+<span class="sd">    :param entries: form entries</span>
+<span class="sd">    :param name: camera name (top or left)</span>
+<span class="sd">    :param cam: camera object</span>
+<span class="sd">    :param pic_to_cm: picture to cm ratio if the no-perspective mode is used</span>
+<span class="sd">    :return: initialized camera object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cam</span><span class="o">.</span><span class="n">load_calibration_file</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">+</span><span class="s1">&#39;/cam_&#39;</span><span class="o">+</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">cam</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="n">entries</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">cam</span><span class="o">.</span><span class="n">firstPic</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">cam</span><span class="o">.</span><span class="n">pic_to_cm</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">141.1</span>
+    <span class="n">cam</span><span class="o">.</span><span class="n">framerate</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">cam</span><span class="o">.</span><span class="n">camRes</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()),</span> <span class="nb">int</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">5</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+    <span class="n">cam</span><span class="o">.</span><span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">6</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()),</span> <span class="nb">int</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">7</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+    <span class="n">cam</span><span class="o">.</span><span class="n">cam_thres</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">8</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pic_to_cm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cam</span><span class="o">.</span><span class="n">pic_to_cm</span> <span class="o">=</span> <span class="n">pic_to_cm</span>
+    <span class="k">return</span> <span class="n">cam</span></div>
+
+
+<div class="viewcode-block" id="launch_analysis"><a class="viewcode-back" href="../../contents/function_list.html#gui.analysis.launch_analysis">[docs]</a><span class="k">def</span> <span class="nf">launch_analysis</span><span class="p">(</span><span class="n">top_entry</span><span class="p">,</span> <span class="n">left_entry</span><span class="p">,</span> <span class="n">notebook</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">traj_3d</span><span class="p">,</span> <span class="n">show_traj</span><span class="p">,</span>
+                    <span class="n">ratTop</span><span class="p">,</span> <span class="n">ratLeft</span><span class="p">,</span> <span class="n">isbatch</span><span class="p">,</span> <span class="n">batch_folder</span><span class="p">,</span> <span class="n">exp_param</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Launch a 3D trajectory analysis</span>
+
+<span class="sd">    :param top_entry,left_entry: form entries for the top and left cameras</span>
+<span class="sd">    :param notebook: GUI notebook object (to enable the pp tab at the end</span>
+<span class="sd">    :param method: analysis method combobox object</span>
+<span class="sd">    :param cam_top,cam_left: camera top and left objects</span>
+<span class="sd">    :param traj_3d: Experiment object</span>
+<span class="sd">    :param show_traj: Trajectory display checkbox object</span>
+<span class="sd">    :param ratTop,ratLeft: pixel to cm ratio form objects for the top and left cameras</span>
+<span class="sd">    :param isbatch: checkbox object enabling (or not) batch mode</span>
+<span class="sd">    :param batch_folder: batch folder path form object</span>
+<span class="sd">    :param exp_param: experimental parameter form object</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">traj_3d</span><span class="o">.</span><span class="n">set_exp_params</span><span class="p">(</span><span class="n">exp_param</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">exp_param</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">exp_param</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;Trajectory.txt&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;No perspective&quot;</span><span class="p">:</span>
+        <span class="n">meth</span> <span class="o">=</span> <span class="s1">&#39;no-persp&#39;</span>
+    <span class="k">elif</span> <span class="n">method</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Perspective simple&quot;</span><span class="p">:</span>
+        <span class="n">meth</span> <span class="o">=</span> <span class="s1">&#39;persp&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">meth</span> <span class="o">=</span> <span class="s1">&#39;persp-opti&#39;</span>
+
+    <span class="k">if</span> <span class="n">isbatch</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+        <span class="n">foldList</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">batch_folder</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+        <span class="n">ana_fold</span> <span class="o">=</span> <span class="n">batch_folder</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">+</span><span class="s1">&#39;/&#39;</span>
+        <span class="k">if</span> <span class="s1">&#39;RESULTS&#39;</span> <span class="ow">in</span> <span class="n">foldList</span><span class="p">:</span>
+            <span class="n">foldList</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;RESULTS&#39;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;cd &#39;</span> <span class="o">+</span> <span class="n">ana_fold</span> <span class="o">+</span> <span class="s1">&#39; &amp;&amp; mkdir RESULTS&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">foldList</span>  <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="n">ana_fold</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="n">notebook</span><span class="o">.</span><span class="n">tab</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">foldList</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;************ &quot;</span><span class="o">+</span><span class="n">elem</span><span class="p">)</span>
+        <span class="n">create_camera</span><span class="p">(</span><span class="n">top_entry</span><span class="p">,</span> <span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">ratTop</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+        <span class="n">create_camera</span><span class="p">(</span><span class="n">left_entry</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">ratLeft</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">elem</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">cam_top</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="n">ana_fold</span> <span class="o">+</span> <span class="n">elem</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">cam_top</span><span class="o">.</span><span class="n">dir</span>
+            <span class="n">cam_left</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="n">ana_fold</span> <span class="o">+</span> <span class="n">elem</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">dir</span>
+        <span class="n">cam_top</span><span class="o">.</span><span class="n">set_crop_size</span><span class="p">()</span>
+        <span class="n">cam_left</span><span class="o">.</span><span class="n">set_crop_size</span><span class="p">()</span>
+
+        <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">timespan</span> <span class="o">=</span> <span class="n">reconstruct_3d</span><span class="p">(</span><span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span>
+                                           <span class="n">splitSymb</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">numsplit</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">meth</span><span class="p">,</span>
+                                           <span class="n">plotTraj</span><span class="o">=</span><span class="n">show_traj</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">plot</span><span class="o">=</span><span class="ow">not</span><span class="p">(</span><span class="n">isbatch</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+        <span class="n">traj_3d</span><span class="o">.</span><span class="n">set_trajectory</span><span class="p">(</span><span class="n">timespan</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">isbatch</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">get_init_angle</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">timespan</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                   <span class="n">saveDir</span><span class="o">=</span><span class="n">ana_fold</span><span class="o">+</span><span class="s1">&#39;RESULTS</span><span class="se">\\</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">elem</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">ang_min_ind</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">ang_end_ind</span><span class="p">)</span>
+            <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span> <span class="o">=</span> <span class="n">get_impact_position</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                             <span class="n">saveDir</span><span class="o">=</span><span class="n">ana_fold</span><span class="o">+</span><span class="s1">&#39;RESULTS</span><span class="se">\\</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">elem</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">imp_thres</span><span class="p">)</span>
+            <span class="n">Vinit</span><span class="p">,</span> <span class="n">Vend</span> <span class="o">=</span> <span class="n">get_velocity</span><span class="p">(</span><span class="n">timespan</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">thres</span><span class="o">=</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">vel_det_fac</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                       <span class="n">saveDir</span><span class="o">=</span><span class="n">ana_fold</span><span class="o">+</span><span class="s1">&#39;RESULTS</span><span class="se">\\</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">elem</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">vel_init_ind</span><span class="p">,</span> <span class="n">pt_num</span><span class="o">=</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">vel_min_pt</span><span class="p">)</span>
+            <span class="n">traj_3d</span><span class="o">.</span><span class="n">set_pp</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">Vinit</span><span class="p">,</span> <span class="n">Vend</span><span class="p">,</span> <span class="p">[</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">])</span>
+            <span class="n">traj_3d</span><span class="o">.</span><span class="n">save_dir</span> <span class="o">=</span> <span class="n">ana_fold</span><span class="o">+</span><span class="s1">&#39;RESULTS/&#39;</span><span class="o">+</span><span class="n">elem</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span>
+            <span class="n">make_report</span><span class="p">(</span><span class="n">traj_3d</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="s2">&quot;data_treat/report_template.txt&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019, S.Breumier
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0
+                1.0
               </div>
             
           
@@ -84,8 +84,27 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Getting started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/getting_started.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#calibration">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#post-processing">Post-processing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html">Camera object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-calibration.main">Camera calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.reconstruction_3d">3D Trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.data_pp">Trajectory post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.make_report">Report generation and save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-gui.recons_gui">GUI fonctions</a></li>
+</ul>
+
             
           
         </div>
@@ -156,7 +175,7 @@
 <span class="kn">import</span> <span class="nn">glob</span>
 
 
-<div class="viewcode-block" id="draw"><a class="viewcode-back" href="../../index.html#calibration.chessboard_tools.draw">[docs]</a><span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">corners</span><span class="p">,</span> <span class="n">imgpts</span><span class="p">):</span>
+<div class="viewcode-block" id="draw"><a class="viewcode-back" href="../../contents/function_list.html#calibration.chessboard_tools.draw">[docs]</a><span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">corners</span><span class="p">,</span> <span class="n">imgpts</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    draw chessboard corners</span>
 
@@ -173,70 +192,121 @@
     <span class="k">return</span> <span class="n">img</span></div>
 
 
-<span class="k">def</span> <span class="nf">order_points</span><span class="p">(</span><span class="n">pts</span><span class="p">):</span>
-    <span class="c1"># initialzie a list of coordinates that will be ordered</span>
-    <span class="c1"># such that the first entry in the list is the top-left,</span>
-    <span class="c1"># the second entry is the top-right, the third is the</span>
-    <span class="c1"># bottom-right, and the fourth is the bottom-left</span>
+<div class="viewcode-block" id="order_points"><a class="viewcode-back" href="../../contents/function_list.html#calibration.chessboard_tools.order_points">[docs]</a><span class="k">def</span> <span class="nf">order_points</span><span class="p">(</span><span class="n">pts</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns an ordered list of points</span>
+
+<span class="sd">    :param pts: initial list of points</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
 
-    <span class="c1"># the top-left point will have the smallest sum, whereas</span>
-    <span class="c1"># the bottom-right point will have the largest sum</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">pts</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
     <span class="n">rect</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
 
-    <span class="c1"># now, compute the difference between the points, the</span>
-    <span class="c1"># top-right point will have the smallest difference,</span>
-    <span class="c1"># whereas the bottom-left will have the largest difference</span>
     <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">diff</span><span class="p">)]</span>
     <span class="n">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">diff</span><span class="p">)]</span>
 
-    <span class="c1"># return the ordered coordinates</span>
-    <span class="k">return</span> <span class="n">rect</span>
+    <span class="k">return</span> <span class="n">rect</span></div>
 
 
-<div class="viewcode-block" id="get_chessboard_points"><a class="viewcode-back" href="../../index.html#calibration.chessboard_tools.get_chessboard_points">[docs]</a><span class="k">def</span> <span class="nf">get_chessboard_points</span><span class="p">(</span><span class="n">picDir</span><span class="p">,</span> <span class="n">listPic</span><span class="p">,</span> <span class="n">criteria</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Finds the chessboard points to use in camera calibration function</span>
-<span class="sd">    :param picDir:</span>
-<span class="sd">    :param listPic:</span>
-<span class="sd">    :param criteria:</span>
-<span class="sd">    :return:</span>
+<div class="viewcode-block" id="get_chessboard_points"><a class="viewcode-back" href="../../contents/function_list.html#calibration.chessboard_tools.get_chessboard_points">[docs]</a><span class="k">def</span> <span class="nf">get_chessboard_points</span><span class="p">(</span><span class="n">picDir</span><span class="p">,</span> <span class="n">listPic</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Finds the chessboard points to use in camera calibration function</span>
+
+<span class="sd">    :param picDir: chessboard picture directory path or single picture name (tif and jpg supported)</span>
+<span class="sd">    :param listPic: True if picDir is the path to a list of pictures, False if it is a single picture name</span>
+<span class="sd">    :param criteria: Chessboard position CV2 convergence criteria</span>
+<span class="sd">    :param pic: default None, picture frame to print in the gui</span>
+<span class="sd">    :return: objpoints (checkboard coordinates), imgpoints (picture coordinates), gray (chess gray picture), img, objp, corners2</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)</span>
-    <span class="n">objp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">7</span> <span class="o">*</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-    <span class="n">objp</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
-    <span class="c1"># Arrays to store object points and image points from all the images.</span>
-    <span class="n">objpoints</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># 3d point in real world space</span>
-    <span class="n">imgpoints</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># 2d points in image plane.</span>
+    <span class="n">objp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">chess_dim</span> <span class="o">*</span> <span class="n">chess_dim</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">objp</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">chess_dim</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">chess_dim</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">objpoints</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">imgpoints</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="n">listPic</span><span class="p">:</span>
-        <span class="n">images</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">picDir</span><span class="o">+</span><span class="s1">&#39;/*.jpg&#39;</span><span class="p">)</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">picDir</span><span class="o">+</span><span class="s1">&#39;/*.tif&#39;</span><span class="p">)</span>
+        <span class="n">images</span> <span class="o">+=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">picDir</span><span class="o">+</span><span class="s1">&#39;/*.jpg&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">images</span> <span class="o">=</span> <span class="p">[</span><span class="n">picDir</span><span class="p">]</span>
 
     <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
         <span class="n">gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
-        <span class="c1"># Find the chess board corners</span>
-        <span class="n">ret</span><span class="p">,</span> <span class="n">corners</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findChessboardCorners</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">ret</span><span class="p">,</span> <span class="n">corners</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findChessboardCorners</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="p">(</span><span class="n">chess_dim</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
 
-        <span class="c1"># If found, add object points, image points (after refining them)</span>
         <span class="k">if</span> <span class="n">ret</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">objpoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">objp</span><span class="p">)</span>
 
             <span class="n">corners2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cornerSubPix</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">corners</span><span class="p">,</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">criteria</span><span class="p">)</span>
             <span class="n">imgpoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">corners2</span><span class="p">)</span>
 
-            <span class="c1"># Draw and display the corners</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">drawChessboardCorners</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">corners2</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
-            <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;img&#39;</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span>
-            <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
-    <span class="n">cv2</span><span class="o">.</span><span class="n">destroyAllWindows</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">objpoints</span><span class="p">,</span> <span class="n">imgpoints</span><span class="p">,</span> <span class="n">gray</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">objp</span><span class="p">,</span> <span class="n">corners2</span></div>
+
+
+<div class="viewcode-block" id="get_blob_position"><a class="viewcode-back" href="../../contents/function_list.html#calibration.chessboard_tools.get_blob_position">[docs]</a><span class="k">def</span> <span class="nf">get_blob_position</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">corners</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find the grid position of the chessboard circles required to get the chessboard orientation</span>
+
+<span class="sd">    :param img: chessboard picture</span>
+<span class="sd">    :param corners: detected corner list</span>
+<span class="sd">    :param dim: chessboard dimension</span>
+<span class="sd">    :return: blob position in index coordinates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">point_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">corners</span><span class="p">,</span> <span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">SimpleBlobDetector_Params</span><span class="p">()</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">filterByCircularity</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">minCircularity</span> <span class="o">=</span> <span class="mf">0.8</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">filterByColor</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">detector</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">SimpleBlobDetector_create</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">blob_pos</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dim</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dim</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">x_min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">point_grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">point_grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">x_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">point_grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">point_grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+            <span class="n">y_min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">point_grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">point_grid</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+            <span class="n">y_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">point_grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">point_grid</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+            <span class="n">pic_actu</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">y_min</span><span class="p">:</span><span class="n">y_max</span><span class="p">,</span> <span class="n">x_min</span><span class="p">:</span><span class="n">x_max</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">blob</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">pic_actu</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">blob</span> <span class="o">==</span> <span class="p">[]):</span>
+                <span class="n">blob_pos</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">pic_actu</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">blob</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pt</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">blob</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pt</span><span class="p">[</span><span class="mi">0</span><span class="p">])][</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">blob_pos</span></div>
+
+
+<div class="viewcode-block" id="change_chess_ori"><a class="viewcode-back" href="../../contents/function_list.html#calibration.chessboard_tools.change_chess_ori">[docs]</a><span class="k">def</span> <span class="nf">change_chess_ori</span><span class="p">(</span><span class="n">blobs</span><span class="p">,</span> <span class="n">objpoints</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Turns the object point array according to the detected blobs position</span>
+
+<span class="sd">    :param blobs: Detected blobs positions</span>
+<span class="sd">    :param objpoints: object point array</span>
+<span class="sd">    :return: transformed object point array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">bcor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">blobs</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">blobs</span><span class="p">),</span> <span class="mi">3</span><span class="p">))[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">blob</span> <span class="ow">in</span> <span class="n">blobs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">blob</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">80</span><span class="p">:</span>
+            <span class="n">b_black</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">i</span> <span class="o">+=</span><span class="mi">1</span>
+
+    <span class="n">tmp_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">objpoints</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+    <span class="n">tmp_obj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">objpoints</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">bcor</span><span class="p">[</span><span class="n">b_black</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+            <span class="n">tmp_points</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_obj</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">tmp_points</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_obj</span><span class="p">[:,</span> <span class="mi">6</span><span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">bcor</span><span class="p">[</span><span class="n">b_black</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+            <span class="n">tmp_points</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_obj</span><span class="p">[:,</span> <span class="mi">6</span> <span class="o">-</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">tmp_points</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_obj</span><span class="p">[:,</span> <span class="mi">6</span> <span class="o">-</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">bcor</span><span class="p">[</span><span class="n">b_black</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+            <span class="n">tmp_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_obj</span><span class="p">[</span><span class="mi">6</span> <span class="o">-</span> <span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">tmp_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_obj</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">tmp_points</span><span class="p">,</span> <span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span></div>
+
 </pre></div>
 
            </div>

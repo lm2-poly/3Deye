@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0
+                1.0
               </div>
             
           
@@ -84,8 +84,27 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Getting started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/getting_started.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#calibration">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#post-processing">Post-processing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html">Camera object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-calibration.main">Camera calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.reconstruction_3d">3D Trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.data_pp">Trajectory post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.make_report">Report generation and save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-gui.recons_gui">GUI fonctions</a></li>
+</ul>
+
             
           
         </div>
@@ -152,34 +171,30 @@
 <span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 
-<div class="viewcode-block" id="Cam"><a class="viewcode-back" href="../../index.html#data_treat.cam.Cam">[docs]</a><span class="k">class</span> <span class="nc">Cam</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Cam"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.cam.Cam">[docs]</a><span class="k">class</span> <span class="nc">Cam</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for the camera object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">picDir</span><span class="p">,</span> <span class="n">firstPic</span><span class="p">,</span> <span class="n">pic_to_cm</span><span class="p">,</span> <span class="n">framerate</span><span class="p">,</span> <span class="n">camRes</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">cropsize</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calib_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">picDir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">firstPic</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pic_to_cm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">framerate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">camRes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cropsize</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">cam_thres</span><span class="o">=</span><span class="mf">20.</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Camera object initialisation</span>
 
-<span class="sd">        :param mtx: camera intrinsinc matrix</span>
-<span class="sd">        :param dist: camera distortion matrix</span>
-<span class="sd">        :param R: camera to sample rotation (Rodrigues vector). Warning: the initialisation function outputs cam.R as a rotation *matrix* but takes a Rodrigues vector as input.</span>
-<span class="sd">        :param T: camera to sample translation</span>
+<span class="sd">        :param calib_file: calibration file for the camera</span>
 <span class="sd">        :param picDir: shot pictures directory</span>
-<span class="sd">        :param firstPic: first picture name</span>
-<span class="sd">        :param pic_to_cm: pixel to cm ratio (deprecated)</span>
+<span class="sd">        :param firstPic: first picture index</span>
+<span class="sd">        :param pic_to_cm: pixel to cm ratio</span>
 <span class="sd">        :param framerate: camera framerate</span>
-<span class="sd">        :param cropsize: size of teh screen to crop (usefull when pictures information was written on each pictures)</span>
 <span class="sd">        :param camRes: camera resolution</span>
-<span class="sd">        :param res: picture resolution (W, H)</span>
-<span class="sd">        :param origin: pixel coordinate of the system origin</span>
+<span class="sd">        :param res: picture resolution (W, H). Warning, it is the picture resolution written on each picture e.g. not accounting for the banner.</span>
+<span class="sd">        :param cropsize: size of the screen to crop (usefull when pictures information was written on each pictures)</span>
+<span class="sd">        :param cam_thres: shot detection trheshold</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mtx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">mtx</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="n">cv2</span><span class="o">.</span><span class="n">Rodrigues</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">R</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="c1">#+ np.array([0.75, 0.75, 0])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">calib_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_calibration_file</span><span class="p">(</span><span class="n">calib_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="n">picDir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">firstPic</span> <span class="o">=</span> <span class="n">firstPic</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pic_to_cm</span> <span class="o">=</span> <span class="n">pic_to_cm</span>
@@ -187,13 +202,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cropSize</span> <span class="o">=</span> <span class="n">cropsize</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">res</span> <span class="o">=</span> <span class="n">res</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camRes</span> <span class="o">=</span> <span class="n">camRes</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">res</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span><span class="p">(</span><span class="n">camRes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_crop_size</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cam_thres</span> <span class="o">=</span> <span class="n">cam_thres</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_w</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_h</span> <span class="o">=</span> <span class="mi">0</span>
 
+<div class="viewcode-block" id="Cam.undistort"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.cam.Cam.undistort">[docs]</a>    <span class="k">def</span> <span class="nf">undistort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Undistort the camera pictures and change the picture file to the undistorted one&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Cam.undistort"><a class="viewcode-back" href="../../index.html#data_treat.cam.Cam.undistort">[docs]</a>    <span class="k">def</span> <span class="nf">undistort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Undistort teh camera pictures and change the picture file to the undistorted one</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;corrected&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The camera was already calibrated.. exiting&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -209,7 +226,106 @@
                 <span class="n">dst</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
                 <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="o">+</span><span class="s1">&#39;/corrected/&#39;</span><span class="o">+</span><span class="n">elem</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dst</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="o">+</span><span class="s2">&quot;/corrected&quot;</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="o">+</span><span class="s2">&quot;/corrected&quot;</span></div>
+
+<div class="viewcode-block" id="Cam.set_mask"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.cam.Cam.set_mask">[docs]</a>    <span class="k">def</span> <span class="nf">set_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask_w</span><span class="p">,</span> <span class="n">mask_h</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set black mask to apply on each picture to remove reflexive surfaces</span>
+
+<span class="sd">        :param mask_w, mask_h: mask width and height in pixels</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_w</span> <span class="o">=</span> <span class="n">mask_w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_h</span> <span class="o">=</span> <span class="n">mask_h</span></div>
+
+<div class="viewcode-block" id="Cam.set_mtx"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.cam.Cam.set_mtx">[docs]</a>    <span class="k">def</span> <span class="nf">set_mtx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mtx</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set camera intrinsic matrix for a given path name (deprecated)</span>
+
+<span class="sd">        :param mtx: camera intrinsic matrix file name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mtx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">mtx</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cam.set_dist"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.cam.Cam.set_dist">[docs]</a>    <span class="k">def</span> <span class="nf">set_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set camera distorsion matrix for a given path name (deprecated)</span>
+
+<span class="sd">        :param dist: camera distorsion matrix file name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cam.set_R"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.cam.Cam.set_R">[docs]</a>    <span class="k">def</span> <span class="nf">set_R</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set camera rotation matrix for a given Rodrigues vector</span>
+
+<span class="sd">        :param R: camera rotation Rodrigues vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">Rodrigues</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cam.set_R_by_matrix"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.cam.Cam.set_R_by_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">set_R_by_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set camera rotation matrix for a given matrix</span>
+
+<span class="sd">        :param R: camera rotation matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span></div>
+
+<div class="viewcode-block" id="Cam.set_T"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.cam.Cam.set_T">[docs]</a>    <span class="k">def</span> <span class="nf">set_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set camera Translation vector</span>
+
+<span class="sd">        :param T: camera Translation vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cam.write_cam_data"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.cam.Cam.write_cam_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_cam_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Writes all camera data into a formated tring</span>
+
+<span class="sd">        :return: String containing all relevant camera data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;Screen resolution:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">camRes</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;Acquisition resolution:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;Crop array:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cropSize</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;Intrisinc matrix:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mtx</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;Distorsion matrix:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;Rotation matrix:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;Translation vector:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;Picture directory: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">&quot;First picture: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">firstPic</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">out_str</span></div>
+
+<div class="viewcode-block" id="Cam.load_calibration_file"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.cam.Cam.load_calibration_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_calibration_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load camera intrinsic, distorsion and transformation matrices from a calibration file</span>
+
+<span class="sd">        :param f_name:calibration file path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fichier</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f_name</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">fichier</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">fichier</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mtx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">5</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_R</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">7</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Cam.load_from_string"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.cam.Cam.load_from_string">[docs]</a>    <span class="k">def</span> <span class="nf">load_from_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a camera object from a formatted string such as produced by write_cam_data</span>
+
+<span class="sd">        :param data: formated string to parse</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camRes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cropSize</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mtx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">7</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">9</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">11</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">13</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">firstPic</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">17</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Cam.set_crop_size"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.cam.Cam.set_crop_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_crop_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set camera crop size to remove the banner according to the picture effective resolution and the picture target resolution (cam.res)&quot;&quot;&quot;</span>
+        <span class="n">picList</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">+</span> <span class="s2">&quot;/*.tif&quot;</span><span class="p">)</span>
+        <span class="n">picList</span> <span class="o">+=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">+</span> <span class="s2">&quot;/*.jpg&quot;</span><span class="p">)</span>
+        <span class="n">testpic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">picList</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cropSize</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">testpic</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span></div></div>
 </pre></div>
 
            </div>

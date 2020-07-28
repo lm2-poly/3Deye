@@ -3,46 +3,18 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
-
-Camera object
-==================================================
-
-.. automodule:: data_treat.cam
-   :members:
-
-Camera calibration
-==================================================
-
-.. automodule:: calibration.main
-   :members:
+   :caption: Getting started:
    
-.. automodule:: calibration.calib_len
-   :members:
+   contents/getting_started
+
+.. toctree::
+   :maxdepth: 2
+   :caption: User guide:
    
-.. automodule:: calibration.find_sample_ori
-   :members:
+   contents/user_guide
    
-.. automodule:: calibration.chessboard_tools
-   :members:
+.. toctree::
+   :maxdepth: 2  
+   :caption: Functions:
 
-3D Trajectory reconstruction
-==================================================
-
-.. automodule:: data_treat.reconstruction_3d
-   :members:
-   
-.. automodule:: data_treat.objectExtract
-   :members:
-
-Trajectory post-processing
-==================================================
-
-.. automodule:: data_treat.data_pp
-   :members:
-   
-Report generation and save
-==================================================
-
-.. automodule:: data_treat.make_report
-   :members:
+   contents/function_list

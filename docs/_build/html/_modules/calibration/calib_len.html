@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0
+                1.0
               </div>
             
           
@@ -84,8 +84,27 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Getting started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/getting_started.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#calibration">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#post-processing">Post-processing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html">Camera object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-calibration.main">Camera calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.reconstruction_3d">3D Trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.data_pp">Trajectory post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.make_report">Report generation and save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-gui.recons_gui">GUI fonctions</a></li>
+</ul>
+
             
           
         </div>
@@ -153,33 +172,20 @@
 <span class="kn">from</span> <span class="nn">calibration.chessboard_tools</span> <span class="kn">import</span> <span class="n">get_chessboard_points</span>
 
 
-<div class="viewcode-block" id="get_cam_matrix"><a class="viewcode-back" href="../../index.html#calibration.calib_len.get_cam_matrix">[docs]</a><span class="k">def</span> <span class="nf">get_cam_matrix</span><span class="p">(</span><span class="n">calib_pics</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cam_matrix"><a class="viewcode-back" href="../../contents/function_list.html#calibration.calib_len.get_cam_matrix">[docs]</a><span class="k">def</span> <span class="nf">get_cam_matrix</span><span class="p">(</span><span class="n">calib_pics</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">,</span> <span class="n">chess_case_len</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds the camera intrinsinc and distortion matrices</span>
 
 <span class="sd">    :param calib_pics: calibration chessboard pictures</span>
+<span class="sd">    :param chess_dim: Number of chess cases -1</span>
+<span class="sd">    :param chess_case_len: chess case length</span>
+<span class="sd">    :param pic: default None, picture frame to print in the gui</span>
 <span class="sd">    :return: camera intrinsinc and distortion matrices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># termination criteria</span>
-    <span class="n">criteria</span> <span class="o">=</span> <span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">TERM_CRITERIA_EPS</span> <span class="o">+</span> <span class="n">cv2</span><span class="o">.</span><span class="n">TERM_CRITERIA_MAX_ITER</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
-    <span class="n">objpoints</span><span class="p">,</span> <span class="n">imgpoints</span><span class="p">,</span> <span class="n">gray</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">objp</span><span class="p">,</span> <span class="n">corners2</span> <span class="o">=</span> <span class="n">get_chessboard_points</span><span class="p">(</span><span class="n">calib_pics</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">criteria</span><span class="p">)</span>
-    <span class="n">objpoints</span> <span class="o">=</span> <span class="mf">0.4375</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">objpoints</span><span class="p">)</span>
+    <span class="n">criteria</span> <span class="o">=</span> <span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">TERM_CRITERIA_EPS</span> <span class="o">+</span> <span class="n">cv2</span><span class="o">.</span><span class="n">TERM_CRITERIA_MAX_ITER</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mf">1.e-9</span><span class="p">)</span>
+    <span class="n">objpoints</span><span class="p">,</span> <span class="n">imgpoints</span><span class="p">,</span> <span class="n">gray</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">objp</span><span class="p">,</span> <span class="n">corners2</span> <span class="o">=</span> <span class="n">get_chessboard_points</span><span class="p">(</span><span class="n">calib_pics</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">)</span>
+    <span class="n">objpoints</span> <span class="o">=</span> <span class="n">chess_case_len</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">objpoints</span><span class="p">)</span>
     <span class="n">ret</span><span class="p">,</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">rvecs</span><span class="p">,</span> <span class="n">tvecs</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">calibrateCamera</span><span class="p">(</span><span class="n">objpoints</span><span class="p">,</span> <span class="n">imgpoints</span><span class="p">,</span> <span class="n">gray</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">newcameramtx</span><span class="p">,</span> <span class="n">roi</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getOptimalNewCameraMatrix</span><span class="p">(</span><span class="n">mtx</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">),</span> <span class="mf">1.</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
-
-    <span class="c1"># undistort</span>
-    <span class="n">dst</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">undistort</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">newcameramtx</span><span class="p">)</span>
-
-    <span class="c1"># crop the image</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">roi</span>
-    <span class="n">dst</span> <span class="o">=</span> <span class="n">dst</span><span class="p">[</span><span class="n">y</span><span class="p">:</span><span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">]</span>
-    <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;res/calibresult.png&#39;</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
-    <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;res/initial.png&#39;</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span>
-    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;distorted&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span>
-    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;corrected&quot;</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
-    <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">dist</span></div>
 </pre></div>

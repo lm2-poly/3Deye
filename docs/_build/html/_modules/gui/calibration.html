@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gui.calibration &mdash; 3Drecons 1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> 3Drecons
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/getting_started.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#calibration">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#post-processing">Post-processing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html">Camera object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-calibration.main">Camera calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.reconstruction_3d">3D Trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.data_pp">Trajectory post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.make_report">Report generation and save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-gui.recons_gui">GUI fonctions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">3Drecons</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>gui.calibration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gui.calibration</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">calibration.main</span> <span class="kn">import</span> <span class="n">calibrate_stereo</span>
+<span class="kn">from</span> <span class="nn">gui.gui_utils</span> <span class="kn">import</span> <span class="n">makeform</span><span class="p">,</span> <span class="n">popupmsg</span>
+
+
+<div class="viewcode-block" id="calib_tab"><a class="viewcode-back" href="../../contents/function_list.html#gui.calibration.calib_tab">[docs]</a><span class="k">def</span> <span class="nf">calib_tab</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="n">frame</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Setup teh calibration tab content</span>
+
+<span class="sd">    :param root: tk root window</span>
+<span class="sd">    :param frame: calibration tab frame object</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">chess_param</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+    <span class="n">numcase_lab</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">chess_param</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Number of chessboard cases -1&quot;</span><span class="p">)</span>
+    <span class="n">numcase</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">chess_param</span><span class="p">)</span>
+    <span class="n">numcase</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+    <span class="n">lencase_lab</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">chess_param</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Cases real life length&quot;</span><span class="p">)</span>
+    <span class="n">lencase</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">chess_param</span><span class="p">)</span>
+    <span class="n">lencase</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">,</span> <span class="mf">0.4375</span><span class="p">)</span>
+
+    <span class="n">numcase_lab</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+    <span class="n">numcase</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+    <span class="n">lencase_lab</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+    <span class="n">lencase</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+
+
+    <span class="n">ents</span> <span class="o">=</span> <span class="n">makeform</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Top camera chessboard picture folder&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;Left camera chessboard picture folder&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;Top camera sample position picture&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;Left camera sample position picture&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;Output calibration files folder path&#39;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;calibration/lens_dist_calib_top&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;calibration/lens_dist_calib_left&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;calibration/sources/calib_checker_top.jpg&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;calibration/sources/calib_checker_left.jpg&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;calibration/res&quot;</span><span class="p">])</span>
+
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Calibrate !&#39;</span><span class="p">,</span>
+                   <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="o">=</span><span class="n">ents</span><span class="p">:</span> <span class="n">launch_calib</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">numcase</span><span class="p">,</span> <span class="n">lencase</span><span class="p">)))</span>
+    <span class="n">chess_param</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+    <span class="n">b1</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="launch_calib"><a class="viewcode-back" href="../../contents/function_list.html#gui.calibration.launch_calib">[docs]</a><span class="k">def</span> <span class="nf">launch_calib</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">numcase</span><span class="p">,</span> <span class="n">lencase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Launch calibration procedure</span>
+
+<span class="sd">    :param entries: calibration form entries</span>
+<span class="sd">    :param numcase: number of checkboard case form object</span>
+<span class="sd">    :param lencase: length of a checkboard case form object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">calibrate_stereo</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                     <span class="n">entries</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                     <span class="n">entries</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                     <span class="n">entries</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                     <span class="n">entries</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                     <span class="n">chess_dim</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">numcase</span><span class="o">.</span><span class="n">get</span><span class="p">()),</span> <span class="n">chess_case_len</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">lencase</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019, S.Breumier
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

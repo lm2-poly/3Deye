@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0
+                1.0
               </div>
             
           
@@ -84,8 +84,27 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Getting started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/getting_started.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#calibration">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#post-processing">Post-processing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html">Camera object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-calibration.main">Camera calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.reconstruction_3d">3D Trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.data_pp">Trajectory post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-data_treat.make_report">Report generation and save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/function_list.html#module-gui.recons_gui">GUI fonctions</a></li>
+</ul>
+
             
           
         </div>
@@ -150,27 +169,93 @@
   <h1>Source code for calibration.find_sample_ori</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">calibration.chessboard_tools</span> <span class="kn">import</span> <span class="n">get_chessboard_points</span>
+<span class="kn">from</span> <span class="nn">calibration.chessboard_tools</span> <span class="kn">import</span> <span class="n">get_chessboard_points</span><span class="p">,</span> <span class="n">get_blob_position</span><span class="p">,</span> <span class="n">change_chess_ori</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 
-<div class="viewcode-block" id="get_transfo_mat"><a class="viewcode-back" href="../../index.html#calibration.find_sample_ori.get_transfo_mat">[docs]</a><span class="k">def</span> <span class="nf">get_transfo_mat</span><span class="p">(</span><span class="n">calib_pic_file</span><span class="p">,</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">dist</span><span class="p">):</span>
+<div class="viewcode-block" id="get_transfo_mat"><a class="viewcode-back" href="../../contents/function_list.html#calibration.find_sample_ori.get_transfo_mat">[docs]</a><span class="k">def</span> <span class="nf">get_transfo_mat</span><span class="p">(</span><span class="n">calib_pic_file</span><span class="p">,</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">,</span> <span class="n">chess_case_len</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds the transformation matrix between the camera&#39;s frame and the sample</span>
 
 <span class="sd">    :param calib_pic_file: picture file of the chessboard</span>
 <span class="sd">    :param mtx: camera intrinsinc matrix</span>
 <span class="sd">    :param dist: camera distorsion matrix</span>
-<span class="sd">    :return:</span>
+<span class="sd">    :param chess_dim: Number of cases per chess side minus one</span>
+<span class="sd">    :param chess_case_len: real life lenth of the chess square</span>
+<span class="sd">    :return: R, T Rotation Rodrigues vector and Translation vector</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># termination criteria</span>
-    <span class="n">criteria</span> <span class="o">=</span> <span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">TERM_CRITERIA_EPS</span> <span class="o">+</span> <span class="n">cv2</span><span class="o">.</span><span class="n">TERM_CRITERIA_MAX_ITER</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+    <span class="n">criteria</span> <span class="o">=</span> <span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">TERM_CRITERIA_EPS</span> <span class="o">+</span> <span class="n">cv2</span><span class="o">.</span><span class="n">TERM_CRITERIA_MAX_ITER</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mf">1.e-9</span><span class="p">)</span>
 
-    <span class="n">objpoints</span><span class="p">,</span> <span class="n">imgpoints</span><span class="p">,</span> <span class="n">gray</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">objp</span><span class="p">,</span> <span class="n">corners2</span> <span class="o">=</span> <span class="n">get_chessboard_points</span><span class="p">(</span><span class="n">calib_pic_file</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">criteria</span><span class="p">)</span>
-    <span class="n">objpoints</span> <span class="o">=</span> <span class="mf">0.4375</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">objpoints</span><span class="p">)</span>
+    <span class="n">objpoints</span><span class="p">,</span> <span class="n">imgpoints</span><span class="p">,</span> <span class="n">gray</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">objp</span><span class="p">,</span> <span class="n">corners2</span> <span class="o">=</span> <span class="n">get_chessboard_points</span><span class="p">(</span><span class="n">calib_pic_file</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">)</span>
+    <span class="n">objpoints</span> <span class="o">=</span> <span class="n">chess_case_len</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">objpoints</span><span class="p">)</span>
     <span class="n">obj_vect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">objpoints</span><span class="p">,</span> <span class="p">(</span><span class="n">objpoints</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">objpoints</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">))</span>
     <span class="n">img_vect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">imgpoints</span><span class="p">),</span> <span class="p">(</span><span class="n">objpoints</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">objpoints</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">blobs</span> <span class="o">=</span> <span class="n">get_blob_position</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">img_vect</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">)</span>
+    <span class="n">obj_vect</span> <span class="o">=</span> <span class="n">change_chess_ori</span><span class="p">(</span><span class="n">blobs</span><span class="p">,</span> <span class="n">objpoints</span><span class="p">)</span>
+
     <span class="n">ret</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">solvePnP</span><span class="p">(</span><span class="n">obj_vect</span><span class="p">,</span> <span class="n">img_vect</span><span class="p">,</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">dist</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span></div>
+
+
+<div class="viewcode-block" id="plot_proj_origin"><a class="viewcode-back" href="../../contents/function_list.html#calibration.find_sample_ori.plot_proj_origin">[docs]</a><span class="k">def</span> <span class="nf">plot_proj_origin</span><span class="p">(</span><span class="n">chessPic</span><span class="p">,</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">,</span> <span class="n">chess_case_len</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Plots the chessboard point projection and chessboard coordinate system axis on a camera for visual calibration check</span>
+
+<span class="sd">    :param chessPic: Chessboard picture path</span>
+<span class="sd">    :param mtx: camera intrinsic matrix</span>
+<span class="sd">    :param R: camera Rotation Rodrigues vector</span>
+<span class="sd">    :param T: camera translation vector</span>
+<span class="sd">    :param chess_dim: Number of cases per chess side minus one</span>
+<span class="sd">    :param chess_case_len: real life lenth of the chess square</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pic</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">chessPic</span><span class="p">)</span>
+    <span class="n">Rmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)))</span>
+    <span class="n">cv2</span><span class="o">.</span><span class="n">Rodrigues</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rmat</span><span class="p">)</span>
+    <span class="n">mat_pass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
+    <span class="n">mat_pass</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">Rmat</span>
+    <span class="n">mat_pass</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">pic</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+
+    <span class="n">x_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">chess_dim</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">chess_case_len</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">)</span>
+    <span class="n">y_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">chess_dim</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">chess_case_len</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">chess_dim</span><span class="p">):</span>
+            <span class="n">vec_3D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">([</span><span class="n">x_grid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_grid</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">proj</span> <span class="o">=</span> <span class="n">mtx</span> <span class="o">*</span> <span class="n">mat_pass</span> <span class="o">*</span> <span class="n">vec_3D</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">proj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">proj</span><span class="p">[</span><span class="mi">2</span><span class="p">])],</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">proj</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">proj</span><span class="p">[</span><span class="mi">2</span><span class="p">])],</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
+    <span class="n">ori</span><span class="p">,</span> <span class="n">Xaxis</span> <span class="o">=</span> <span class="n">get_quiver</span><span class="p">([</span><span class="n">chess_case_len</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">mat_pass</span><span class="p">)</span>
+    <span class="n">ori</span><span class="p">,</span> <span class="n">Yaxis</span> <span class="o">=</span> <span class="n">get_quiver</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="n">chess_case_len</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">mat_pass</span><span class="p">)</span>
+    <span class="n">ori</span><span class="p">,</span> <span class="n">Zaxis</span> <span class="o">=</span> <span class="n">get_quiver</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">chess_case_len</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">mat_pass</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">proj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">proj</span><span class="p">[</span><span class="mi">2</span><span class="p">])],</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">proj</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">proj</span><span class="p">[</span><span class="mi">2</span><span class="p">])],</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Projected point&quot;</span><span class="p">)</span>
+    <span class="n">vec_3D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">proj</span> <span class="o">=</span> <span class="n">mtx</span> <span class="o">*</span> <span class="n">mat_pass</span> <span class="o">*</span> <span class="n">vec_3D</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">proj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">proj</span><span class="p">[</span><span class="mi">2</span><span class="p">])],</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">proj</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">proj</span><span class="p">[</span><span class="mi">2</span><span class="p">])],</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Axis origin&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">ori</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ori</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Xaxis</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Xaxis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">ori</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ori</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Yaxis</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Yaxis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">ori</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ori</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Zaxis</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Zaxis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pic</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="n">pic</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_quiver"><a class="viewcode-back" href="../../contents/function_list.html#calibration.find_sample_ori.get_quiver">[docs]</a><span class="k">def</span> <span class="nf">get_quiver</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">mtx</span><span class="p">,</span> <span class="n">mat_pass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Computes the projection of a vector on a give camera</span>
+
+<span class="sd">    :param axis: vector to project</span>
+<span class="sd">    :param mtx: camera intrinsic matrix</span>
+<span class="sd">    :param mat_pass: camera transformation matrix</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">origin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">proj_ori</span> <span class="o">=</span> <span class="n">mtx</span> <span class="o">*</span> <span class="n">mat_pass</span> <span class="o">*</span> <span class="n">origin</span>
+    <span class="n">proj_axis</span> <span class="o">=</span> <span class="n">mtx</span> <span class="o">*</span> <span class="n">mat_pass</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">X0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">proj_ori</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">proj_ori</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">Y0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">proj_ori</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">proj_ori</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">X1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">proj_axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">proj_axis</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">Y1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">proj_axis</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">proj_axis</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">X0</span><span class="p">,</span> <span class="n">Y0</span><span class="p">],</span> <span class="p">[</span><span class="n">X1</span> <span class="o">-</span> <span class="n">X0</span><span class="p">,</span> <span class="n">Y0</span> <span class="o">-</span> <span class="n">Y1</span><span class="p">]</span></div>
 </pre></div>
 
            </div>
