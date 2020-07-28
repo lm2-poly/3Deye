@@ -4,15 +4,13 @@ import numpy as np
 from PIL import Image
 
 
-def filter_val(pic, width, height, tol=10.):
-	"""
-	Compute the barycenter of a point cloud which pixel grey value is above a given threshold
+def filter_val(pic, width, height, tol=20.):
+	"""Compute the barycenter of a point cloud which pixel grey value is above a given threshold
 
 	:param pic: picture array grey values
 	:param width: picture width
 	:param height: picture height
-	:param tol: filter tolerance (default 100)
-	:param lastVal: last barycenter value if several images are treated, used to return something when no values are above the threshold
+	:param tol: filter tolerance (default 20)
 	:return: barycenter x and y coordinates and the number of pixels detected
 	"""
 	xi = np.arange(width)
@@ -32,18 +30,14 @@ def filter_val(pic, width, height, tol=10.):
 	return bary_x, bary_y, numvals
 
 
-def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
-	"""
-	Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,
+def compute_2d_traj(cam, splitSymb="_", numsplit=-1, plotTraj=True):
+	"""Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,
 	by computing the difference of images with the object and without the object (initial state)
 
-	:param dir: directory name containing the picture
-	:param firstPicEnd: name of the first picture (should not contain the moving object)
-	:param cropSizes: Size to crop from the picture (bottom), use if the images have a banner
-	:param pic_to_cm: pixel to centimeter size ratio
-	:param framerate: camera framerate
+	:param cam: camera object
 	:param splitSymb: symbol to use to split the picture names (default "_")
-	:param numsplit: place of the image number in the picture name after splitting (default 1)
+	:param numsplit: place of the image number in the picture name after splitting (default -1)
+	:param plotTraj: TRue or False, indicate if the detected point should be plotted
 	:return: X,Y trajectory in the camera reference system and the time list
 	"""
 	picList = glob.glob(cam.dir + "/*.tif")
@@ -61,8 +55,6 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 	firstNum = cam.firstPic
 
 	width, height = img.size
-	area = (cam.cropSize[0], cam.cropSize[2], width - cam.cropSize[1], height - cam.cropSize[3])
-	#img = img.crop(area)
 	RGBPicRef = (np.array(img)[:, :, 0].T).astype(np.int16)
 	RGBPicRef[:int(cam.mask_w), :] = 0
 	RGBPicRef[:, RGBPicRef.shape[1] - int(cam.mask_h):] = 0
@@ -78,26 +70,22 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 
 	lenDat = len(picList)
 	avgdif = np.zeros((lenDat, 2))
-	RGBPic_actu = np.zeros((width, height))
 	timespan = np.linspace(0, lenDat, lenDat) / cam.framerate
-	lastVal = [0., 0.]
+
 	for k in range(0, lenDat):
 		img = Image.open(picList[k]).convert('LA')
-		#img = img.crop(area)
 		RGBPic_actu = (np.array(img)[:, :, 0].T).astype(np.int16)
 		RGBPic_actu[:int(cam.mask_w), :] = 0
 		RGBPic_actu[:, RGBPic_actu.shape[1] - int(cam.mask_h):] = 0
 		RGBPic_actu = RGBPic_actu[:, :height - cam.cropSize[3]]
 		if plotTraj:
 			imSuper = np.copy(RGBPic_actu.T)
-			#imSuper = (imSuper/2).astype(np.int16)
 		img.close()
 
 		numActu = int(picList[k].split(splitSymb)[numsplit].split(".")[0]) - firstNum - 1
 		bary_x, bary_y, num_pic = filter_val(abs(RGBPic_actu - RGBPicRef), width - (cam.cropSize[0]+cam.cropSize[1]),
 											 height - (cam.cropSize[2] + cam.cropSize[3]), tol=cam.cam_thres)
 
-		lastVal = [bary_x, bary_y]
 		avgdif[numActu, 0] = bary_x
 		avgdif[numActu, 1] = bary_y
 
@@ -108,11 +96,7 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 			plt.xlim((0, cam.res[0]))
 			plt.ylim((0, cam.res[1]))
 			plt.legend()
-			plt.savefig("C:\\Users\\breum\\Desktop\\LM2_2020_07_28\\detection pic\\" + str(k) + ".jpg")
 			plt.draw()
 			plt.pause(0.1)
-
-
-	#avgdif *= cam.pic_to_cm
 
 	return avgdif, timespan

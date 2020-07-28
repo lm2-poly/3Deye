@@ -16,13 +16,13 @@ class Cam:
 
         :param calib_file: calibration file for the camera
         :param picDir: shot pictures directory
-        :param firstPic: first picture name
-        :param pic_to_cm: pixel to cm ratio (deprecated)
+        :param firstPic: first picture index
+        :param pic_to_cm: pixel to cm ratio
         :param framerate: camera framerate
-        :param cropsize: size of teh screen to crop (usefull when pictures information was written on each pictures)
         :param camRes: camera resolution
-        :param res: picture resolution (W, H)
-        :param origin: pixel coordinate of the system origin
+        :param res: picture resolution (W, H). Warning, it is the picture resolution written on each picture e.g. not accounting for the banner.
+        :param cropsize: size of the screen to crop (usefull when pictures information was written on each pictures)
+        :param cam_thres: shot detection trheshold
         """
         if not(calib_file is None):
             self.load_calibration_file(calib_file)
@@ -40,10 +40,8 @@ class Cam:
         self.mask_h = 0
 
     def undistort(self):
-        """
-        Undistort teh camera pictures and change the picture file to the undistorted one
-        :return:
-        """
+        """Undistort the camera pictures and change the picture file to the undistorted one"""
+
         if "corrected" in self.dir.split("/"):
             print("The camera was already calibrated.. exiting")
         else:
@@ -62,26 +60,54 @@ class Cam:
             self.dir = self.dir+"/corrected"
 
     def set_mask(self, mask_w, mask_h):
+        """Set black mask to apply on each picture to remove reflexive surfaces
+
+        :param mask_w, mask_h: mask width and height in pixels
+        """
         self.mask_w = mask_w
         self.mask_h = mask_h
 
     def set_mtx(self, mtx):
+        """Set camera intrinsic matrix for a given path name (deprecated)
+
+        :param mtx: camera intrinsic matrix file name
+        """
         self.mtx = np.loadtxt(mtx)
 
     def set_dist(self, dist):
+        """Set camera distorsion matrix for a given path name (deprecated)
+
+        :param dist: camera distorsion matrix file name
+        """
         self.dist = np.loadtxt(dist)
 
     def set_R(self, R):
+        """Set camera rotation matrix for a given Rodrigues vector
+
+        :param R: camera rotation Rodrigues vector
+        """
         self.R = np.zeros((3, 3))
         cv2.Rodrigues(R, self.R)
 
     def set_R_by_matrix(self, R):
+        """Set camera rotation matrix for a given matrix
+
+        :param R: camera rotation matrix
+        """
         self.R = R
 
     def set_T(self, T):
+        """Set camera Translation vector
+
+        :param T: camera Translation vector
+        """
         self.T = np.loadtxt(T)
 
     def write_cam_data(self):
+        """Writes all camera data into a formated tring
+
+        :return: String containing all relevant camera data
+        """
         out_str = ''
         out_str += "Screen resolution:\n" + json.dumps(self.camRes) + '\n'
         out_str += "Acquisition resolution:\n" + json.dumps(self.res) + '\n'
@@ -95,6 +121,10 @@ class Cam:
         return out_str
 
     def load_calibration_file(self, f_name):
+        """Load camera intrinsic, distorsion and transformation matrices from a calibration file
+
+        :param f_name:calibration file path
+        """
         fichier = open(f_name)
         lines = fichier.read().split('\n')
         fichier.close()
@@ -106,6 +136,10 @@ class Cam:
         self.T = np.array(json.loads(lines[7])[0])
 
     def load_from_string(self, data):
+        """Initialize a camera object from a formatted string such as produced by write_cam_data
+
+        :param data: formated string to parse
+        """
         lines = data.split('\n')
         self.camRes = tuple(json.loads(lines[1]))
         self.res = tuple(json.loads(lines[3]))
@@ -118,6 +152,7 @@ class Cam:
         self.firstPic = int(lines[17])
 
     def set_crop_size(self):
+        """Set camera crop size to remove the banner according to the picture effective resolution and the picture target resolution (cam.res)"""
         picList = glob.glob(self.dir + "/*.tif")
         picList += glob.glob(self.dir + "/*.jpg")
         testpic = np.array(Image.open(picList[0]))

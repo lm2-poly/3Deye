@@ -1,13 +1,14 @@
 import numpy as np
 from string import Template
-from data_treat.cam import Cam
-import json
 from gui.gui_utils import popupmsg
+
 
 def load_data(fileName, trajectory, cam_top, cam_left):
     """Load existing data from file
 
     :param fileName: name of the file to load
+    :param trajectory: Experiment object to initialize
+    :param cam_top, cam_left: top and left camera object to initialize
     """
     fichier = open(fileName)
     str_data = fichier.read()
@@ -44,10 +45,11 @@ def load_data(fileName, trajectory, cam_top, cam_left):
 
 
 def data_save(traj_3d, cam_top, cam_left):
-    """Save position data after 3D trajectory reconstruction
+    """Save experiment data after 3D trajectory reconstruction
 
-    :param traj_3d: experiment object containing the 3D trajectory
-    :return: write the position in a column text file
+    :param traj_3d: experiment object to save
+    :param cam_top, cam_left: top and left camera object to save
+    :return: 1 if success
     """
 
     lenX = traj_3d.X.shape[0]
@@ -65,12 +67,12 @@ def data_save(traj_3d, cam_top, cam_left):
 
 
 def make_report(traj_3d, cam_top, cam_left, template):
-    """Generates a report of the post-processed values as wel as the parameters used to extract the trajectory.
+    """Generates a report of the post-processed values as well as the parameters used to extract the trajectory.
     Also saves the trajectory.
-    
-    :param t: timespan vector
-    :param traj_3d: trajectory object
+
+    :param traj_3d: Experiment object
     :param cam_top,cam_left: camera objects used for the trajectory determination
+    :param template: name of the template to use for the report
     """
     if traj_3d.save_dir == '':
         popupmsg('Empty file name')
@@ -86,7 +88,13 @@ def make_report(traj_3d, cam_top, cam_left, template):
 
 
 def make_template_file(template, sortie, H, var_names):
-    """Create a file from a given template file"""
+    """Create a file from a given template file
+
+    :param template: template file name
+    :param sortie: output file name
+    :param H: variable values
+    :param var_names: variable names
+    """
     len_vars = len(H)
     to_rmv = []
     for i in range(0, len_vars):

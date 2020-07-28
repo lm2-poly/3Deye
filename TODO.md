@@ -2,3 +2,5 @@
 - [ ] Add description / instructions / Warnings
 - [ ] Documentation
 - [ ] Code cleanups
+- [ ] Warning for impossible save
+- [ ] Warning for impossible load

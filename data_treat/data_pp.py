@@ -1,9 +1,8 @@
-"""Save position data after 3D trajectory reconstruction"""
+"""Several post processing functions to provide the shot velocity before and after impact, the impact angle and position..."""
 import numpy as np
 import matplotlib.pyplot as plt
 import math
 from PIL import Image
-import os
 from data_treat.reconstruction_3d import get_proj_list
 import glob
 
@@ -38,15 +37,16 @@ def result_plot(X, Y, Z, timespan):
 
 
 def get_init_angle(Xi, Yi, Zi, ti, cam_top, cam_left, plot=True, saveDir='data_treat/', init=0, end=2):
-    """Compute the shot trajectory angle relatively to teh shooting axis
+    """Compute the shot trajectory angle relatively to the shooting axis
+
     :param X,Y,Z: reconstructed X, Y, and Z coordinates (ndarray)
     :param timespan: time point list
     :param cam_top,cam_left: camera objects
     :param plot: True or False indicate if should plot a verification picture
-    :return: nothing
+    :param saveDir: Directory to save the picture to
+    :param init,end: initial and final array index used to average the angle value (default: 0 and 2)
     """
     numPic = end - init
-    t = ti[~np.isnan(Xi)]
     X = Xi[~np.isnan(Xi)]
     Y = Yi[~np.isnan(Xi)]
     Z = Zi[~np.isnan(Xi)]
@@ -60,7 +60,6 @@ def get_init_angle(Xi, Yi, Zi, ti, cam_top, cam_left, plot=True, saveDir='data_t
     alpha = math.acos(v[1]/vnorm)*180./math.pi
 
     xt, yt = get_proj_list(X, Y, Z, cam_top)
-    #xl, yl = get_proj_list(-Y, X, Z, cam_left)
     xl, yl = get_proj_list(X, Y, Z, cam_left)
 
     pos_screen_resize(xt, yt, cam_top)
@@ -97,15 +96,15 @@ def get_init_angle(Xi, Yi, Zi, ti, cam_top, cam_left, plot=True, saveDir='data_t
 
 
 def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True, saveDir='data_treat/', threshold=0.995):
-    """Automatic detection of the moment of impact simply by taking the moment where Y changes direction
+    """Automatic detection of the moment of impact simply by taking the moment where Y changes direction, within a given threshold
 
     :param X,Y,Z: reconstructed X, Y, and Z coordinates (ndarray)
     :param cam_left,cam_top: left and top camera objects.
+    :param plot: True or False indicate if should plot a verification picture
+    :param saveDir: Directory to save the picture to
+    :param threshold: impact detection threshold
     :return: impact X,Y,Z position relative to the first detected shot picture position.
     """
-    X0 = X[~np.isnan(X)][0]
-    Y0 = Y[~np.isnan(X)][0]
-    Z0 = Z[~np.isnan(X)][0]
     i = 0
     lenY = len(Y)
     cont = True
@@ -130,14 +129,15 @@ def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True, saveDir='data_tre
 
     if plot:
         plt.show(block=False)
-        print("Impact position: ({:.02f}, {:.02f}, {:.02f}) (cm)".format(X[i] - X0, Y[i] - Y0, Z[i] - Z0))
+        print("Impact position: ({:.02f}, {:.02f}, {:.02f}) (cm)".format(X[i], Y[i], Z[i]))
     else:
         plt.close()
-    return X[i] - X0, Y[i] - Y0, Z[i] - Z0
+    return X[i], Y[i], Z[i]
 
 
 def plot_supper(init, end, cam):
     """Plot the superposition (addition) of a cam shot picture between picture init and end
+
     :param init,end: start and stop indices for the addition
     :param cam: camera object to be used
     """
@@ -153,7 +153,8 @@ def plot_supper(init, end, cam):
 
 
 def pos_screen_resize(x, y, cam):
-    """Returns the coordinate in the resized screen given coordinates in the unresized creen
+    """Returns the coordinate in the resized screen given the coordinates in the usnresized creen (when cropping for higher fps)
+
     :param x,y: ndarray containing unresized scree coordinates
     :param cam: cam object
     :return: nothing but changes x and y values
@@ -162,7 +163,7 @@ def pos_screen_resize(x, y, cam):
     y -= (cam.camRes[1] / 2 - cam.res[1] / 2)
 
 
-def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir='data_treat/', init= 0, pt_num=2):
+def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir='data_treat/', init=0, pt_num=2):
     """Computes the shot velocity before and after the impact by linear fit.
     Before the impact, the functions continues adding the next acquisition point to the linear fit until the
     new points reduces the fit success score at less then the previous score * threshold. Then the first point with
@@ -171,8 +172,12 @@ def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir='data_treat/', in
     more acquisition point after the impact than before.
 
     :param t: time vector
-    :param X,Y,Z: 3D coordinates (ndarray)
+    :param Xi,Yi,Zi: 3D coordinates (ndarray)
     :param thres: threshold for the accepted residual difference (default 1.3)
+    :param plot: True or False indicate if should plot a verification picture
+    :param saveDir: Directory to save the picture to
+    :param init: initial index to compute the initial velocity
+    :param pt_num: minimum number of points to use to compute the velocity
     :return: VX,VY,VZ initial velocity vector coordinates
     """
     score_actu = 1000.
@@ -205,8 +210,6 @@ def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir='data_treat/', in
     plt.plot(t * 1000, Z - Z0, marker=".", label="Z")
     plt.plot(t[init:i] * 1000, (dat[0][0] * t[init:i] + dat[0][1]), label="Best linear fit (initial)")
     print("Initial velocity: ({:.02f}, {:.02f}, {:.02f}) m/s".format(VX / 100, VY / 100, VZ / 100))
-
-
 
     score_down = 1000.
     lenVel = max(i, 3)

@@ -3,19 +3,18 @@ import numpy as np
 from scipy.optimize import least_squares
 from data_treat.objectExtract import compute_2d_traj
 import matplotlib.pyplot as plt
-import tkinter as tk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp",
-                   plotTraj=True, pic=None, plot=True):
+                   plotTraj=True, plot=True):
     """Reconstruct the 3D trajectory of a moving object filmed by 2 cameras with a given angle between them
 
     :param cam_top,cam_left: camera object for the top and left camera
     :param splitSymb: split symbol used in the images name between name and image number
-    :param numsplit: index corresponding to the image number after the name was split
+    :param numsplit: index corresponding to the image number after the name was split (default 1)
     :param method: "persp", "persp-opti" or "no-persp" (default) - using the camera intrinsinc matrix for 3D trajectory or not, using analytical expression or least square optimisation
     :param plotTraj: Boolean, if True the detected shot position will be plotted
+    :param plot: Boolean, if true the reprojection error will be plotted
     :return:
     """
 
@@ -35,7 +34,7 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
         X, Y, Z = get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method)
 
     if plot:
-        plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left, pic)
+        plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left)
 
     return X, Y, Z, timespan_top[:minspan_len]
 
@@ -60,19 +59,16 @@ def cam_shift_resize(traj_2d_top, traj_2d_left, cam_top, cam_left):
     return np.array(shift_2d_top), np.array(shift_2d_left)
 
 
-def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, pic=None):
+def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left):
     """Plot the reprojected trajectory for each camera to check for the trajectory errors
 
-        :param traj_top, traj_left: screen trajectory for the top and left cameras
+        :param traj_top,traj_left: screen trajectory for the top and left cameras
         :param X,Y,Z: computed 3D trajectory
         :param cam_top,cam_left: top and left camera objects
-        :return:
         """
     x_top, y_top = get_proj_list(X, Y, Z, cam_top)
-    #x_left, y_left = get_proj_list(-Y, X, Z, cam_left)
     x_left, y_left = get_proj_list(X, Y, Z, cam_left)
 
-    my_dpi = 50
     figure = plt.figure(figsize=(18,6))
     plt.title("Trajectory reprojection error")
     plt.subplot(131)
@@ -80,8 +76,7 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, pic=None):
     plt.plot(traj_top[:, 0], traj_top[:, 1], 'o-', label="Camera trajectory")
     plt.plot(x_top, y_top,'.', label="Reprojected trajectory")
     plot_square(cam_top)
-    #plt.xlim((0, 1240))
-    #plt.ylim((0, 800))
+
     plt.legend()
     plt.subplot(132)
     plt.title("Left camera")
@@ -96,11 +91,13 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, pic=None):
     plt.plot(Z, label="Z")
     plt.legend()
     plt.show(block=False)
-    #plt.xlim((0, 1240))
-    #plt.ylim((0, 800))
 
 
 def plot_square(cam):
+    """Plot a square repreentive the cropped camera screen
+
+    :param cam: camera object
+    """
     A = [cam.camRes[0] / 2 - cam.res[0] / 2, cam.camRes[1] / 2 - cam.res[1] / 2]
     B = [cam.camRes[0] / 2 + cam.res[0] / 2, cam.camRes[1] / 2 - cam.res[1] / 2]
     C = [cam.camRes[0] / 2 + cam.res[0] / 2, cam.camRes[1] / 2 + cam.res[1] / 2]
@@ -135,7 +132,7 @@ def get_3d_nopersp(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top):
     :param traj_2d_left: trajectory found by the left camera
     :param traj_2d_top: trajectory found by the right camera
     :param cam_top,cam_left: camera object for the top and left camera
-    :return:
+    :return: X,Y,Z coordinate list
     """
     X = (traj_2d_top[:minspan_len, 0] - 0.5 * cam_left.res[0]) * cam_left.pic_to_cm
     Y = (traj_2d_top[:minspan_len, 1] - 0.5 * cam_top.res[0]) * cam_top.pic_to_cm
@@ -144,7 +141,7 @@ def get_3d_nopersp(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top):
 
 
 def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method="persp"):
-    """Retrieve the ball 3D trajectory from each cameras parameters and 2D trajectories
+    """Retrieve the shot 3D trajectory from each cameras parameters and 2D trajectories
 
     :param minspan_len: number of time points
     :param traj_2d_left: trajectory found by the left camera
@@ -163,7 +160,6 @@ def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, metho
         if not(np.isnan(X[i]) or np.isnan(Y[i]) or np.isnan(Z[i])):
             A, B = make_system_mat(cam_top, cam_left, traj_2d_left[i, :], traj_2d_top[i, :])
             X_coor[i], Y_coor[i], Z_coor[i] = np.linalg.solve(np.matrix(A), np.matrix(B).T)
-            # X_coor[i], Y_coor[i], Z_coor[i] = np.linalg.pinv(np.matrix(A)) * np.matrix(B).T
             if method == "persp-opti":
                 X0 = np.linalg.solve(np.matrix(A), np.matrix(B).T)
                 args = (cam_left, cam_top, traj_2d_left[i, :], traj_2d_top[i, :])
@@ -177,9 +173,9 @@ def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, metho
 def make_system_mat(cam_top, cam_left, pos_2d_left, pos_2d_top):
     """Computes the matrix A, b of the equation system AX = b where X is the shot 3D coordinates
 
+    :param cam_top,cam_left: camera object for the top and left camera
     :param pos_2d_left: position found by the left camera
     :param pos_2d_top: position found by the right camera
-    :param cam_top,cam_left: camera object for the top and left camera
     :return:
     """
 
@@ -196,22 +192,11 @@ def make_system_mat(cam_top, cam_left, pos_2d_left, pos_2d_top):
     A[1, :] = [cam_top.R[2, 0] * v1 - a_top[1, 0], cam_top.R[2, 1] * v1 - a_top[1, 1],
                 cam_top.R[2, 2] * v1 - a_top[1, 2]]
 
-    #A[1, :] = [-cam_left.R[2, 2] * u2 + a_left[0, 2], -cam_left.R[2, 0] * u2 + a_left[0, 0],
-    #            cam_left.R[2, 1] * u2 - a_left[0, 1]]
-    #A[2, :] = [-cam_left.R[2, 2] * v2 + a_left[1, 2], -cam_left.R[2, 0] * v2 + a_left[1, 0],
-    #           cam_left.R[2, 1] * v2 - a_left[1, 1]]
-
-    # A[2, :] = [cam_left.R[2, 1] * v2 - a_left[1, 1], -cam_left.R[2, 0] * v2 + a_left[1, 0],
-    #            cam_left.R[2, 2] * v2 - a_left[1, 2]]
-
-
-
     A[2, :] = [cam_left.R[2, 0] * v2 - a_left[1, 0], cam_left.R[2, 1] * v2 - a_left[1, 1],
                cam_left.R[2, 2] * v2 - a_left[1, 2]]
 
     B[0, 0] = b_top[0, 0] - cam_top.T[2] * u1
     B[0, 1] = b_top[0, 1] - cam_top.T[2] * v1
-    #B[0, 1] = b_left[0, 0] - cam_left.T[2] * u2
     B[0, 2] = b_left[0, 1] - cam_left.T[2] * v2
     return A, B
 
@@ -258,14 +243,13 @@ def get_proj_error(var, cam_left, cam_top, pos_2d_left, pos_2d_top):
     """Compute the projection error between the projection of a guessed 3D coordinate vector and the actual screen point
 
     :param var: 3D coordinate triplet
+    :param cam_top,cam_left: camera object for the top and left camera
     :param pos_2d_left: position found by the left camera
     :param pos_2d_top: position found by the right camera
-    :param cam_top,cam_left: camera object for the top and left camera
-    :return:
+    :return: projection error vector
     """
     X, Y, Z = var
     pos_proj_top = get_proj_coords(X, Y, Z, cam_top)
-    # pos_proj_left = get_proj_coords(-Y, X, Z, cam_left)
     pos_proj_left = get_proj_coords(X, Y, Z, cam_left)
 
     if pos_proj_top.T[0, 2] == 0.:
