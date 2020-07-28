@@ -53,7 +53,6 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     w.bind("<<ComboboxSelected>>", (lambda val=w.get(), camf=cam_factors: method_change(val, camf)))
     w.insert(tk.END, 'Perspective simple')
     cb = tk.Checkbutton(option_box, text="Show detected points", variable=show_traj)
-    thres = makeform(option_box, ['Detection threshold'], ['10.'])
 
     exp_params_fr = tk.Frame(frame)
     exp_param = makeform(exp_params_fr, ['Shot type', 'Sample name', 'Input pressure (psi)'],
@@ -61,23 +60,25 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
 
 
     top = makeform(top_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
-                             'Screen width', 'Screen height', "Acquisition width", "Acquisition height"],
+                             'Screen width', 'Screen height', "Acquisition width", "Acquisition height",
+                             'Detection threshold'],
                     ["calibration/res", "tests/single/camTop", "0", '15000',
-                     "1280", "800", "1280", "800"])
+                     "1280", "800", "1280", "800", "20."])
 
 
     titleLeft = tk.Label(left_cam, text="Left camera parameters")
     titleLeft.pack(side=tk.TOP)
     left = makeform(left_cam, ['Calibration folder',"Picture folder", 'First picture ID', 'framerate',
-                             'Screen width', 'Screen height', "Acquisition width", "Acquisition height"],
+                             'Screen width', 'Screen height', "Acquisition width", "Acquisition height",
+                               'Detection threshold'],
                     ["calibration/res", "tests/single/camLeft", "0", '15000',
-                     "1280", "800", "1280", "800"])
+                     "1280", "800", "1280", "800", '20.'])
 
     b1 = tk.Button(frame, text='Launch Analysis !',
                    command=(lambda t=top, l=left, n=notebook, wval=w, s=show_traj, ct=cam_top,
                                    cl=cam_left, traj=traj_3d, ratTop=cam_top_factor, ratLeft=cam_left_factor,
-                                   bo=is_batch, bf=batch_folder, ep=exp_param, th=thres:
-                            launch_analysis(t, l, n, wval,ct, cl, traj, s, ratTop, ratLeft, bo, bf, ep, th)))
+                                   bo=is_batch, bf=batch_folder, ep=exp_param:
+                            launch_analysis(t, l, n, wval,ct, cl, traj, s, ratTop, ratLeft, bo, bf, ep)))
 
     exp_params_fr.pack(side=tk.TOP)
     b1.pack(side=tk.BOTTOM, padx=5, pady=5)
@@ -156,14 +157,14 @@ def create_camera(entries, name, cam, pic_to_cm=None):
     cam.framerate = float(entries[3][1].get())
     cam.camRes = (int(entries[4][1].get()), int(entries[5][1].get()))
     cam.res = (int(entries[6][1].get()), int(entries[7][1].get()))
-
+    cam.cam_thres = float(entries[8][1].get())
     if not pic_to_cm is None:
         cam.pic_to_cm = pic_to_cm
     return cam
 
 
 def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj,
-                    ratTop, ratLeft, isbatch, batch_folder, exp_param, thres):
+                    ratTop, ratLeft, isbatch, batch_folder, exp_param):
 
 
     traj_3d.set_exp_params(exp_param[0][1].get(), exp_param[1][1].get(), exp_param[2][1].get(), "Trajectory.txt")
@@ -199,7 +200,7 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
 
         X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
                                            splitSymb="_", numsplit=-1, method=meth,
-                                           plotTraj=show_traj.get(), plot=not(isbatch.get()), threshold=float(thres[0][1].get()))
+                                           plotTraj=show_traj.get(), plot=not(isbatch.get()))
         traj_3d.set_trajectory(timespan, X, Y, Z)
 
         if isbatch.get():

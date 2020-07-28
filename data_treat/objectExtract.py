@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 
 
-def filter_val(pic, width, height, tol=10., lastVal = [0,0]):
+def filter_val(pic, width, height, tol=10.):
 	"""
 	Compute the barycenter of a point cloud which pixel grey value is above a given threshold
 
@@ -32,7 +32,7 @@ def filter_val(pic, width, height, tol=10., lastVal = [0,0]):
 	return bary_x, bary_y, numvals
 
 
-def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True, threshold=10.):
+def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True):
 	"""
 	Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,
 	by computing the difference of images with the object and without the object (initial state)
@@ -89,7 +89,7 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=1, plotTraj=True, threshold=10.
 
 		numActu = int(picList[k].split(splitSymb)[numsplit].split(".")[0]) - firstNum - 1
 		bary_x, bary_y, num_pic = filter_val(abs(RGBPic_actu - RGBPicRef), width - (cam.cropSize[0]+cam.cropSize[1]),
-											 height - (cam.cropSize[2] + cam.cropSize[3]), tol=threshold, lastVal=lastVal)
+											 height - (cam.cropSize[2] + cam.cropSize[3]), tol=cam.cam_thres)
 
 		lastVal = [bary_x, bary_y]
 		avgdif[numActu, 0] = bary_x

@@ -4,3 +4,4 @@
 - [ ] Documentation
 - [ ] Code cleanups
 - [ ] Fix exemple script
+- [ ] Different threshold er camera

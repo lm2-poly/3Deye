@@ -11,7 +11,7 @@ class Cam:
     Class for the camera object
     """
     def __init__(self, calib_file=None, picDir=None, firstPic=None, pic_to_cm=None,
-                 framerate=None, camRes=None, res=None, cropsize=0, origin=(0,0)):
+                 framerate=None, camRes=None, res=None, cropsize=0, cam_thres=20.):
         """Camera object initialisation
 
         :param calib_file: calibration file for the camera
@@ -25,7 +25,7 @@ class Cam:
         :param origin: pixel coordinate of the system origin
         """
         if not(calib_file is None):
-            self.load_calibration_file(f_name)
+            self.load_calibration_file(calib_file)
         self.dir = picDir
         self.firstPic = firstPic
         self.pic_to_cm = pic_to_cm
@@ -33,6 +33,7 @@ class Cam:
         self.cropSize = cropsize
         self.res = res
         self.camRes = camRes
+        self.cam_thres = cam_thres
 
     def undistort(self):
         """
