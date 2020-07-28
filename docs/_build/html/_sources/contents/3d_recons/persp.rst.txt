@@ -20,7 +20,10 @@ for camera 1 and 2 respectively.
 
 The two equations above can therefore be re-written as a linear system with 4 equations for our three unknowns (X,Y and Z).
 
-Since the two cameras sees approximately the same information toward the y coordinate of the shots, one of the above equation can be ignored to obtain a simple linear system with 3 equations and three unknowns
+.. image:: figures/persp_redon.png
+   :align: center
+   
+As can be seen in the figure, the two cameras sees approximately the same information toward the x (u1 and v2 coordinates on each camera) coordinate of the shots, one of the above equation can be ignored to obtain a simple linear system with 3 equations and three unknowns
 
 The function :py:func:`data_treat.reconstruction_3d.get_3d_coor` reconstructs the shot 3D trajectory with this method, assuming that the shot position on each camera and the cameras intrinsic and transformation matrices were already obtained.
 
@@ -29,5 +32,55 @@ The function :py:func:`data_treat.reconstruction_3d.get_3d_coor` reconstructs th
 
 Using the method "persp", the function only builds the linear system, ignoring on of the four equations and inverts it to get the shot 3D trajectory.
 
+.. note ::
+   Usage of high frequency camera often requires to reduce the acquisition resolution to reduce the acquisition time. Since the camera intrinsic and transformation matrices relates the 3D coordinates to the pixel on the screen, the detected coordinates on each screen have to be expressed in the unresized screen frame. This is performed by the function :py:func:`data_treat.reonstruction_3d.cam_shift_resize` which is called automatically in the function :py:func:`data_treat.reonstruction_3d.reconstruct_3d`. The coordinate shift is performed knowing the camera initial and resized resolution provided in the camera objects.
+
+However, camera calibrations are subjected to errors and the shot position detection on eahc camera is not always perfect. The solution of the linear system might therefore not fully be consistent with the coordinates found on both cameras.
+
+To enhance the obtained solution, the "persp-opti" method uses the linear system solution as a first guess and finds the best (X,Y,Z) solution that minimizes the reprojection error on both cameras using least-square optimization.
+
+.. image:: figures/persp-opti.png
+   :align: center
+   
+This provides an estimate of the 3D coordinates that makes a good compromize between both cameras calibration errors.
+
+Shot detection and 3D trajectory reconstruction using this method can be performed by calling the function :py:func:`data_treat.reonstruction_3d.reconstruct_3d` with the method attribute set to 'persp' or 'persp-opti'.
+
+
 Error indicators
 **************************************************
+
+In addition to being more accurate than the `no-persp` method, the `persp` and `persp-opti` method provides errors indicators on the recovered shot 3D coordinates.
+The reprojection error consist in projecting the shot (X,Y,Z) coordinates on each camera and compare it to the initially detected shot position on the screen.
+The reprojection is simply performed using the equations above for each camera.
+
+.. image:: figures/reprojection_error.png
+   :align: center
+   
+The figure above provides an exemple of such reprojection error plot in an ideal case of a perfect camera system modeled in `blender
+<https://www.blender.org/>`_ 3D software.
+
+.. raw:: html
+
+    <style> .blue {color:#3483bbff; font-weight:bold; font-size:16px} </style>
+	<style> .orange {color:#ff7f0eff; font-weight:bold; font-size:16px} </style>
+
+.. role:: blue
+.. role:: orange
+
+A bad match between the :orange:`projected points` and the :blue:`detected points` could result from:
+
+1. a bad calibration of either the intrinsic or the transformation matrix: This problem could be solved by taking more chessboard pictures with more various positions, while ensuring the picture quality (see for instance `this link
+<https://www.photomodeler.com/kb/taking_proper_images_for_camera_calibrat/>`_ for advices on camera calibration).
+
+2. a bad detection of the shot position on one of the cameras: this could be solved by playing with the shot detection threshold, by using a more sophisticated feature detection algorithm (see for instance `the opencv documentation
+<https://docs.opencv.org/3.4/db/d27/tutorial_py_table_of_contents_feature2d.html>`_) or by improving the picture contrast.
+
+It should be noted that this indicator mostly indicates wether the method was well applied or not but not wether the method is relevent for the studied situation.
+
+Reprojection error can be plotted using the :py:func:`data_treat.reconstruction_3d.plot_proj_error` function.
+
+.. currentmodule:: data_treat.reconstruction_3d
+.. autofunction:: plot_proj_error
+
+The error will also be plotted when calling :py:func:`data_treat.reconstruction_3d.reconstruct_3d` with the argument `plot` set to `True`.

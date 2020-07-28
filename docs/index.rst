@@ -18,3 +18,9 @@
    :caption: Functions:
 
    contents/function_list
+
+.. toctree::
+   :maxdepth: 2  
+   :caption: Credits:
+
+   contents/credits

@@ -3,15 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="07a047a0-5fc3-425e-85a2-ca29d66a331d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibration/chessboard_tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/calibration/chessboard_tools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibration/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/calibration/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/contents/3d_recons/nopersp.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/contents/3d_recons/nopersp.doctree" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/contents/3d_recons/persp.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/contents/3d_recons/persp.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/contents/3d_recons/shot_detect.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/contents/3d_recons/shot_detect.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/contents/function_list.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/contents/function_list.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/contents/getting_started.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/contents/getting_started.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/contents/user_guide.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/contents/user_guide.doctree" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/index.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/index.doctree" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/calib_len.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/calib_len.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/chessboard_tools.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/chessboard_tools.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/find_sample_ori.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/find_sample_ori.html" afterDir="false" />
@@ -28,29 +22,17 @@
       <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/gui/post_processing.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/gui/post_processing.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/gui/recons_gui.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/gui/recons_gui.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/contents/3d_recons/nopersp.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/contents/3d_recons/nopersp.rst.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/contents/3d_recons/persp.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/contents/3d_recons/persp.rst.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/contents/3d_recons/shot_detect.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/contents/3d_recons/shot_detect.rst.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/contents/getting_started.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/contents/getting_started.rst.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/contents/user_guide.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/contents/user_guide.rst.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/contents/3d_recons/nopersp.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/contents/3d_recons/nopersp.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/index.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/index.rst.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/contents/3d_recons/persp.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/contents/3d_recons/persp.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/contents/3d_recons/shot_detect.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/contents/3d_recons/shot_detect.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/contents/function_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/contents/function_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/contents/getting_started.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/contents/getting_started.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/contents/user_guide.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/contents/user_guide.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/genindex.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/objects.inv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/py-modindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/py-modindex.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/search.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/search.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/searchindex.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/contents/3d_recons/nopersp.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contents/3d_recons/nopersp.rst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/contents/3d_recons/persp.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contents/3d_recons/persp.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/contents/3d_recons/shot_detect.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contents/3d_recons/shot_detect.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/contents/getting_started.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contents/getting_started.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/contents/user_guide.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contents/user_guide.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gui/gui_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui/gui_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.rst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,7 +213,7 @@
       <workItem from="1595871447422" duration="12478000" />
       <workItem from="1595934326632" duration="8782000" />
       <workItem from="1595958422801" duration="2153000" />
-      <workItem from="1595960626847" duration="4049000" />
+      <workItem from="1595960626847" duration="4649000" />
     </task>
     <servers />
   </component>
@@ -261,52 +243,52 @@
     </state>
     <state x="548" y="167" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595901570662" />
     <state x="548" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1593445527380" />
-    <state width="1493" height="249" key="GridCell.Tab.0.bottom" timestamp="1595967444468">
+    <state width="1493" height="249" key="GridCell.Tab.0.bottom" timestamp="1595972222122">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="249" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595967444468" />
+    <state width="1493" height="249" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595972222122" />
     <state width="1476" height="249" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1594923042094" />
     <state width="1493" height="249" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1595509132640" />
-    <state width="1493" height="249" key="GridCell.Tab.0.center" timestamp="1595967444468">
+    <state width="1493" height="249" key="GridCell.Tab.0.center" timestamp="1595972222121">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="249" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595967444468" />
+    <state width="1493" height="249" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595972222121" />
     <state width="1476" height="249" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1594923042094" />
     <state width="1493" height="249" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1595509132639" />
-    <state width="1493" height="249" key="GridCell.Tab.0.left" timestamp="1595967444467">
+    <state width="1493" height="249" key="GridCell.Tab.0.left" timestamp="1595972222121">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="249" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595967444467" />
+    <state width="1493" height="249" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595972222121" />
     <state width="1476" height="249" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1594923042094" />
     <state width="1493" height="249" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1595509132639" />
-    <state width="1493" height="249" key="GridCell.Tab.0.right" timestamp="1595967444468">
+    <state width="1493" height="249" key="GridCell.Tab.0.right" timestamp="1595972222122">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="249" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595967444468" />
+    <state width="1493" height="249" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595972222122" />
     <state width="1476" height="249" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1594923042094" />
     <state width="1493" height="249" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1595509132640" />
-    <state width="1493" height="249" key="GridCell.Tab.1.bottom" timestamp="1595960577512">
+    <state width="1493" height="249" key="GridCell.Tab.1.bottom" timestamp="1595972222122">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="249" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595960577512" />
+    <state width="1493" height="249" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595972222122" />
     <state width="1476" height="249" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1594923042013" />
     <state width="1493" height="249" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1595509121507" />
-    <state width="1493" height="249" key="GridCell.Tab.1.center" timestamp="1595960577512">
+    <state width="1493" height="249" key="GridCell.Tab.1.center" timestamp="1595972222122">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="249" key="GridCell.Tab.1.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595960577512" />
+    <state width="1493" height="249" key="GridCell.Tab.1.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595972222122" />
     <state width="1476" height="249" key="GridCell.Tab.1.center/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1594923042013" />
     <state width="1493" height="249" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1595509121507" />
-    <state width="1493" height="249" key="GridCell.Tab.1.left" timestamp="1595960577512">
+    <state width="1493" height="249" key="GridCell.Tab.1.left" timestamp="1595972222122">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="249" key="GridCell.Tab.1.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595960577512" />
+    <state width="1493" height="249" key="GridCell.Tab.1.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595972222122" />
     <state width="1476" height="249" key="GridCell.Tab.1.left/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1594923042013" />
     <state width="1493" height="249" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1595509121506" />
-    <state width="1493" height="249" key="GridCell.Tab.1.right" timestamp="1595960577512">
+    <state width="1493" height="249" key="GridCell.Tab.1.right" timestamp="1595972222122">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="249" key="GridCell.Tab.1.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595960577512" />
+    <state width="1493" height="249" key="GridCell.Tab.1.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595972222122" />
     <state width="1476" height="249" key="GridCell.Tab.1.right/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1594923042013" />
     <state width="1493" height="249" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1595509121507" />
     <state x="277" y="55" key="SettingsEditor" timestamp="1593445534316">
