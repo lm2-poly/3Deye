@@ -4,6 +4,12 @@ from gui.gui_utils import makeform, popupmsg
 
 
 def calib_tab(root,frame):
+    """Setup teh calibration tab content
+
+    :param root: tk root window
+    :param frame: calibration tab frame object
+    :return:
+    """
     chess_param = tk.Frame(frame)
     numcase_lab = tk.Label(chess_param, text="Number of chessboard cases -1")
     numcase = tk.Entry(chess_param)
@@ -30,26 +36,21 @@ def calib_tab(root,frame):
                      "calibration/res"])
 
     b1 = tk.Button(frame, text='Calibrate !',
-                   command=(lambda e=ents: launch_calib(e, frame, numcase, lencase)))
+                   command=(lambda e=ents: launch_calib(e, numcase, lencase)))
     chess_param.pack()
     b1.pack()
 
 
-def launch_calib(entries, frame, numcase, lencase):
+def launch_calib(entries, numcase, lencase):
+    """Launch calibration procedure
 
+    :param entries: calibration form entries
+    :param numcase: number of checkboard case form object
+    :param lencase: length of a checkboard case form object
+    """
     calibrate_stereo(entries[0][1].get(),
                      entries[1][1].get(),
                      entries[2][1].get(),
                      entries[3][1].get(),
                      entries[4][1].get(),
                      chess_dim=int(numcase.get()), chess_case_len=float(lencase.get()))
-
-
-def all_children(window) :
-    _list = window.winfo_children()
-
-    for item in _list :
-        if item.winfo_children() :
-            _list.extend(item.winfo_children())
-
-    return _list

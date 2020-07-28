@@ -1,14 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
 from data_treat.reconstruction_3d import reconstruct_3d
-from data_treat.make_report import make_report, load_data
+from data_treat.make_report import make_report
 from data_treat.data_pp import get_init_angle, get_impact_position, get_velocity
 import os
-from gui.gui_utils import makeform, popupmsg
+from gui.gui_utils import makeform
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
-# Implement the default Matplotlib key bindings.
-from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
 from PIL import Image
 import glob
@@ -16,6 +14,14 @@ import numpy as np
 
 
 def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
+    """Setup the analysis tab
+
+    :param root: root tk window
+    :param frame: frame of the tab to draw in
+    :param notebook: notebook object the tab belongs to
+    :param cam_top,cam_left: top and left camera objects
+    :param traj_3d: Experiment object
+    """
     show_traj = tk.IntVar()
     is_batch = tk.IntVar()
 
@@ -109,6 +115,11 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
 
 
 def set_mask(cam, form):
+    """Generate the subwindow to set a camera mask
+
+    :param cam: camera object
+    :param form: camera form values to get the first picture path
+    """
     mask_w = tk.IntVar()
     mask_h = tk.IntVar()
     root = tk.Tk()
@@ -147,11 +158,19 @@ def set_mask(cam, form):
 
 
 def set_cam_mask(root, cam, mask_w, mask_h):
+    """sets the camera mask and closes the mask selection window"""
     cam.set_mask(int(mask_w.get()), int(mask_h.get()))
     root.destroy()
 
 
 def update_fig(mask, im_act, canvas, ind):
+    """update the mask selection picture as the slider moves
+
+    :param mask: mask value
+    :param im_act: plotted image ndarray
+    :param canvas: canvas to plot the modified image onto
+    :param ind: 0 for the mask to act on the pictur width, 1 for the picture height
+    """
     pic_act = np.copy(im_act)
     if ind == 0:
         pic_act[:, :int(mask)] = 0
@@ -163,6 +182,10 @@ def update_fig(mask, im_act, canvas, ind):
 
 
 def set_pp_params(traj_3d):
+    """Generate the batch PP parameter subwindow
+
+    :param traj_3d: Experience object to change
+    """
     param_win = tk.Tk()
     param_win.title("Batch post-processing parameters")
     param_win.geometry("600x400")
@@ -194,6 +217,15 @@ def set_pp_params(traj_3d):
 
 
 def save_pp_params(traj_3d, vels, angles, pos, param_win):
+    """saves PP parameters in an Experiment object and closes the window
+
+    :param traj_3d: Experiment object
+    :param vels: velocity determination parameters
+    :param angles: angle determination parameters
+    :param pos: impact position determination parameters
+    :param param_win: PP parameter window to shut down
+    :return:
+    """
     traj_3d.vel_det_fac = float(vels[0][1].get())
     traj_3d.vel_init_ind = int(vels[1][1].get())
     traj_3d.vel_min_pt = int(vels[2][1].get())
@@ -204,6 +236,11 @@ def save_pp_params(traj_3d, vels, angles, pos, param_win):
 
 
 def batch_option_active(switch_val, batch_options):
+    """Check if the batch mode was activate and plots the batch options accordingly
+
+    :param switch_val: batch mode switch
+    :param batch_options: batch option tk Frame
+    """
     if switch_val.get():
         batch_options.pack(side=tk.TOP)
     else:
@@ -211,6 +248,11 @@ def batch_option_active(switch_val, batch_options):
 
 
 def method_change(val, cam_factors):
+    """Checks if the method was changed to no-perspective and changes the GUI accordingly
+
+    :param val: method choice tk combobox object
+    :param cam_factors: method parameters to display
+    """
     if val.widget.get() == 'No perspective':
         cam_factors.pack(side=tk.BOTTOM)
 
@@ -219,6 +261,14 @@ def method_change(val, cam_factors):
 
 
 def create_camera(entries, name, cam, pic_to_cm=None):
+    """Create a camera object based on the values filled in the form
+
+    :param entries: form entries
+    :param name: camera name (top or left)
+    :param cam: camera object
+    :param pic_to_cm: picture to cm ratio if the no-perspective mode is used
+    :return: initialized camera object
+    """
     cam.load_calibration_file(entries[0][1].get()+'/cam_'+name)
     cam.dir = entries[1][1].get()
     cam.firstPic = int(entries[2][1].get())
@@ -234,7 +284,20 @@ def create_camera(entries, name, cam, pic_to_cm=None):
 
 def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, traj_3d, show_traj,
                     ratTop, ratLeft, isbatch, batch_folder, exp_param):
+    """Launch a 3D trajectory analysis
 
+    :param top_entry,left_entry: form entries for the top and left cameras
+    :param notebook: GUI notebook object (to enable the pp tab at the end
+    :param method: analysis method combobox object
+    :param cam_top,cam_left: camera top and left objects
+    :param traj_3d: Experiment object
+    :param show_traj: Trajectory display checkbox object
+    :param ratTop,ratLeft: pixel to cm ratio form objects for the top and left cameras
+    :param isbatch: checkbox object enabling (or not) batch mode
+    :param batch_folder: batch folder path form object
+    :param exp_param: experimental parameter form object
+    :return:
+    """
 
     traj_3d.set_exp_params(exp_param[0][1].get(), exp_param[1][1].get(), exp_param[2][1].get(), "Trajectory.txt")
 

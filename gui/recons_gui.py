@@ -9,6 +9,7 @@ from gui.analysis import ana_tab
 
 
 def start_gui():
+    """Setup the main guI window"""
     cam_top = Cam()
     cam_left = Cam()
     traj_3d = Experiment()

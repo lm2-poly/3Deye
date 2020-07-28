@@ -1,6 +1,6 @@
 import tkinter as tk
 import matplotlib.pyplot as plt
-from data_treat.make_report import make_report, load_data
+from data_treat.make_report import make_report
 from data_treat.data_pp import get_init_angle, get_impact_position, get_velocity
 from gui.gui_utils import makeform, popupmsg
 import os
@@ -8,6 +8,13 @@ import platform
 
 
 def pp_tab(root,frame, cam_top, cam_left, traj_3d):
+    """Setup the post-processing tab
+
+    :param root: tk root window
+    :param frame: calibration tab frame object
+    :param cam_top,cam_left: top and left camera objects
+    :param traj_3d: Experiment object
+    """
     pic = tk.Frame(frame, width=500, height=350,
                    highlightbackground="black", highlightthickness=1.)
     T = tk.Text(pic)
@@ -50,6 +57,13 @@ def pp_tab(root,frame, cam_top, cam_left, traj_3d):
 
 
 def save_res(cam_top, cam_left, T, traj_3d, fileSave):
+    """Saves the results and make a report
+
+    :param cam_top,cam_left: top and left camera objects
+    :param T: Text canvas to log the results
+    :param traj_3d: Experiment object
+    :param fileSave: report save directory
+    """
     list_pic = os.listdir('data_treat')
     traj_3d.save_dir = fileSave[0][1].get()
     if 'Angle.png' in list_pic:
@@ -65,6 +79,11 @@ def save_res(cam_top, cam_left, T, traj_3d, fileSave):
 
 
 def parse_dir(save_dir):
+    """Parses the save directoryto get only the directory (without the file name) to save the pictures to
+
+    :param save_dir: save directory string
+    :return: save directory string without the file name
+    """
     dir_list = save_dir.split('/')
     dir = ''
     if len(dir_list) == 1:
@@ -77,6 +96,11 @@ def parse_dir(save_dir):
 
 
 def move_file(init, end):
+    """Moves a file using either batch or shell command according to the current os (Windows or Linux only)
+
+    :param init: path of the file to move
+    :param end: target directory path
+    """
     if platform.system() == 'Windows':
         init = init.replace('/', '\\')
         end = end.replace('/', '\\')
@@ -88,6 +112,16 @@ def move_file(init, end):
 
 
 def launch_pp(vels, cam_top, cam_left, T, traj_3d, fileSave, ang, pos):
+    """Launch a post-processing analysis
+
+    :param vels: velocity parameter form
+    :param cam_top,cam_left: top and left camera objects
+    :param T: Text canvas to log the results
+    :param traj_3d: Experiment object
+    :param fileSave: report save directory
+    :param ang: angle parameter form
+    :param pos: impact position parameter form
+    """
     plt.close()
     log = ''
     fileSave[0][1].delete(0, tk.END)
@@ -110,4 +144,3 @@ def launch_pp(vels, cam_top, cam_left, T, traj_3d, fileSave, ang, pos):
 
     T.delete('1.0', tk.END)
     T.insert(tk.END, log)
-    
