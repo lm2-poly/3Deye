@@ -33,6 +33,8 @@ class Cam:
         self.cropSize = cropsize
         self.res = res
         self.camRes = camRes
+        if not(res is None) and not(camRes is None):
+            self.set_crop_size()
         self.cam_thres = cam_thres
         self.mask_w = 0
         self.mask_h = 0
@@ -102,7 +104,6 @@ class Cam:
         R = np.matrix(json.loads(lines[5]))
         self.set_R(R)
         self.T = np.array(json.loads(lines[7])[0])
-
 
     def load_from_string(self, data):
         lines = data.split('\n')

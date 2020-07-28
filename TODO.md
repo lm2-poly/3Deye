@@ -2,4 +2,3 @@
 - [ ] Set default
 - [ ] Documentation
 - [ ] Code cleanups
-- [ ] Fix exemple script

@@ -27,15 +27,6 @@ def calibrate_stereo(left_lens, right_lens, left_pos, right_pos, calib_folder, c
     print("Getting reference frame transformations")
     R_top, T_top = get_transfo_mat(left_pos, mtx_top, dist_top, chess_dim, chess_case_len, pic)
     R_left, T_left = get_transfo_mat(right_pos, mtx_left, dist_left, chess_dim, chess_case_len, pic)
-    #T_left[0] += chess_case_len * (chess_dim -1 )
-
-    # new_angle = np.linalg.norm(R_top)
-    # T_top[0] += chess_case_len * 3 * np.cos(new_angle)
-    # T_top[2] += chess_case_len * 3 * np.sin(new_angle)
-    # T_top[1] += chess_case_len * 3
-    # T_left[0] += chess_case_len * 3
-    # T_left[1] += chess_case_len * 3 * np.sin(np.pi/4)
-    # T_left[2] -= chess_case_len * 3 * np.cos(np.pi / 4)
 
     print("Check system coordinate consistency")
     my_dpi = 96
