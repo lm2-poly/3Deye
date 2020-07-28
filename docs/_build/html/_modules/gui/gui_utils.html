@@ -30,6 +30,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -90,8 +91,7 @@
 </ul>
 <p class="caption"><span class="caption-text">User guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">3D trajectory reconstruction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#calibration">Calibration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#post-processing">Post-processing</a></li>
 </ul>
@@ -172,7 +172,8 @@
 
 
 <div class="viewcode-block" id="popupmsg"><a class="viewcode-back" href="../../contents/function_list.html#gui.gui_utils.popupmsg">[docs]</a><span class="k">def</span> <span class="nf">popupmsg</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Instantiate a popup with a message and an &quot;ok&quot; button</span>
+    <span class="sd">&quot;&quot;&quot;Instantiate a popup with a message and an &quot;ok&quot; button.</span>
+<span class="sd">    source: https://pythonprogramming.net/tkinter-popup-message-window/</span>
 
 <span class="sd">    :param msg: pop-up string message</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -186,7 +187,8 @@
 
 
 <div class="viewcode-block" id="makeform"><a class="viewcode-back" href="../../contents/function_list.html#gui.gui_utils.makeform">[docs]</a><span class="k">def</span> <span class="nf">makeform</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">def_vals</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create a form with several entries</span>
+    <span class="sd">&quot;&quot;&quot;Create a form with several entries.</span>
+<span class="sd">    source: https://www.python-course.eu/tkinter_entry_widgets.php</span>
 
 <span class="sd">    :param root: tk Frame object to put the form in</span>
 <span class="sd">    :param fields: field name strings (list)</span>

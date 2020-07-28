@@ -30,6 +30,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -90,8 +91,7 @@
 </ul>
 <p class="caption"><span class="caption-text">User guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">3D trajectory reconstruction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#calibration">Calibration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#post-processing">Post-processing</a></li>
 </ul>
@@ -169,7 +169,11 @@
   <h1>Source code for calibration.main</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Finds the top and left cameras intrinsinc and distortion matrices and the rotation/translation matrix between the</span>
-<span class="sd">cameras and the sample</span>
+<span class="sd">cameras and the sample.</span>
+
+<span class="sd">Most functions were highly inspired from the following source:</span>
+<span class="sd">https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_calib3d/py_calibration/py_calibration.html</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">calibration.calib_len</span> <span class="kn">import</span> <span class="n">get_cam_matrix</span>
 <span class="kn">from</span> <span class="nn">calibration.find_sample_ori</span> <span class="kn">import</span> <span class="n">get_transfo_mat</span><span class="p">,</span> <span class="n">plot_proj_origin</span>

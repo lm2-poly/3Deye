@@ -30,6 +30,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -90,8 +91,7 @@
 </ul>
 <p class="caption"><span class="caption-text">User guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html">3D trajectory reconstruction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#calibration">Calibration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contents/user_guide.html#post-processing">Post-processing</a></li>
 </ul>
@@ -174,7 +174,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 
-<div class="viewcode-block" id="reconstruct_3d"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.reconstruction_3d.reconstruct_3d">[docs]</a><span class="k">def</span> <span class="nf">reconstruct_3d</span><span class="p">(</span><span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">splitSymb</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">numsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;no-persp&quot;</span><span class="p">,</span>
+<div class="viewcode-block" id="reconstruct_3d"><a class="viewcode-back" href="../../contents/3d_recons/nopersp.html#data_treat.reconstruction_3d.reconstruct_3d">[docs]</a><span class="k">def</span> <span class="nf">reconstruct_3d</span><span class="p">(</span><span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">splitSymb</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">numsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;no-persp&quot;</span><span class="p">,</span>
                    <span class="n">plotTraj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reconstruct the 3D trajectory of a moving object filmed by 2 cameras with a given angle between them</span>
 
@@ -294,7 +294,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_3d_nopersp"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.reconstruction_3d.get_3d_nopersp">[docs]</a><span class="k">def</span> <span class="nf">get_3d_nopersp</span><span class="p">(</span><span class="n">minspan_len</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">,</span> <span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">):</span>
+<div class="viewcode-block" id="get_3d_nopersp"><a class="viewcode-back" href="../../contents/3d_recons/nopersp.html#data_treat.reconstruction_3d.get_3d_nopersp">[docs]</a><span class="k">def</span> <span class="nf">get_3d_nopersp</span><span class="p">(</span><span class="n">minspan_len</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">,</span> <span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Find the 3D trajectory of the ball by orthographic projection nor camera exact positions</span>
 
 <span class="sd">    :param minspan_len: number of time points</span>
@@ -309,7 +309,7 @@
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span></div>
 
 
-<div class="viewcode-block" id="get_3d_coor"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.reconstruction_3d.get_3d_coor">[docs]</a><span class="k">def</span> <span class="nf">get_3d_coor</span><span class="p">(</span><span class="n">minspan_len</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">,</span> <span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;persp&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="get_3d_coor"><a class="viewcode-back" href="../../contents/3d_recons/persp.html#data_treat.reconstruction_3d.get_3d_coor">[docs]</a><span class="k">def</span> <span class="nf">get_3d_coor</span><span class="p">(</span><span class="n">minspan_len</span><span class="p">,</span> <span class="n">traj_2d_left</span><span class="p">,</span> <span class="n">traj_2d_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;persp&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Retrieve the shot 3D trajectory from each cameras parameters and 2D trajectories</span>
 
 <span class="sd">    :param minspan_len: number of time points</span>

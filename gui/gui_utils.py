@@ -3,7 +3,8 @@ from tkinter import ttk
 
 
 def popupmsg(msg):
-    """Instantiate a popup with a message and an "ok" button
+    """Instantiate a popup with a message and an "ok" button.
+    source: https://pythonprogramming.net/tkinter-popup-message-window/
 
     :param msg: pop-up string message
     """
@@ -17,7 +18,8 @@ def popupmsg(msg):
 
 
 def makeform(root, fields, def_vals, pos=tk.TOP):
-    """Create a form with several entries
+    """Create a form with several entries.
+    source: https://www.python-course.eu/tkinter_entry_widgets.php
 
     :param root: tk Frame object to put the form in
     :param fields: field name strings (list)

@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Without perspective" href="nopersp.html" />
-    <link rel="prev" title="Introduction" href="../getting_started.html" /> 
+    <link rel="prev" title="3D trajectory reconstruction" href="../user_guide.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,17 +87,20 @@
             
             
               <p class="caption"><span class="caption-text">Getting started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../getting_started.html#d-trajectory-reconstruction">3D trajectory reconstruction</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html">3D trajectory reconstruction</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Shot detection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nopersp.html">Without perspective</a></li>
 <li class="toctree-l2"><a class="reference internal" href="persp.html">Accounting for perspective</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gui.html">Using the GUI</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started.html#calibration">Calibration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started.html#post-processing">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html#calibration">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html#post-processing">Post-processing</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Functions:</span></p>
 <ul>
@@ -153,7 +156,7 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="../getting_started.html">Introduction</a> &raquo;</li>
+          <li><a href="../user_guide.html">3D trajectory reconstruction</a> &raquo;</li>
         
       <li>Shot detection</li>
     
@@ -176,6 +179,62 @@
             
   <div class="section" id="shot-detection">
 <h1>Shot detection<a class="headerlink" href="#shot-detection" title="Permalink to this headline">¶</a></h1>
+<p>The shot detection is simply performed by thresholding the difference between the analyzed picture and a reference picture taken without the shot. This is performed by the function <a class="reference internal" href="#data_treat.objectExtract.filter_val" title="data_treat.objectExtract.filter_val"><code class="xref py py-func docutils literal notranslate"><span class="pre">data_treat.objectExtract.filter_val()</span></code></a> .</p>
+<dl class="py function">
+<dt id="data_treat.objectExtract.filter_val">
+<code class="sig-prename descclassname">data_treat.objectExtract.</code><code class="sig-name descname">filter_val</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pic</span></em>, <em class="sig-param"><span class="n">width</span></em>, <em class="sig-param"><span class="n">height</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">20.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/data_treat/objectExtract.html#filter_val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.objectExtract.filter_val" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the barycenter of a point cloud which pixel grey value is above a given threshold</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pic</strong> – picture array grey values</p></li>
+<li><p><strong>width</strong> – picture width</p></li>
+<li><p><strong>height</strong> – picture height</p></li>
+<li><p><strong>tol</strong> – filter tolerance (default 20)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>barycenter x and y coordinates and the number of pixels detected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<img alt="../../_images/shot_detec.png" src="../../_images/shot_detec.png" />
+<p>Adjusting the threshold is generally sufficient to obtain a relatively good shot position estimation on the camera, despite the simplicity of teh approach.</p>
+<p>The function <a class="reference internal" href="#data_treat.objectExtract.compute_2d_traj" title="data_treat.objectExtract.compute_2d_traj"><code class="xref py py-func docutils literal notranslate"><span class="pre">data_treat.objectExtract.compute_2d_traj()</span></code></a> extracts the shot trajectory for every pictures given for a camera</p>
+<dl class="py function">
+<dt id="data_treat.objectExtract.compute_2d_traj">
+<code class="sig-prename descclassname">data_treat.objectExtract.</code><code class="sig-name descname">compute_2d_traj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam</span></em>, <em class="sig-param"><span class="n">splitSymb</span><span class="o">=</span><span class="default_value">'_'</span></em>, <em class="sig-param"><span class="n">numsplit</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">plotTraj</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/data_treat/objectExtract.html#compute_2d_traj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.objectExtract.compute_2d_traj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,
+by computing the difference of images with the object and without the object (initial state)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cam</strong> – camera object</p></li>
+<li><p><strong>splitSymb</strong> – symbol to use to split the picture names (default “_”)</p></li>
+<li><p><strong>numsplit</strong> – place of the image number in the picture name after splitting (default -1)</p></li>
+<li><p><strong>plotTraj</strong> – TRue or False, indicate if the detected point should be plotted</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>X,Y trajectory in the camera reference system and the time list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<img alt="../../_images/shot_mirror.png" class="align-center" src="../../_images/shot_mirror.png" />
+<p>In certain cases, reflection in the sample’s surface can induce deviation in the detected trajectory. A simple fix is to mask the part of the image displaying the sample. This is possible by setting the <cite>mask_w</cite> and <cite>mask_h</cite> values of the camera object to the wask width (starting from the left of the picture) and height (starting from the bottom of the picture). This can be performed using the <a class="reference internal" href="#data_treat.cam.Cam.set_mask" title="data_treat.cam.Cam.set_mask"><code class="xref py py-func docutils literal notranslate"><span class="pre">data_treat.cam.Cam.set_mask()</span></code></a> of the camera object.</p>
+<dl class="py function">
+<dt id="data_treat.cam.Cam.set_mask">
+<code class="sig-prename descclassname">data_treat.cam.Cam.</code><code class="sig-name descname">set_mask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">mask_w</span></em>, <em class="sig-param"><span class="n">mask_h</span></em><span class="sig-paren">)</span><a class="headerlink" href="#data_treat.cam.Cam.set_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set black mask to apply on each picture to remove reflexive surfaces</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mask_h</strong> (<em>mask_w</em><em>,</em>) – mask width and height in pixels</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
@@ -189,7 +248,7 @@
         <a href="nopersp.html" class="btn btn-neutral float-right" title="Without perspective" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../getting_started.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../user_guide.html" class="btn btn-neutral float-left" title="3D trajectory reconstruction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

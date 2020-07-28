@@ -1,6 +1,10 @@
 """
 Finds the top and left cameras intrinsinc and distortion matrices and the rotation/translation matrix between the
-cameras and the sample
+cameras and the sample.
+
+Most functions were highly inspired from the following source:
+https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_calib3d/py_calibration/py_calibration.html
+
 """
 from calibration.calib_len import get_cam_matrix
 from calibration.find_sample_ori import get_transfo_mat, plot_proj_origin

@@ -6,23 +6,6 @@ import numpy as np
 import glob
 
 
-def draw(img, corners, imgpts):
-    """
-    draw chessboard corners
-
-    :param img: chessboard picture
-    :param corners: chessboard corner points
-    :param imgpts: chessboard points
-    :return:
-    """
-
-    corner = tuple(corners[0].ravel())
-    img = cv2.line(img, corner, tuple(imgpts[0].ravel()), (255, 0, 0), 5)
-    img = cv2.line(img, corner, tuple(imgpts[1].ravel()), (0, 255, 0), 5)
-    img = cv2.line(img, corner, tuple(imgpts[2].ravel()), (0, 0, 255), 5)
-    return img
-
-
 def order_points(pts):
     """Returns an ordered list of points
 

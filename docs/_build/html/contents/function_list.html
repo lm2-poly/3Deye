@@ -87,10 +87,13 @@
             
               <p class="caption"><span class="caption-text">Getting started:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started.html#calibration">Calibration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started.html#post-processing">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html#calibration">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html#post-processing">Post-processing</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Functions:</span></p>
 <ul class="current">
@@ -284,7 +287,9 @@
 <div class="section" id="module-calibration.main">
 <span id="camera-calibration"></span><h1>Camera calibration<a class="headerlink" href="#module-calibration.main" title="Permalink to this headline">¶</a></h1>
 <p>Finds the top and left cameras intrinsinc and distortion matrices and the rotation/translation matrix between the
-cameras and the sample</p>
+cameras and the sample.</p>
+<p>Most functions were highly inspired from the following source:
+<a class="reference external" href="https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_calib3d/py_calibration/py_calibration.html">https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_calib3d/py_calibration/py_calibration.html</a></p>
 <dl class="py function">
 <dt id="calibration.main.calibrate_stereo">
 <code class="sig-prename descclassname">calibration.main.</code><code class="sig-name descname">calibrate_stereo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">left_lens</span></em>, <em class="sig-param"><span class="n">right_lens</span></em>, <em class="sig-param"><span class="n">left_pos</span></em>, <em class="sig-param"><span class="n">right_pos</span></em>, <em class="sig-param"><span class="n">calib_folder</span></em>, <em class="sig-param"><span class="n">chess_dim</span></em>, <em class="sig-param"><span class="n">chess_case_len</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/calibration/main.html#calibrate_stereo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.main.calibrate_stereo" title="Permalink to this definition">¶</a></dt>
@@ -411,24 +416,6 @@ cameras and the sample</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>transformed object point array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="calibration.chessboard_tools.draw">
-<code class="sig-prename descclassname">calibration.chessboard_tools.</code><code class="sig-name descname">draw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">img</span></em>, <em class="sig-param"><span class="n">corners</span></em>, <em class="sig-param"><span class="n">imgpts</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/calibration/chessboard_tools.html#draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.chessboard_tools.draw" title="Permalink to this definition">¶</a></dt>
-<dd><p>draw chessboard corners</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>img</strong> – chessboard picture</p></li>
-<li><p><strong>corners</strong> – chessboard corner points</p></li>
-<li><p><strong>imgpts</strong> – chessboard points</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1205,7 +1192,8 @@ Also saves the trajectory.</p>
 <span class="target" id="module-gui.gui_utils"></span><dl class="py function">
 <dt id="gui.gui_utils.makeform">
 <code class="sig-prename descclassname">gui.gui_utils.</code><code class="sig-name descname">makeform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">fields</span></em>, <em class="sig-param"><span class="n">def_vals</span></em>, <em class="sig-param"><span class="n">pos</span><span class="o">=</span><span class="default_value">'top'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gui/gui_utils.html#makeform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui_utils.makeform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a form with several entries</p>
+<dd><p>Create a form with several entries.
+source: <a class="reference external" href="https://www.python-course.eu/tkinter_entry_widgets.php">https://www.python-course.eu/tkinter_entry_widgets.php</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1224,7 +1212,8 @@ Also saves the trajectory.</p>
 <dl class="py function">
 <dt id="gui.gui_utils.popupmsg">
 <code class="sig-prename descclassname">gui.gui_utils.</code><code class="sig-name descname">popupmsg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gui/gui_utils.html#popupmsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui_utils.popupmsg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instantiate a popup with a message and an “ok” button</p>
+<dd><p>Instantiate a popup with a message and an “ok” button.
+source: <a class="reference external" href="https://pythonprogramming.net/tkinter-popup-message-window/">https://pythonprogramming.net/tkinter-popup-message-window/</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>msg</strong> – pop-up string message</p>

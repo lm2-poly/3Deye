@@ -30,6 +30,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -90,8 +91,7 @@
 </ul>
 <p class="caption"><span class="caption-text">User guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="contents/user_guide.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contents/user_guide.html#d-trajectory-reconstruction">3D trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contents/user_guide.html">3D trajectory reconstruction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contents/user_guide.html#calibration">Calibration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contents/user_guide.html#post-processing">Post-processing</a></li>
 </ul>
@@ -245,7 +245,7 @@
 </li>
       <li><a href="contents/function_list.html#calibration.chessboard_tools.change_chess_ori">change_chess_ori() (in module calibration.chessboard_tools)</a>
 </li>
-      <li><a href="contents/function_list.html#data_treat.objectExtract.compute_2d_traj">compute_2d_traj() (in module data_treat.objectExtract)</a>
+      <li><a href="contents/3d_recons/shot_detect.html#data_treat.objectExtract.compute_2d_traj">compute_2d_traj() (in module data_treat.objectExtract)</a>, <a href="contents/function_list.html#data_treat.objectExtract.compute_2d_traj">[1]</a>
 </li>
       <li><a href="contents/function_list.html#gui.analysis.create_camera">create_camera() (in module gui.analysis)</a>
 </li>
@@ -271,6 +271,8 @@
         <li><a href="contents/function_list.html#module-data_treat.data_pp">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     data_treat.make_report
 
@@ -278,8 +280,6 @@
         <li><a href="contents/function_list.html#module-data_treat.make_report">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     data_treat.objectExtract
 
@@ -294,15 +294,13 @@
         <li><a href="contents/function_list.html#module-data_treat.reconstruction_3d">module</a>
 </li>
       </ul></li>
-      <li><a href="contents/function_list.html#calibration.chessboard_tools.draw">draw() (in module calibration.chessboard_tools)</a>
-</li>
   </ul></td>
 </tr></table>
 
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="contents/function_list.html#data_treat.objectExtract.filter_val">filter_val() (in module data_treat.objectExtract)</a>
+      <li><a href="contents/3d_recons/shot_detect.html#data_treat.objectExtract.filter_val">filter_val() (in module data_treat.objectExtract)</a>, <a href="contents/function_list.html#data_treat.objectExtract.filter_val">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -310,9 +308,9 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="contents/function_list.html#data_treat.reconstruction_3d.get_3d_coor">get_3d_coor() (in module data_treat.reconstruction_3d)</a>
+      <li><a href="contents/3d_recons/persp.html#data_treat.reconstruction_3d.get_3d_coor">get_3d_coor() (in module data_treat.reconstruction_3d)</a>, <a href="contents/function_list.html#data_treat.reconstruction_3d.get_3d_coor">[1]</a>
 </li>
-      <li><a href="contents/function_list.html#data_treat.reconstruction_3d.get_3d_nopersp">get_3d_nopersp() (in module data_treat.reconstruction_3d)</a>
+      <li><a href="contents/3d_recons/nopersp.html#data_treat.reconstruction_3d.get_3d_nopersp">get_3d_nopersp() (in module data_treat.reconstruction_3d)</a>, <a href="contents/function_list.html#data_treat.reconstruction_3d.get_3d_nopersp">[1]</a>
 </li>
       <li><a href="contents/function_list.html#calibration.chessboard_tools.get_blob_position">get_blob_position() (in module calibration.chessboard_tools)</a>
 </li>
@@ -522,6 +520,8 @@
       <li><a href="contents/function_list.html#data_treat.cam.Cam.set_mask">set_mask() (data_treat.cam.Cam method)</a>
 
       <ul>
+        <li><a href="contents/3d_recons/shot_detect.html#data_treat.cam.Cam.set_mask">(in module data_treat.cam.Cam)</a>
+</li>
         <li><a href="contents/function_list.html#gui.analysis.set_mask">(in module gui.analysis)</a>
 </li>
       </ul></li>
