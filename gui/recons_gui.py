@@ -16,6 +16,7 @@ def start_gui():
     root = tk.Tk()
     root.title("Eye3D")
     root.geometry("1000x750")
+    root.wm_iconbitmap('gui/logo-lm2-f_0.ico')
     style = ttk.Style(root)
     style.configure("lefttab.TNotebook", tabposition="wn")
 

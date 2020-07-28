@@ -1,4 +1,4 @@
-- [ ] Add description / instructions / Warnings
 - [ ] Set default
+- [ ] Add description / instructions / Warnings
 - [ ] Documentation
 - [ ] Code cleanups

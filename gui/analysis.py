@@ -114,10 +114,11 @@ def set_mask(cam, form):
     root = tk.Tk()
     root.title("Set mask")
     root.geometry("600x600")
+    root.wm_iconbitmap('gui/logo-lm2-f_0.ico')
     cam_pics = glob.glob(form[1][1].get() + "/*.tif")
     if len(cam_pics) == 0:
         cam_pics = glob.glob(form[1][1].get() + "/*.jpg")
-    im_act = Image.open(cam_pics[5])
+    im_act = Image.open(cam_pics[0])
     fig = Figure(figsize=(5,4), dpi=100)
     im_act = np.array(im_act)
     fig_plot = fig.add_subplot(111).imshow(im_act, cmap='gray')
@@ -150,7 +151,6 @@ def set_cam_mask(root, cam, mask_w, mask_h):
     root.destroy()
 
 
-
 def update_fig(mask, im_act, canvas, ind):
     pic_act = np.copy(im_act)
     if ind == 0:
@@ -166,6 +166,7 @@ def set_pp_params(traj_3d):
     param_win = tk.Tk()
     param_win.title("Batch post-processing parameters")
     param_win.geometry("600x400")
+    param_win.wm_iconbitmap('gui/logo-lm2-f_0.ico')
 
     vel_frame = tk.Frame(param_win)
     title = tk.Label(vel_frame, text="Velocity determination parameters")

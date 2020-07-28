@@ -29,7 +29,6 @@ def calib_tab(root,frame):
                   "calibration/sources/calib_checker_left.jpg",
                      "calibration/res"])
 
-    #frame.bind('<Return>', (lambda event, e=ents: launch_calib(e, pic)))
     b1 = tk.Button(frame, text='Calibrate !',
                    command=(lambda e=ents: launch_calib(e, frame, numcase, lencase)))
     chess_param.pack()

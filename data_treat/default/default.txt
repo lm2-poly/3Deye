@@ -1,0 +1,11 @@
+0.5mm
+Aluminum 6050
+50
+calibration/res
+tests/single/camTop
+0
+15000
+1280
+800
+1280
+800

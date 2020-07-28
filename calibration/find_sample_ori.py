@@ -5,7 +5,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 
-def get_transfo_mat(calib_pic_file, mtx, dist, chess_dim, chess_case_len, pic=None):
+def get_transfo_mat(calib_pic_file, mtx, dist, chess_dim, chess_case_len):
     """
     Finds the transformation matrix between the camera's frame and the sample
 
@@ -14,11 +14,11 @@ def get_transfo_mat(calib_pic_file, mtx, dist, chess_dim, chess_case_len, pic=No
     :param dist: camera distorsion matrix
     :param chess_dim: Number of cases per chess side minus one
     :param chess_case_len: real life lenth of the chess square
-    :return:
+    :return: R, T Rotation Rodrigues vector and Translation vector
     """
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 1000, 1.e-9)
 
-    objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pic_file, False, criteria, chess_dim, pic)
+    objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pic_file, False, criteria, chess_dim)
     objpoints = chess_case_len * np.array(objpoints)
     obj_vect = np.reshape(objpoints, (objpoints.shape[0] * objpoints.shape[1], 3))
     img_vect = np.reshape(np.array(imgpoints), (objpoints.shape[0] * objpoints.shape[1], 2))
@@ -29,7 +29,16 @@ def get_transfo_mat(calib_pic_file, mtx, dist, chess_dim, chess_case_len, pic=No
     return R, T
 
 
-def plot_proj_origin(chessPic, mtx, dist, R, T, name, chess_dim, chess_case_len):
+def plot_proj_origin(chessPic, mtx, R, T, chess_dim, chess_case_len):
+    """ Plots the chessboard point projection and chessboard coordinate system axis on a camera for visual calibration check
+
+    :param chessPic: Chessboard picture path
+    :param mtx: camera intrinsic matrix
+    :param R: camera Rotation Rodrigues vector
+    :param T: camera translation vector
+    :param chess_dim: Number of cases per chess side minus one
+    :param chess_case_len: real life lenth of the chess square
+    """
     pic = Image.open(chessPic)
     Rmat = np.matrix(np.zeros((3,3)))
     cv2.Rodrigues(R, Rmat)
@@ -43,10 +52,7 @@ def plot_proj_origin(chessPic, mtx, dist, R, T, name, chess_dim, chess_case_len)
     y_grid = np.linspace(0., (chess_dim-1) * chess_case_len, chess_dim)
     for i in range(0, chess_dim):
         for j in range(0, chess_dim):
-            #if name == 'top':
             vec_3D = np.matrix([x_grid[i], y_grid[j], 0, 1]).T
-            #else:
-            #    vec_3D = np.matrix([-y_grid[i], x_grid[j], 0, 1]).T
             proj = mtx * mat_pass * vec_3D
             plt.plot([float(proj[0] / proj[2])], [float(proj[1] / proj[2])], '.', color="blue")
     ori, Xaxis = get_quiver([chess_case_len, 0., 0., 1.], mtx, mat_pass)
@@ -66,6 +72,13 @@ def plot_proj_origin(chessPic, mtx, dist, R, T, name, chess_dim, chess_case_len)
 
 
 def get_quiver(axis, mtx, mat_pass):
+    """ Computes the projection of a vector on a give camera
+
+    :param axis: vector to project
+    :param mtx: camera intrinsic matrix
+    :param mat_pass: camera transformation matrix
+    :return:
+    """
     origin = np.matrix([0., 0., 0., 1.]).T
     proj_ori = mtx * mat_pass * origin
     proj_axis = mtx * mat_pass * np.matrix(axis).T
