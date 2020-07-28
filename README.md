@@ -1,4 +1,4 @@
-# 3Drecons
+# 3Deye
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Documentation Status](https://readthedocs.org/projects/3drecons/badge/?version=latest)](https://3drecons.readthedocs.io/en/latest/?badge=latest)
