@@ -3,36 +3,33 @@
   <component name="ChangeListManager">
     <list default="true" id="07a047a0-5fc3-425e-85a2-ca29d66a331d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/contents/3d_recons/persp.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/contents/3d_recons/persp.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doc.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_treat/Angle.png" beforeDir="false" afterPath="$PROJECT_DIR$/data_treat/Angle.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_treat/Impact_position.png" beforeDir="false" afterPath="$PROJECT_DIR$/data_treat/Impact_position.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_treat/Velocity.png" beforeDir="false" afterPath="$PROJECT_DIR$/data_treat/Velocity.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/contents/calibration/gui.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/contents/calibration/gui.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/contents/user_guide.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/contents/user_guide.doctree" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/index.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/index.doctree" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/calib_len.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/calib_len.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/chessboard_tools.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/chessboard_tools.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/find_sample_ori.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/find_sample_ori.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/calibration/main.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/data_treat/cam.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/data_treat/cam.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/data_treat/data_pp.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/data_treat/data_pp.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/data_treat/make_report.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/data_treat/make_report.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/data_treat/objectExtract.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/data_treat/objectExtract.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/data_treat/reconstruction_3d.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/data_treat/reconstruction_3d.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/gui/analysis.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/gui/analysis.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/gui/calibration.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/gui/calibration.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/gui/gui_utils.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/gui/gui_utils.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/gui/load.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/gui/load.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/gui/post_processing.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/gui/post_processing.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/gui/recons_gui.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/gui/recons_gui.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/contents/3d_recons/persp.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/contents/3d_recons/persp.rst.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/index.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/index.rst.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/contents/3d_recons/persp.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/contents/3d_recons/persp.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/contents/calibration/gui.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/contents/calibration/gui.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/contents/user_guide.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/contents/user_guide.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/contents/calibration/gui.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/contents/calibration/gui.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/contents/user_guide.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/contents/user_guide.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/genindex.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/py-modindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/py-modindex.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/search.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/search.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/objects.inv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/searchindex.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/contents/3d_recons/persp.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contents/3d_recons/persp.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/contents/calibration/cam_int.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/contents/calibration/cam_trans.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/contents/calibration/gui.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contents/calibration/gui.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/contents/post_proc/angle.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/contents/post_proc/gui.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/contents/post_proc/imp_pos.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/contents/post_proc/velocity.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/contents/user_guide.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contents/user_guide.rst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -214,6 +211,7 @@
       <workItem from="1595934326632" duration="8782000" />
       <workItem from="1595958422801" duration="2153000" />
       <workItem from="1595960626847" duration="4649000" />
+      <workItem from="1595982860940" duration="3035000" />
     </task>
     <servers />
   </component>
@@ -295,10 +293,11 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1593445534316" />
-    <state x="470" y="237" width="606" height="350" key="com.intellij.ide.util.TipDialog" timestamp="1595960639844">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="2508" y="299" width="606" height="350" key="com.intellij.ide.util.TipDialog" timestamp="1595982861047">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="470" y="237" width="606" height="350" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1595960639844" />
+    <state x="2508" y="299" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595982861047" />
     <state x="470" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1595508800985" />
     <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1594946199795">
       <screen x="0" y="0" width="1536" height="824" />

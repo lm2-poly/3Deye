@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Camera matrices calibration &mdash; 3Drecons 1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Using the GUI" href="gui.html" />
+    <link rel="prev" title="Using the GUI" href="../3d_recons/gui.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> 3Drecons
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html">3D trajectory reconstruction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html#calibration">Calibration</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Camera matrices calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html">Using the GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html#post-processing">Post-processing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../function_list.html">Camera object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-calibration.main">Camera calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-data_treat.reconstruction_3d">3D Trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-data_treat.data_pp">Trajectory post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-data_treat.make_report">Report generation and save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-gui.recons_gui">GUI fonctions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Credits:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../credits.html">Credits</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">3Drecons</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../user_guide.html">3D trajectory reconstruction</a> &raquo;</li>
+        
+      <li>Camera matrices calibration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/contents/calibration/cam_matrices.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="camera-matrices-calibration">
+<h1>Camera matrices calibration<a class="headerlink" href="#camera-matrices-calibration" title="Permalink to this headline">¶</a></h1>
+<p>The objective of teh calibration procedure is to find:</p>
+<ul class="simple">
+<li><p><strong>The camera intrinsic matrix</strong> which results from the camera geometry <span class="math notranslate nohighlight">\(F\)</span>.</p></li>
+<li><p><strong>The transormation matrix</strong> between the sample and the camera coordinate systems <span class="math notranslate nohighlight">\(M\)</span>.</p></li>
+</ul>
+<p>The intrinsic matrix is typically obtained by taking several pictures of a checkboard in different orientations. For more information, see <a class="reference external" href="https://docs.opencv.org/2.4/doc/tutorials/calib3d/camera_calibration/camera_calibration.html">The openCV documentation</a>.</p>
+<p>All the calibration functions are implemented in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">calibration</span></code> module and are largely inspired from <a class="reference external" href="https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_calib3d/py_calibration/py_calibration.html">the following source</a>.</p>
+<p>The intrinsic camera matrix is recovered using the provided chessboard picture by the <a class="reference internal" href="#calibration.calib_len.get_cam_matrix" title="calibration.calib_len.get_cam_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">calibration.calib_len.get_cam_matrix()</span></code></a> function</p>
+<dl class="py function">
+<dt id="calibration.calib_len.get_cam_matrix">
+<code class="sig-prename descclassname">calibration.calib_len.</code><code class="sig-name descname">get_cam_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">calib_pics</span></em>, <em class="sig-param"><span class="n">chess_dim</span></em>, <em class="sig-param"><span class="n">chess_case_len</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/calibration/calib_len.html#get_cam_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.calib_len.get_cam_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the camera intrinsinc and distortion matrices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calib_pics</strong> – calibration chessboard pictures</p></li>
+<li><p><strong>chess_dim</strong> – Number of chess cases -1</p></li>
+<li><p><strong>chess_case_len</strong> – chess case length</p></li>
+<li><p><strong>pic</strong> – default None, picture frame to print in the gui</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>camera intrinsinc and distortion matrices</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>The transformation matrix between each camera and the sample coordinate system can be obtained by taking a picture of a chessboard positioned in the sample coordiate system, e.g. at a 90° angle from the sample, so that it is seen by both camera simultaneously, as shown in the picture below.</p>
+<img alt="../../_images/transfo_matrix.png" class="align-center" src="../../_images/transfo_matrix.png" />
+<p>The chessboard position is then computed using the <cite>solvePnP</cite> opencv function which provides the rotation Rodrigues vector and translation vector between the two coordinate systems.</p>
+<p>Before computing the transformation matrix the chessboard orientation is recovered by detecting the circles positionned on the chessboard with the <a class="reference internal" href="../function_list.html#calibration.chessboard_tools.get_blob_position" title="calibration.chessboard_tools.get_blob_position"><code class="xref py py-func docutils literal notranslate"><span class="pre">calibration.chessboard_tools.get_blob_position()</span></code></a> function. The chessbard coordinate system is then rotated by the <a class="reference internal" href="../function_list.html#calibration.chessboard_tools.change_chess_ori" title="calibration.chessboard_tools.change_chess_ori"><code class="xref py py-func docutils literal notranslate"><span class="pre">calibration.chessboard_tools.change_chess_ori()</span></code></a> function. This is necessary to ensure that the two transformation matrix obtained for the two cameras will chose the same orientation for the chessboard coordinate system.</p>
+<img alt="../../_images/chess_ori.png" class="align-center" src="../../_images/chess_ori.png" />
+<p>All of the step to find a camera transformation matrix with the right orientation are performed by the <a class="reference internal" href="#calibration.find_sample_ori.get_transfo_mat" title="calibration.find_sample_ori.get_transfo_mat"><code class="xref py py-func docutils literal notranslate"><span class="pre">calibration.find_sample_ori.get_transfo_mat()</span></code></a> function.</p>
+<dl class="py function">
+<dt id="calibration.find_sample_ori.get_transfo_mat">
+<code class="sig-prename descclassname">calibration.find_sample_ori.</code><code class="sig-name descname">get_transfo_mat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">calib_pic_file</span></em>, <em class="sig-param"><span class="n">mtx</span></em>, <em class="sig-param"><span class="n">dist</span></em>, <em class="sig-param"><span class="n">chess_dim</span></em>, <em class="sig-param"><span class="n">chess_case_len</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/calibration/find_sample_ori.html#get_transfo_mat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.find_sample_ori.get_transfo_mat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the transformation matrix between the camera’s frame and the sample</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calib_pic_file</strong> – picture file of the chessboard</p></li>
+<li><p><strong>mtx</strong> – camera intrinsinc matrix</p></li>
+<li><p><strong>dist</strong> – camera distorsion matrix</p></li>
+<li><p><strong>chess_dim</strong> – Number of cases per chess side minus one</p></li>
+<li><p><strong>chess_case_len</strong> – real life lenth of the chess square</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>R, T Rotation Rodrigues vector and Translation vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>The function <a class="reference internal" href="../function_list.html#calibration.find_sample_ori.plot_proj_origin" title="calibration.find_sample_ori.plot_proj_origin"><code class="xref py py-func docutils literal notranslate"><span class="pre">calibration.find_sample_ori.plot_proj_origin()</span></code></a> plots the reprojected chessboard points as well as the projection of the coordinate system axes and origin to check that the quality of the calibration. One must ensure that</p>
+<ul class="simple">
+<li><p>The projected chess board points match effectively with the chessboard corners</p></li>
+<li><p>The projected axes are consistent between the two cameras.</p></li>
+</ul>
+<p>Finally, the whole calibration procedure can be performed at once using the <code class="xref py py-func docutils literal notranslate"><span class="pre">calibration.calibrate_stereo()</span></code> function.</p>
+<dl class="py function">
+<dt id="calibration.main.calibrate_stereo">
+<code class="sig-prename descclassname">calibration.main.</code><code class="sig-name descname">calibrate_stereo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">left_lens</span></em>, <em class="sig-param"><span class="n">right_lens</span></em>, <em class="sig-param"><span class="n">left_pos</span></em>, <em class="sig-param"><span class="n">right_pos</span></em>, <em class="sig-param"><span class="n">calib_folder</span></em>, <em class="sig-param"><span class="n">chess_dim</span></em>, <em class="sig-param"><span class="n">chess_case_len</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/calibration/main.html#calibrate_stereo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calibration.main.calibrate_stereo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calibrate a stereocamera system given calibration file names</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left_lens</strong><strong>,</strong><strong>right_lens</strong> – path of the right and left camera lens calibration pictures</p></li>
+<li><p><strong>left_pos</strong><strong>,</strong><strong>right_pos</strong> – path of the right and left camera position pictures</p></li>
+<li><p><strong>calib_folder</strong> – calibration result folder</p></li>
+<li><p><strong>chess_dim</strong> – Number of chess cases -1</p></li>
+<li><p><strong>chess_case_len</strong> – chess case length</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nothing but generates the camera calibration files in the “res folder” mtx_top,mtx_left (camera intrinsinc matrix), dist_top,dist_left (passage matrix from the sample to</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>The function will save the calibration files contaning each camera matrices in the calibration folder, in a format that can be read by the analysis and post-processing programs.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As it is computed by opencv, the camera rotation matrix is given as a Rodrigues vector.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="gui.html" class="btn btn-neutral float-right" title="Using the GUI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../3d_recons/gui.html" class="btn btn-neutral float-left" title="Using the GUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019, S.Breumier
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

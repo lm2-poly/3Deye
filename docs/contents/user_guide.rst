@@ -27,18 +27,12 @@
 
 Calibration
 ==================================================
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Cameras intrinsic matrices:
-
-   calibration/cam_int
    
 .. toctree::
    :maxdepth: 2
-   :caption: Cameras transformation matrices:
+   :caption: Calibration procedure:
 
-   calibration/cam_trans
+   calibration/cam_matrices
    
 .. toctree::
    :maxdepth: 2
@@ -55,22 +49,4 @@ Post-processing
    :maxdepth: 2
    :caption: Velocity:
 
-   post_proc/velocity
-   
-.. toctree::
-   :maxdepth: 2
-   :caption: Shooting angle:
-
-   post_proc/angle
-   
-.. toctree::
-   :maxdepth: 2
-   :caption: Impact position:
-
-   post_proc/imp_pos
-   
-.. toctree::
-   :maxdepth: 2
-   :caption: Using the GUI:
-   
-   post_proc/gui
+   post_proc/post_proc
