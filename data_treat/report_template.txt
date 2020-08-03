@@ -13,7 +13,9 @@ Input pressure (psi): $pressure
 
 Horizontal angle: $angle °
 Initial velocity (m/s): ($VX, $VY, $VZ)
+Initial velocity norm (m/s): $ViNorm
 Velocity after impact (m/s): ($VXAfter, $VYAfter, $VZAfter)
+Velocity norm after impact (m/s): $VoNorm
 Impact position (cm, relative to initial position): ($X, $Y, $Z)
 
 === Trajectory

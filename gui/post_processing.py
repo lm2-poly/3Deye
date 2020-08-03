@@ -5,6 +5,7 @@ from data_treat.data_pp import get_init_angle, get_impact_position, get_velocity
 from gui.gui_utils import makeform, popupmsg
 import os
 import platform
+import numpy as np
 
 
 def pp_tab(root,frame, cam_top, cam_left, traj_3d):
@@ -137,8 +138,13 @@ def launch_pp(vels, cam_top, cam_left, T, traj_3d, fileSave, ang, pos):
     Vinit, Vend = get_velocity(traj_3d.t, traj_3d.X, traj_3d.Y, traj_3d.Z,
                                thres=float(vels[0][1].get()), init=int(vels[1][1].get()), pt_num=int(vels[2][1].get()))
 
+    vi_norm = np.sqrt(Vinit[0] ** 2 + Vinit[1] ** 2 + Vinit[2] ** 2)
+    vo_norm = np.sqrt(Vend[0] ** 2 + Vend[1] ** 2 + Vend[2] ** 2)
+
     log += 'Initial velocity (m/s): ({:.02f}, {:.02f} {:.02f})\n'.format(Vinit[0], Vinit[1], Vinit[2])
+    log += 'Initial velocity norm (m/s): {:.02f}\n'.format(vi_norm)
     log += 'Velocity after impact (m/s): ({:.02f}, {:.02f} {:.02f})\n'.format(Vend[0], Vend[1], Vend[2])
+    log += 'Velocity norm after impact (m/s): {:.02f}\n'.format(vo_norm)
 
     traj_3d.set_pp(alpha, Vinit, Vend, [xi, yi, zi])
 

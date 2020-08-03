@@ -77,13 +77,16 @@ def make_report(traj_3d, cam_top, cam_left, template):
     if traj_3d.save_dir == '':
         popupmsg('Empty file name')
         return 0
+    vi_norm = np.sqrt(traj_3d.vinit[0] ** 2 + traj_3d.vinit[1] ** 2 + traj_3d.vinit[2] ** 2)
+    vo_norm = np.sqrt(traj_3d.vend[0] ** 2 + traj_3d.vend[1] ** 2 + traj_3d.vend[2] ** 2)
 
     make_template_file(template, traj_3d.save_dir,
                        [traj_3d.save_dir, cam_top.firstPic, cam_top.framerate, cam_top.res, traj_3d.sample,
                        traj_3d.shot, traj_3d.pressure, traj_3d.alpha, traj_3d.vinit[0], traj_3d.vinit[1], traj_3d.vinit[2],
-                        traj_3d.vend[0], traj_3d.vend[1], traj_3d.vend[2], traj_3d.impact_pos[0], traj_3d.impact_pos[1], traj_3d.impact_pos[2]],
+                        vi_norm, traj_3d.vend[0], traj_3d.vend[1], traj_3d.vend[2], vo_norm,
+                        traj_3d.impact_pos[0], traj_3d.impact_pos[1], traj_3d.impact_pos[2]],
                        ['testName', 'picName', 'fps', 'res', 'sample', 'shot', 'pressure',
-                        'angle', 'VX', 'VY', 'VZ','VXAfter', 'VYAfter', 'VZAfter', 'X', 'Y', 'Z'])
+                        'angle', 'VX', 'VY', 'VZ', 'ViNorm', 'VXAfter', 'VYAfter', 'VZAfter', 'VoNorm', 'X', 'Y', 'Z'])
     data_save(traj_3d, cam_top, cam_left)
 
 

@@ -1,6 +1,5 @@
 - [ ] Set default
 - [ ] Add description / instructions / Warnings
-- [ ] Documentation
 - [ ] Warning for impossible save
 - [ ] Warning for impossible load
 - [ ] Warning setup camera path before using mask

@@ -1,5 +1,8 @@
 __pycache__
 .idea
-camLeft
-camTopcalib_files
-calib_files
+Trajectory.txt
+main.spec
+build
+data_treat/Angle.png
+data_treat/Impact_position.png
+data_treat/Velocity.png
