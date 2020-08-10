@@ -1,5 +1,7 @@
 """Several post processing functions to provide the shot velocity before and after impact, the impact angle and position..."""
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import math
 from PIL import Image
