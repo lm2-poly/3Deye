@@ -56,9 +56,11 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=-1, plotTraj=True):
 
 	width, height = img.size
 	RGBPicRef = (np.array(img)[:, :, 0].T).astype(np.int16)
-	RGBPicRef[:int(cam.mask_w), :] = 0
-	RGBPicRef[:, RGBPicRef.shape[1] - int(cam.mask_h):] = 0
-	RGBPicRef = RGBPicRef[:, :height - cam.cropSize[3]]
+	RGBPicRef[:int(cam.mask_w), :] = 0 #Width mask
+	RGBPicRef[:, RGBPicRef.shape[1] - int(cam.mask_h):] = 0 #Height mask
+	RGBPicRef = RGBPicRef[:, :height - cam.cropSize[3]] #Vertical crop
+	RGBPicRef = RGBPicRef[cam.cropSize[0]:width - cam.cropSize[1], :] #Horizontal crop
+
 	if (plotTraj):
 		imSuper = np.copy(RGBPicRef.T)
 	img.close()
@@ -78,6 +80,7 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=-1, plotTraj=True):
 		RGBPic_actu[:int(cam.mask_w), :] = 0
 		RGBPic_actu[:, RGBPic_actu.shape[1] - int(cam.mask_h):] = 0
 		RGBPic_actu = RGBPic_actu[:, :height - cam.cropSize[3]]
+		RGBPic_actu = RGBPic_actu[cam.cropSize[0]:width - cam.cropSize[1], :]
 		if plotTraj:
 			imSuper = np.copy(RGBPic_actu.T)
 		img.close()

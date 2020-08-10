@@ -156,4 +156,5 @@ class Cam:
         picList = glob.glob(self.dir + "/*.tif")
         picList += glob.glob(self.dir + "/*.jpg")
         testpic = np.array(Image.open(picList[0]))
-        self.cropSize = [0, 0, 0, testpic.shape[0] - self.res[1]]
+        hor_crop = int(np.abs(testpic.shape[1] - self.res[0])/2.)
+        self.cropSize = [hor_crop, hor_crop, 0, testpic.shape[0] - self.res[1]]

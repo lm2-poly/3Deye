@@ -1,7 +1,5 @@
 """Several post processing functions to provide the shot velocity before and after impact, the impact angle and position..."""
 import numpy as np
-import matplotlib
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import math
 from PIL import Image
@@ -91,8 +89,8 @@ def get_init_angle(Xi, Yi, Zi, ti, cam_top, cam_left, plot=True, saveDir='data_t
         plt.savefig(saveDir+"Angle.png")
     if plot:
         plt.show(block=False)
-    else:
-        plt.close()
+    #else:
+    #    plt.close()
     print("Horizontal angle: {:.02f}°".format(alpha))
     return alpha
 
@@ -132,8 +130,8 @@ def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True, saveDir='data_tre
     if plot:
         plt.show(block=False)
         print("Impact position: ({:.02f}, {:.02f}, {:.02f}) (cm)".format(X[i], Y[i], Z[i]))
-    else:
-        plt.close()
+    #else:
+    #    plt.close()
     return X[i], Y[i], Z[i]
 
 
@@ -233,6 +231,6 @@ def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir='data_treat/', in
         plt.show(block=False)
         print("Velocity after impact: ({:.02f}, {:.02f}, {:.02f}) m/s".format(VX_after / 100, VY_after / 100,
                                                                       VZ_after / 100))
-    else:
-        plt.close()
+    #else:
+    #    plt.close()
     return [VX / 100, VY / 100, VZ / 100], [VX_after / 100, VY_after / 100, VZ_after / 100]

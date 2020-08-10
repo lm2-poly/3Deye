@@ -3,4 +3,3 @@
 - [ ] Warning for impossible save
 - [ ] Warning for impossible load
 - [ ] Warning setup camera path before using mask
-- [ ] Repair horizontal cropping issue
