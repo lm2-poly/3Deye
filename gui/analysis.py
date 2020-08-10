@@ -4,7 +4,7 @@ from data_treat.reconstruction_3d import reconstruct_3d
 from data_treat.make_report import make_report
 from data_treat.data_pp import get_init_angle, get_impact_position, get_velocity
 import os
-from gui.gui_utils import makeform
+from gui.gui_utils import makeform, popupmsg
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
@@ -122,39 +122,44 @@ def set_mask(cam, form):
     """
     mask_w = tk.IntVar()
     mask_h = tk.IntVar()
-    root = tk.Tk()
-    root.title("Set mask")
-    root.geometry("600x600")
-    root.wm_iconbitmap('gui/logo-lm2-f_0.ico')
+
     cam_pics = glob.glob(form[1][1].get() + "/*.tif")
     if len(cam_pics) == 0:
         cam_pics = glob.glob(form[1][1].get() + "/*.jpg")
-    im_act = Image.open(cam_pics[0])
-    fig = Figure(figsize=(5,4), dpi=100)
-    im_act = np.array(im_act)
-    fig_plot = fig.add_subplot(111).imshow(im_act, cmap='gray')
-    canvas = FigureCanvasTkAgg(fig, master=root)
-    canvas.draw()
-    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-    toolbar = NavigationToolbar2Tk(canvas, root)
-    toolbar.update()
-    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    try:
+        im_act = Image.open(cam_pics[0])
+    except:
+        popupmsg("Wrong camera picture folder name")
+    else:
+        root = tk.Tk()
+        root.title("Set mask")
+        root.geometry("600x600")
+        root.wm_iconbitmap('gui/logo-lm2-f_0.ico')
+        fig = Figure(figsize=(5,4), dpi=100)
+        im_act = np.array(im_act)
+        fig_plot = fig.add_subplot(111).imshow(im_act, cmap='gray')
+        canvas = FigureCanvasTkAgg(fig, master=root)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        toolbar = NavigationToolbar2Tk(canvas, root)
+        toolbar.update()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
-    wd_lab = tk.Label(root, text="width")
-    mask_val_w = tk.Scale(root, from_=0, to=im_act.shape[1], orient=tk.HORIZONTAL, variable=mask_w,
-                        command=(lambda ma=mask_w, p=im_act, c=canvas: update_fig(ma, p, c, 0)))
-    wd_lab.pack(side=tk.LEFT)
-    mask_val_w.pack(side=tk.LEFT)
+        wd_lab = tk.Label(root, text="width")
+        mask_val_w = tk.Scale(root, from_=0, to=im_act.shape[1], orient=tk.HORIZONTAL, variable=mask_w,
+                            command=(lambda ma=mask_w, p=im_act, c=canvas: update_fig(ma, p, c, 0)))
+        wd_lab.pack(side=tk.LEFT)
+        mask_val_w.pack(side=tk.LEFT)
 
-    hi_lab = tk.Label(root, text="height")
-    mask_val_h = tk.Scale(root, from_=0, to=im_act.shape[0], orient=tk.HORIZONTAL, variable=mask_h,
-                        command=(lambda ma=mask_h, p=im_act, c=canvas: update_fig(ma, p, c, 1)))
-    hi_lab.pack(side=tk.LEFT)
-    mask_val_h.pack(side=tk.LEFT)
+        hi_lab = tk.Label(root, text="height")
+        mask_val_h = tk.Scale(root, from_=0, to=im_act.shape[0], orient=tk.HORIZONTAL, variable=mask_h,
+                            command=(lambda ma=mask_h, p=im_act, c=canvas: update_fig(ma, p, c, 1)))
+        hi_lab.pack(side=tk.LEFT)
+        mask_val_h.pack(side=tk.LEFT)
 
-    b1 = tk.Button(root, text='Set mask',
-                   command=(lambda r=root, c=cam, mw=mask_val_w, mh=mask_val_h: set_cam_mask(r, c, mw, mh)))
-    b1.pack()
+        b1 = tk.Button(root, text='Set mask',
+                       command=(lambda r=root, c=cam, mw=mask_val_w, mh=mask_val_h: set_cam_mask(r, c, mw, mh)))
+        b1.pack()
 
 
 def set_cam_mask(root, cam, mask_w, mask_h):
@@ -269,6 +274,7 @@ def create_camera(entries, name, cam, pic_to_cm=None):
     :param pic_to_cm: picture to cm ratio if the no-perspective mode is used
     :return: initialized camera object
     """
+
     cam.load_calibration_file(entries[0][1].get()+'/cam_'+name)
     cam.dir = entries[1][1].get()
     cam.firstPic = int(entries[2][1].get())
@@ -318,31 +324,42 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
         foldList  = ['']
         ana_fold = ''
 
-    notebook.tab(3, state='normal')
 
     for elem in foldList:
         print("************ "+elem)
-        create_camera(top_entry, 'top', cam_top, float(ratTop.get()))
-        create_camera(left_entry, 'left', cam_left, float(ratLeft.get()))
-        if not elem == '':
-            cam_top.dir = ana_fold + elem + '/' + cam_top.dir
-            cam_left.dir = ana_fold + elem + '/' + cam_left.dir
-        cam_top.set_crop_size()
-        cam_left.set_crop_size()
+        try:
+            create_camera(top_entry, 'top', cam_top, float(ratTop.get()))
+            create_camera(left_entry, 'left', cam_left, float(ratLeft.get()))
+            if not elem == '':
+                cam_top.dir = ana_fold + elem + '/' + cam_top.dir
+                cam_left.dir = ana_fold + elem + '/' + cam_left.dir
+            cam_top.set_crop_size()
+            cam_left.set_crop_size()
 
-        X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
-                                           splitSymb="_", numsplit=-1, method=meth,
-                                           plotTraj=show_traj.get(), plot=not(isbatch.get()))
-        traj_3d.set_trajectory(timespan, X, Y, Z)
+            X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
+                                               splitSymb="_", numsplit=-1, method=meth,
+                                               plotTraj=show_traj.get(), plot=not(isbatch.get()))
+        except NameError:
+            popupmsg("One of the camera folder name you entered was either incorrect or empty.")
+        except:
+            popupmsg("Camera creation failed. Check the parameters you entered for possible mistakes.")
 
-        if isbatch.get():
-            alpha = get_init_angle(X, Y, Z, timespan, cam_top, cam_left, plot=False,
-                                   saveDir=ana_fold+'RESULTS\\'+elem+'-', init=traj_3d.ang_min_ind, end=traj_3d.ang_end_ind)
-            xi, yi, zi = get_impact_position(X, Y, Z, cam_left, cam_top, plot=False,
-                                             saveDir=ana_fold+'RESULTS\\'+elem+'-', threshold= traj_3d.imp_thres)
-            Vinit, Vend = get_velocity(timespan, X, Y, Z, thres=traj_3d.vel_det_fac, plot=False,
-                                       saveDir=ana_fold+'RESULTS\\'+elem+'-', init=traj_3d.vel_init_ind, pt_num=traj_3d.vel_min_pt)
+        else:
+            try:
+                traj_3d.set_trajectory(timespan, X, Y, Z)
+            except:
+                notebook.tab(3, state='disable')
+                popupmsg("Something went wrong in the analysis. Check out the console messages for more detail.")
+            else:
+                notebook.tab(3, state='normal')
+                if isbatch.get():
+                    alpha = get_init_angle(X, Y, Z, timespan, cam_top, cam_left, plot=False,
+                                           saveDir=ana_fold+'RESULTS\\'+elem+'-', init=traj_3d.ang_min_ind, end=traj_3d.ang_end_ind)
+                    xi, yi, zi = get_impact_position(X, Y, Z, cam_left, cam_top, plot=False,
+                                                     saveDir=ana_fold+'RESULTS\\'+elem+'-', threshold= traj_3d.imp_thres)
+                    Vinit, Vend = get_velocity(timespan, X, Y, Z, thres=traj_3d.vel_det_fac, plot=False,
+                                               saveDir=ana_fold+'RESULTS\\'+elem+'-', init=traj_3d.vel_init_ind, pt_num=traj_3d.vel_min_pt)
 
-            traj_3d.set_pp(alpha, Vinit, Vend, [xi, yi, zi])
-            traj_3d.save_dir = ana_fold+'RESULTS/'+elem+'.txt'
-            make_report(traj_3d, cam_top, cam_left, "data_treat/report_template.txt")
+                    traj_3d.set_pp(alpha, Vinit, Vend, [xi, yi, zi])
+                    traj_3d.save_dir = ana_fold+'RESULTS/'+elem+'.txt'
+                    make_report(traj_3d, cam_top, cam_left, "data_treat/report_template.txt")

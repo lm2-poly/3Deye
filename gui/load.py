@@ -33,6 +33,12 @@ def start_load(notebook, f, tra, ct, cl):
     :param tra: Experiment object
     :param ct,cl: camera_top and left objects
     """
-    notebook.tab(3, state='normal')
-    load_data(f.get(), tra, ct, cl)
-    popupmsg('Data successfully loaded !')
+
+    try:
+        load_data(f.get(), tra, ct, cl)
+    except:
+        notebook.tab(3, state='disabled')
+        popupmsg('File not found...')
+    else:
+        notebook.tab(3, state='normal')
+        popupmsg('Data successfully loaded !')

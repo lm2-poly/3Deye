@@ -66,17 +66,23 @@ def save_res(cam_top, cam_left, T, traj_3d, fileSave):
     :param fileSave: report save directory
     """
     list_pic = os.listdir('data_treat')
-    traj_3d.save_dir = fileSave[0][1].get()
-    if 'Angle.png' in list_pic:
-        move_file('data_treat/Angle.png', parse_dir(traj_3d.save_dir))
-    if 'Impact_position.png' in list_pic:
-        move_file('data_treat/Impact_position.png', parse_dir(traj_3d.save_dir))
-    if 'Velocity.png' in list_pic:
-        move_file('data_treat/Velocity.png', parse_dir(traj_3d.save_dir))
+    try:
+        traj_3d.save_dir = fileSave[0][1].get()
+        if 'Angle.png' in list_pic:
+            move_file('data_treat/Angle.png', parse_dir(traj_3d.save_dir))
+        if 'Impact_position.png' in list_pic:
+            move_file('data_treat/Impact_position.png', parse_dir(traj_3d.save_dir))
+        if 'Velocity.png' in list_pic:
+            move_file('data_treat/Velocity.png', parse_dir(traj_3d.save_dir))
 
-    make_report(traj_3d, cam_top, cam_left, "data_treat/report_template.txt")
-    log = '\nTrajectory exported as ' + traj_3d.save_dir
-    T.insert(tk.END, log)
+        make_report(traj_3d, cam_top, cam_left, "data_treat/report_template.txt")
+        log = '\nTrajectory exported as ' + traj_3d.save_dir
+        T.insert(tk.END, log)
+
+    except:
+        popupmsg("Wrong save directory")
+    else:
+        popupmsg("File saved successfully !")
 
 
 def parse_dir(save_dir):
