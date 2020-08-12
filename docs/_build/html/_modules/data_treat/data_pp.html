@@ -262,8 +262,8 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">saveDir</span><span class="o">+</span><span class="s2">&quot;Angle.png&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">plot</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1">#else:</span>
+    <span class="c1">#    plt.close()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Horizontal angle: </span><span class="si">{:.02f}</span><span class="s2">°&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">alpha</span></div>
 
@@ -303,8 +303,8 @@
     <span class="k">if</span> <span class="n">plot</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Impact position: (</span><span class="si">{:.02f}</span><span class="s2">, </span><span class="si">{:.02f}</span><span class="s2">, </span><span class="si">{:.02f}</span><span class="s2">) (cm)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Z</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1">#else:</span>
+    <span class="c1">#    plt.close()</span>
     <span class="k">return</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
 
 
@@ -404,8 +404,8 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Velocity after impact: (</span><span class="si">{:.02f}</span><span class="s2">, </span><span class="si">{:.02f}</span><span class="s2">, </span><span class="si">{:.02f}</span><span class="s2">) m/s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">VX_after</span> <span class="o">/</span> <span class="mi">100</span><span class="p">,</span> <span class="n">VY_after</span> <span class="o">/</span> <span class="mi">100</span><span class="p">,</span>
                                                                       <span class="n">VZ_after</span> <span class="o">/</span> <span class="mi">100</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1">#else:</span>
+    <span class="c1">#    plt.close()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">VX</span> <span class="o">/</span> <span class="mi">100</span><span class="p">,</span> <span class="n">VY</span> <span class="o">/</span> <span class="mi">100</span><span class="p">,</span> <span class="n">VZ</span> <span class="o">/</span> <span class="mi">100</span><span class="p">],</span> <span class="p">[</span><span class="n">VX_after</span> <span class="o">/</span> <span class="mi">100</span><span class="p">,</span> <span class="n">VY_after</span> <span class="o">/</span> <span class="mi">100</span><span class="p">,</span> <span class="n">VZ_after</span> <span class="o">/</span> <span class="mi">100</span><span class="p">]</span></div>
 </pre></div>
 

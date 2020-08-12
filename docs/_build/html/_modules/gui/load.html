@@ -206,9 +206,15 @@
 <span class="sd">    :param tra: Experiment object</span>
 <span class="sd">    :param ct,cl: camera_top and left objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">notebook</span><span class="o">.</span><span class="n">tab</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">)</span>
-    <span class="n">load_data</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">tra</span><span class="p">,</span> <span class="n">ct</span><span class="p">,</span> <span class="n">cl</span><span class="p">)</span>
-    <span class="n">popupmsg</span><span class="p">(</span><span class="s1">&#39;Data successfully loaded !&#39;</span><span class="p">)</span></div>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">load_data</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">tra</span><span class="p">,</span> <span class="n">ct</span><span class="p">,</span> <span class="n">cl</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">notebook</span><span class="o">.</span><span class="n">tab</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;disabled&#39;</span><span class="p">)</span>
+        <span class="n">popupmsg</span><span class="p">(</span><span class="s1">&#39;File not found...&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">notebook</span><span class="o">.</span><span class="n">tab</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">)</span>
+        <span class="n">popupmsg</span><span class="p">(</span><span class="s1">&#39;Data successfully loaded !&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

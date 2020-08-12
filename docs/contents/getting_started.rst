@@ -1,7 +1,9 @@
 Installation
 ==================================================
 
-Install python 3.8 with pip and install the dependencies using the following command
+Install `python 3.8
+<https://www.python.org/downloads/>`_ with pip, download 3Deye on the `github page
+<https://www.github.com/lm2-poly/3Deye>`_ and install the dependencies using the following command
 
 .. code-block:: shell
 
