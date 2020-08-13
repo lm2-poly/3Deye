@@ -338,7 +338,7 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
 
             X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
                                                splitSymb="_", numsplit=-1, method=meth,
-                                               plotTraj=show_traj.get(), plot=not(isbatch.get()))
+                                               plotTraj=show_traj.get(), plot=not(isbatch.get()), isgui=True)
         except NameError:
             popupmsg("One of the camera folder name you entered was either incorrect or empty.")
         except:

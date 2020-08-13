@@ -3,10 +3,13 @@ import numpy as np
 from scipy.optimize import least_squares
 from data_treat.objectExtract import compute_2d_traj
 import matplotlib.pyplot as plt
+from gui.gui_utils import plot_fig
+import matplotlib
+matplotlib.use("TkAgg")
 
 
 def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp",
-                   plotTraj=True, plot=True):
+                   plotTraj=True, plot=True, isgui=False):
     """Reconstruct the 3D trajectory of a moving object filmed by 2 cameras with a given angle between them
 
     :param cam_top,cam_left: camera object for the top and left camera
@@ -19,10 +22,14 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
     """
 
     print("**** Shot position detection")
+    canvas = None
+    if isgui and plotTraj:
+        canvas = plot_fig(plt.figure(figsize=(8,6)))
+
     print("** Top camera")
-    traj_2d_top, timespan_top = compute_2d_traj(cam_top, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj)
+    traj_2d_top, timespan_top = compute_2d_traj(cam_top, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj, canvas=canvas)
     print("** Left camera")
-    traj_2d_left, timespan_left = compute_2d_traj(cam_left, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj)
+    traj_2d_left, timespan_left = compute_2d_traj(cam_left, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj, canvas=canvas)
     minspan_len = min(len(timespan_top), len(timespan_left))
 
     traj_2d_top, traj_2d_left = cam_shift_resize(traj_2d_top, traj_2d_left, cam_top, cam_left)
@@ -90,7 +97,9 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left):
     plt.plot(Y, label="Y")
     plt.plot(Z, label="Z")
     plt.legend()
-    plt.show(block=False)
+
+    plot_fig(figure)
+    #plt.show(block=False)
 
 
 def plot_square(cam):

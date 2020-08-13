@@ -1,6 +1,19 @@
 import tkinter as tk
 from tkinter import ttk
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib.figure import Figure
 
+
+def plot_fig(figure):
+    root = tk.Tk()
+    root.title("")
+    root.geometry("600x600")
+    root.wm_iconbitmap('gui/logo-lm2-f_0.ico')
+    canvas = FigureCanvasTkAgg(figure, master=root)
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    return canvas
 
 def popupmsg(msg):
     """Instantiate a popup with a message and an "ok" button.

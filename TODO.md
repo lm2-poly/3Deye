@@ -1,2 +1,4 @@
 - [ ] Set default
-- [ ] Add description / instructions / Warnings
+- [ ] Temporal shift optimization
+- [ ] Enhanced shot detection
+- [ ] Fix non consistent interruption warning

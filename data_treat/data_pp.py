@@ -1,10 +1,13 @@
 """Several post processing functions to provide the shot velocity before and after impact, the impact angle and position..."""
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import math
 from PIL import Image
 from data_treat.reconstruction_3d import get_proj_list
 import glob
+from gui.gui_utils import plot_fig
 
 
 def result_plot(X, Y, Z, timespan):
@@ -68,7 +71,7 @@ def get_init_angle(Xi, Yi, Zi, ti, cam_top, cam_left, plot=True, saveDir='data_t
     proj_V_t = [xt[end] - xt[init], yt[end] - yt[init]]
     proj_V_l = [xl[end] - xl[init], yl[end] - yl[init]]
 
-    plt.figure(figsize=(14, 6))
+    f = plt.figure(figsize=(8, 6))
     plt.subplot(121)
     plt.title("Left camera")
     plot_supper(init, end, cam_left)
@@ -81,17 +84,20 @@ def get_init_angle(Xi, Yi, Zi, ti, cam_top, cam_left, plot=True, saveDir='data_t
     plt.title("Top camera")
     plot_supper(init, end, cam_top)
     plt.quiver([xt[init]], [yt[init]],
-               proj_V_t[0]/(numPic+1), proj_V_t[1]/(numPic+1), color=(1., 0., 0.), scale=50)
+              proj_V_t[0]/(numPic+1), proj_V_t[1]/(numPic+1), color=(1., 0., 0.), scale=50)
 
     plt.xlim((0, cam_top.res[0]))
     plt.ylim((0, cam_top.res[1]))
+
     if not(saveDir is None):
         plt.savefig(saveDir+"Angle.png")
     if plot:
-        plt.show(block=False)
-    #else:
-    #    plt.close()
-    print("Horizontal angle: {:.02f}°".format(alpha))
+        #plt.show(block=False)
+        plot_fig(f)
+        print("Horizontal angle: {:.02f}°".format(alpha))
+    else:
+        plt.close(f)
+
     return alpha
 
 
@@ -114,7 +120,7 @@ def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True, saveDir='data_tre
         else:
             i+=1
 
-    plt.figure(figsize=(8, 6))
+    f = plt.figure(figsize=(8, 6))
     plot_supper(0, 10, cam_top)
     xt, yt = get_proj_list(X, Y, Z, cam_top)
     pos_screen_resize(xt, yt, cam_top)
@@ -128,10 +134,11 @@ def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True, saveDir='data_tre
         plt.savefig(saveDir+"Impact_position.png")
 
     if plot:
-        plt.show(block=False)
+        #plt.show(block=False)
+        plot_fig(f)
         print("Impact position: ({:.02f}, {:.02f}, {:.02f}) (cm)".format(X[i], Y[i], Z[i]))
-    #else:
-    #    plt.close()
+    else:
+        plt.close(f)
     return X[i], Y[i], Z[i]
 
 
@@ -147,7 +154,7 @@ def plot_supper(init, end, cam):
     ver_pic = ver_pic[0:cam.res[0] - cam.cropSize[3], :]
     for i in range(init, end):
         im_act = np.array(Image.open(picList[i]))
-        ver_pic += im_act[0:cam.res[0] - cam.cropSize[3], :]
+        ver_pic = ver_pic/2 + im_act[0:cam.res[0] - cam.cropSize[3], :]/2
 
     plt.imshow(ver_pic, "gray")
 
@@ -204,7 +211,7 @@ def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir='data_treat/', in
     VY = np.polyfit(t[init:i], Y[init:i], deg=1)[0]
     VZ = np.polyfit(t[init:i], Z[init:i], deg=1)[0]
 
-    plt.figure(figsize=(8,6))
+    f = plt.figure(figsize=(8,6))
     plt.plot(t * 1000, X - X0, marker=".", label="X")
     plt.plot(t * 1000, Y - Y0, marker=".", label="Y")
     plt.plot(t * 1000, Z - Z0, marker=".", label="Z")
@@ -228,9 +235,10 @@ def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir='data_treat/', in
     if not(saveDir is None):
         plt.savefig(saveDir+"Velocity.png")
     if plot:
-        plt.show(block=False)
+        #plt.show(block=False)
+        plot_fig(f)
         print("Velocity after impact: ({:.02f}, {:.02f}, {:.02f}) m/s".format(VX_after / 100, VY_after / 100,
                                                                       VZ_after / 100))
-    #else:
-    #    plt.close()
+    else:
+        plt.close(f)
     return [VX / 100, VY / 100, VZ / 100], [VX_after / 100, VY_after / 100, VZ_after / 100]

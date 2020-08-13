@@ -2,6 +2,10 @@ import glob
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
+from gui.gui_utils import plot_fig
+import matplotlib
+matplotlib.use("TkAgg")
+import time
 
 
 def filter_val(pic, width, height, tol=20.):
@@ -30,7 +34,7 @@ def filter_val(pic, width, height, tol=20.):
 	return bary_x, bary_y, numvals
 
 
-def compute_2d_traj(cam, splitSymb="_", numsplit=-1, plotTraj=True):
+def compute_2d_traj(cam, splitSymb="_", numsplit=-1, plotTraj=True, canvas=None):
 	"""Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,
 	by computing the difference of images with the object and without the object (initial state)
 
@@ -93,13 +97,25 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=-1, plotTraj=True):
 		avgdif[numActu, 1] = bary_y
 
 		if plotTraj:
-			plt.clf()
-			plt.imshow(imSuper, cmap='gray')
-			plt.plot([bary_x], [bary_y], '.', markersize=3, color="red", label="Detected position")
-			plt.xlim((0, cam.res[0]))
-			plt.ylim((0, cam.res[1]))
-			plt.legend()
-			plt.draw()
-			plt.pause(0.1)
+			if canvas is None:
+				plt.clf()
+				plt.imshow(imSuper, cmap='gray')
+				plt.plot([bary_x], [bary_y], '.', markersize=3, color="red", label="Detected position")
+			else:
+				canvas.figure.clear()
+				canvas.figure.add_subplot(111).imshow(imSuper, cmap='gray')
+				canvas.figure.add_subplot(111).plot([bary_x], [bary_y], '.', markersize=3, color="red", label="Detected position")
+
+			# plt.xlim((0, cam.res[0]))
+			# plt.ylim((0, cam.res[1]))
+			# plt.legend()
+
+			if canvas is None:
+				plt.draw()
+				plt.pause(0.1)
+			else:
+				canvas.draw()
+				time.sleep(0.1)
+
 
 	return avgdif, timespan
