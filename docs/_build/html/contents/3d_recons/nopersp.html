@@ -30,6 +30,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -111,6 +112,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-data_treat.make_report">Report generation and save</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-gui.recons_gui">GUI fonctions</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Credits:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../credits.html">Credits</a></li>
+</ul>
 
             
           
@@ -186,7 +191,7 @@ The detected shot X and Z coordinates are therefore considered to be the one det
 To convert the shot position value in pixel to spatial coordinates, a calibration picture of a ruler positioned at the camera focused distance has to be taken to obtain the camera pixel to cm ratio.</p>
 <img alt="../../_images/calib_ruler.png" class="align-center" src="../../_images/calib_ruler.png" />
 <p>The pixel to cm ratio is simply taken as the length of the ruler in cm divided by it’s length on the screen in pixels. It can then be set in the camera object by setting the attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">data_treat.cam.Cam.pic_to_cm</span></code></p>
-<p>This approach is implented in the function <a class="reference internal" href="#data_treat.reconstruction_3d.get_3d_nopersp" title="data_treat.reconstruction_3d.get_3d_nopersp"><code class="xref py py-func docutils literal notranslate"><span class="pre">data_treat.reconstruction_3d.get_3d_nopersp()</span></code></a></p>
+<p>This approach is implented in the function <a class="reference internal" href="../function_list.html#data_treat.reconstruction_3d.get_3d_nopersp" title="data_treat.reconstruction_3d.get_3d_nopersp"><code class="xref py py-func docutils literal notranslate"><span class="pre">data_treat.reconstruction_3d.get_3d_nopersp()</span></code></a></p>
 <dl class="py function">
 <dt id="data_treat.reconstruction_3d.get_3d_nopersp">
 <code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">get_3d_nopersp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">minspan_len</span></em>, <em class="sig-param"><span class="n">traj_2d_left</span></em>, <em class="sig-param"><span class="n">traj_2d_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">cam_top</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/data_treat/reconstruction_3d.html#get_3d_nopersp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.get_3d_nopersp" title="Permalink to this definition">¶</a></dt>

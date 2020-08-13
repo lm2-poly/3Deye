@@ -1,4 +1,3 @@
 - [ ] Set default
-- [ ] Temporal shift optimization
 - [ ] Enhanced shot detection
 - [ ] Fix non consistent interruption warning

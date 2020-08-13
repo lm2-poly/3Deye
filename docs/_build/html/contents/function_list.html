@@ -497,7 +497,7 @@ cameras and the sample.</p>
 
 <dl class="py function">
 <dt id="data_treat.reconstruction_3d.get_3d_coor">
-<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">get_3d_coor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">minspan_len</span></em>, <em class="sig-param"><span class="n">traj_2d_left</span></em>, <em class="sig-param"><span class="n">traj_2d_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'persp'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_treat/reconstruction_3d.html#get_3d_coor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.get_3d_coor" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">get_3d_coor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">minspan_len</span></em>, <em class="sig-param"><span class="n">traj_2d_left</span></em>, <em class="sig-param"><span class="n">traj_2d_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'persp'</span></em>, <em class="sig-param"><span class="n">timespan</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_treat/reconstruction_3d.html#get_3d_coor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.get_3d_coor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve the shot 3D trajectory from each cameras parameters and 2D trajectories</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -644,7 +644,7 @@ cameras and the sample.</p>
 
 <dl class="py function">
 <dt id="data_treat.reconstruction_3d.reconstruct_3d">
-<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">reconstruct_3d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">splitSymb</span><span class="o">=</span><span class="default_value">'_'</span></em>, <em class="sig-param"><span class="n">numsplit</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'no-persp'</span></em>, <em class="sig-param"><span class="n">plotTraj</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_treat/reconstruction_3d.html#reconstruct_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.reconstruct_3d" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">reconstruct_3d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">splitSymb</span><span class="o">=</span><span class="default_value">'_'</span></em>, <em class="sig-param"><span class="n">numsplit</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'no-persp'</span></em>, <em class="sig-param"><span class="n">plotTraj</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">isgui</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_treat/reconstruction_3d.html#reconstruct_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.reconstruct_3d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reconstruct the 3D trajectory of a moving object filmed by 2 cameras with a given angle between them</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -663,9 +663,45 @@ cameras and the sample.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.shift_cam_coord">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">shift_cam_coord</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timespan</span></em>, <em class="sig-param"><span class="n">traj_2d_top</span></em>, <em class="sig-param"><span class="n">traj_2d_left</span></em>, <em class="sig-param"><span class="n">tau</span><span class="o">=</span><span class="default_value">0.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_treat/reconstruction_3d.html#shift_cam_coord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.shift_cam_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shifts one of the two cameras of a given time delay to account for asynchronized cameras</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timespan</strong> – time vector</p></li>
+<li><p><strong>traj_2d_top</strong> – 2D pixel trajectory for the top camera</p></li>
+<li><p><strong>traj_2d_left</strong> – 2D pixel trajectory for the left camera</p></li>
+<li><p><strong>tau</strong> – time_shift</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>traj_2d_top, traj_2d_left</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="data_treat.reconstruction_3d.shift_error">
+<code class="sig-prename descclassname">data_treat.reconstruction_3d.</code><code class="sig-name descname">shift_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tau</span></em>, <em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">Z</span></em>, <em class="sig-param"><span class="n">cam_left</span></em>, <em class="sig-param"><span class="n">cam_top</span></em>, <em class="sig-param"><span class="n">traj_left</span></em>, <em class="sig-param"><span class="n">traj_top</span></em>, <em class="sig-param"><span class="n">timespan</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_treat/reconstruction_3d.html#shift_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.reconstruction_3d.shift_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the reprojection error obtained by time shifting the left camera of a value of tau</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tau</strong> – time shift value</p></li>
+<li><p><strong>X</strong><strong>,</strong><strong>Y</strong><strong>,</strong><strong>Z</strong> – unshifted 3D trajectory</p></li>
+<li><p><strong>cam_left</strong><strong>,</strong><strong>cam_top</strong> – cameras objects</p></li>
+<li><p><strong>traj_left</strong><strong>,</strong><strong>traj_top</strong> – 2D pixel coordinate trajectory on each camera</p></li>
+</ul>
+</dd>
+</dl>
+<p>:param</p>
+</dd></dl>
+
 <span class="target" id="module-data_treat.objectExtract"></span><dl class="py function">
 <dt id="data_treat.objectExtract.compute_2d_traj">
-<code class="sig-prename descclassname">data_treat.objectExtract.</code><code class="sig-name descname">compute_2d_traj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam</span></em>, <em class="sig-param"><span class="n">splitSymb</span><span class="o">=</span><span class="default_value">'_'</span></em>, <em class="sig-param"><span class="n">numsplit</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">plotTraj</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_treat/objectExtract.html#compute_2d_traj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.objectExtract.compute_2d_traj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">data_treat.objectExtract.</code><code class="sig-name descname">compute_2d_traj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam</span></em>, <em class="sig-param"><span class="n">splitSymb</span><span class="o">=</span><span class="default_value">'_'</span></em>, <em class="sig-param"><span class="n">numsplit</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">plotTraj</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">canvas</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_treat/objectExtract.html#compute_2d_traj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.objectExtract.compute_2d_traj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,
 by computing the difference of images with the object and without the object (initial state)</p>
 <dl class="field-list simple">
@@ -773,7 +809,7 @@ more acquisition point after the impact than before.</p>
 
 <dl class="py function">
 <dt id="data_treat.data_pp.plot_supper">
-<code class="sig-prename descclassname">data_treat.data_pp.</code><code class="sig-name descname">plot_supper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">init</span></em>, <em class="sig-param"><span class="n">end</span></em>, <em class="sig-param"><span class="n">cam</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_treat/data_pp.html#plot_supper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.data_pp.plot_supper" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">data_treat.data_pp.</code><code class="sig-name descname">plot_supper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">init</span></em>, <em class="sig-param"><span class="n">end</span></em>, <em class="sig-param"><span class="n">cam</span></em>, <em class="sig-param"><span class="n">thres</span><span class="o">=</span><span class="default_value">40.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_treat/data_pp.html#plot_supper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.data_pp.plot_supper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the superposition (addition) of a cam shot picture between picture init and end</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1211,6 +1247,20 @@ source: <a class="reference external" href="https://www.python-course.eu/tkinter
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>list with each field name (column 0) and entry object (column 1)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gui.gui_utils.plot_fig">
+<code class="sig-prename descclassname">gui.gui_utils.</code><code class="sig-name descname">plot_fig</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">figure</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gui/gui_utils.html#plot_fig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui_utils.plot_fig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new tk window instance with a figure ploted in a canvas</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>figure</strong> – figure to plot</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>canvas object</p>
 </dd>
 </dl>
 </dd></dl>

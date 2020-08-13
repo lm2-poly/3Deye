@@ -1,6 +1,7 @@
 """functions to reconstruct the object 3D trajectory"""
 import numpy as np
 from scipy.optimize import least_squares
+from scipy.interpolate import interp1d
 from data_treat.objectExtract import compute_2d_traj
 import matplotlib.pyplot as plt
 from gui.gui_utils import plot_fig
@@ -38,7 +39,7 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
     if method == "no-persp":
         X, Y, Z = get_3d_nopersp(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top)
     else:
-        X, Y, Z = get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method)
+        X, Y, Z, traj_2d_top, traj_2d_left = get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method, timespan_top[:minspan_len])
 
     if plot:
         plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left)
@@ -149,7 +150,7 @@ def get_3d_nopersp(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top):
     return X, Y, Z
 
 
-def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method="persp"):
+def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method="persp", timespan=[]):
     """Retrieve the shot 3D trajectory from each cameras parameters and 2D trajectories
 
     :param minspan_len: number of time points
@@ -159,6 +160,8 @@ def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, metho
     :param method: "persp" (default) or "persp-opti" - use analytical expression or least square optimisation
     :return:
     """
+    t1 = traj_2d_top
+    t2 = traj_2d_left
     X = traj_2d_left[:minspan_len, 0]
     Y = traj_2d_top[:minspan_len, 0]
     Z = traj_2d_left[:minspan_len, 1]
@@ -169,14 +172,82 @@ def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, metho
         if not(np.isnan(X[i]) or np.isnan(Y[i]) or np.isnan(Z[i])):
             A, B = make_system_mat(cam_top, cam_left, traj_2d_left[i, :], traj_2d_top[i, :])
             X_coor[i], Y_coor[i], Z_coor[i] = np.linalg.solve(np.matrix(A), np.matrix(B).T)
-            if method == "persp-opti":
+            if method == "persp-opti-coor":
                 X0 = np.linalg.solve(np.matrix(A), np.matrix(B).T)
                 args = (cam_left, cam_top, traj_2d_left[i, :], traj_2d_top[i, :])
                 res_act = least_squares(get_proj_error, np.array(X0.T)[0], args=args)
                 X_coor[i], Y_coor[i], Z_coor[i] = res_act.x
         else:
             X_coor[i], Y_coor[i], Z_coor[i] = [np.nan, np.nan, np.nan]
-    return X_coor, Y_coor, Z_coor
+
+    if method == "persp-opti":
+        tau_0 = 0.
+        args = (X_coor, Y_coor, Z_coor, cam_left, cam_top, traj_2d_left, traj_2d_top, timespan)
+        res_act = least_squares(shift_error, tau_0, args=args)
+        tau = float(res_act.x)
+        X_coor, Y_coor, Z_coor, t1, t2 = get_shifted_3D(tau, X, Y, Z, cam_left, cam_top, traj_2d_left, traj_2d_top, timespan)
+
+    return X_coor, Y_coor, Z_coor, t1, t2
+
+
+def shift_error(tau, X, Y, Z, cam_left, cam_top, traj_left, traj_top, timespan):
+    """Computes the reprojection error obtained by time shifting the left camera of a value of tau
+
+    :param tau: time shift value
+    :param X,Y,Z: unshifted 3D trajectory
+    :param cam_left,cam_top: cameras objects
+    :param traj_left,traj_top: 2D pixel coordinate trajectory on each camera
+    :param
+    """
+    x, y, z, corr_top, corr_left = get_shifted_3D(tau, X, Y, Z, cam_left, cam_top, traj_left, traj_top, timespan)
+    err = [0., 0., 0., 0.]
+    len_traj = len(timespan)
+    for i in range(0, len_traj):
+        if not (np.isnan(X[i]) or np.isnan(Y[i]) or np.isnan(Z[i])):
+            err_actu = get_proj_error([x[i], y[i], z[i]], cam_left, cam_top, corr_left[i, :], corr_top[i, :])
+            if np.sum(np.isnan(err_actu)) == 0:
+                err[0] += float(err_actu[0]) ** 2
+                err[1] += float(err_actu[1]) ** 2
+                err[2] += float(err_actu[2]) ** 2
+                err[3] += float(err_actu[3]) ** 2
+
+    return err
+
+
+def get_shifted_3D(tau, X, Y, Z, cam_left, cam_top, traj_left, traj_top, timespan):
+    corr_top, corr_left = shift_cam_coord(timespan, traj_top, traj_left, tau)
+    len_traj = len(corr_top)
+    x = np.zeros(np.shape(X)) * np.nan
+    y = np.zeros(np.shape(Y)) * np.nan
+    z = np.zeros(np.shape(Z)) * np.nan
+    for i in range(0, len_traj):
+        if not (np.isnan(X[i]) or np.isnan(Y[i]) or np.isnan(Z[i])):
+            A, B = make_system_mat(cam_top, cam_left, corr_left[i, :], corr_top[i, :])
+            x[i], y[i], z[i] = np.linalg.solve(np.matrix(A), np.matrix(B).T)
+
+    return x, y, z, corr_top, corr_left
+
+
+def shift_cam_coord(timespan, traj_2d_top, traj_2d_left, tau=0.):
+    """Shifts one of the two cameras of a given time delay to account for asynchronized cameras
+
+    :param timespan: time vector
+    :param traj_2d_top: 2D pixel trajectory for the top camera
+    :param traj_2d_left: 2D pixel trajectory for the left camera
+    :param tau: time_shift
+    :return: traj_2d_top, traj_2d_left
+    """
+    u_interp = interp1d(timespan + tau, traj_2d_left[:, 0])
+    v_interp = interp1d(timespan + tau, traj_2d_left[:, 1])
+    traj_final = np.nan * np.zeros(traj_2d_left.shape)
+
+    new_time = np.zeros(timespan.shape)
+    len_t = len(timespan)
+    for i in range(0, len_t):
+        if timespan[i] > np.min(timespan + tau) and timespan[i] < np.max(timespan + tau):
+            traj_final[i, 0] = u_interp(timespan[i])
+            traj_final[i, 1] = v_interp(timespan[i])
+    return traj_2d_top, traj_final
 
 
 def make_system_mat(cam_top, cam_left, pos_2d_left, pos_2d_top):

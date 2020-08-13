@@ -22,7 +22,7 @@ import mock
 
 sys.path.insert(0, os.path.abspath('..'))
 
-MOCK_MODULES = ['numpy', 'scipy', 'cv2', 'matplotlib', 'matplotlib.pyplot', 'PIL', 'math', 'glob', 'scipy.optimize', 'matplotlib.backends.backend_tkagg', 'matplotlib.figure']
+MOCK_MODULES = ['numpy', 'scipy', 'scipy.interpolate', 'cv2', 'matplotlib', 'matplotlib.pyplot', 'PIL', 'math', 'glob', 'scipy.optimize', 'matplotlib.backends.backend_tkagg', 'matplotlib.figure']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
     

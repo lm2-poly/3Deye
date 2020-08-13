@@ -173,7 +173,25 @@
   <h1>Source code for gui.gui_utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
+<span class="kn">from</span> <span class="nn">matplotlib.backends.backend_tkagg</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FigureCanvasTkAgg</span><span class="p">,</span> <span class="n">NavigationToolbar2Tk</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">matplotlib.figure</span> <span class="kn">import</span> <span class="n">Figure</span>
 
+
+<div class="viewcode-block" id="plot_fig"><a class="viewcode-back" href="../../contents/function_list.html#gui.gui_utils.plot_fig">[docs]</a><span class="k">def</span> <span class="nf">plot_fig</span><span class="p">(</span><span class="n">figure</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create a new tk window instance with a figure ploted in a canvas</span>
+<span class="sd">    </span>
+<span class="sd">    :param figure: figure to plot </span>
+<span class="sd">    :return: canvas object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s2">&quot;600x600&quot;</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">wm_iconbitmap</span><span class="p">(</span><span class="s1">&#39;gui/logo-lm2-f_0.ico&#39;</span><span class="p">)</span>
+    <span class="n">canvas</span> <span class="o">=</span> <span class="n">FigureCanvasTkAgg</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="n">master</span><span class="o">=</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">get_tk_widget</span><span class="p">()</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TOP</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">BOTH</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">canvas</span></div>
 
 <div class="viewcode-block" id="popupmsg"><a class="viewcode-back" href="../../contents/function_list.html#gui.gui_utils.popupmsg">[docs]</a><span class="k">def</span> <span class="nf">popupmsg</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Instantiate a popup with a message and an &quot;ok&quot; button.</span>

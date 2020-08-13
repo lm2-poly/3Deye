@@ -35,16 +35,21 @@ Using the method "persp", the function only builds the linear system, ignoring o
 .. note ::
    Usage of high frequency camera often requires to reduce the acquisition resolution to reduce the acquisition time. Since the camera intrinsic and transformation matrices relates the 3D coordinates to the pixel on the screen, the detected coordinates on each screen have to be expressed in the unresized screen frame. This is performed by the function :py:func:`data_treat.reonstruction_3d.cam_shift_resize` which is called automatically in the function :py:func:`data_treat.reonstruction_3d.reconstruct_3d`. The coordinate shift is performed knowing the camera initial and resized resolution provided in the camera objects.
 
-However, camera calibrations are subjected to errors and the shot position detection on eahc camera is not always perfect. The solution of the linear system might therefore not fully be consistent with the coordinates found on both cameras.
 
-To enhance the obtained solution, the "persp-opti" method uses the linear system solution as a first guess and finds the best (X,Y,Z) solution that minimizes the reprojection error on both cameras using least-square optimization.
+Position optimisation
+**************************************************
+
+Slight time delay between the pictures taken by the two cameras can lead to errors in the trajectory estimation as the trajectory will be guessed using two pictures taken at different moments.
+
+To reduce this error, the trajectory of one of the two camera is linearly interpolated to get the pixel coordinate of the shots on the two cameras at the same time.
+However, the time delay between the two cameras is difficult to caracterize experimentally. The 'persp-opti' mode of 3D eye finds the values of the camera delay that minimizes the overall projection errors on the two cameras using elast-square optimization (see figure below).
 
 .. image:: figures/persp-opti.png
    :align: center
-   
-This provides an estimate of the 3D coordinates that makes a good compromize between both cameras calibration errors.
 
 Shot detection and 3D trajectory reconstruction using this method can be performed by calling the function :py:func:`data_treat.reonstruction_3d.reconstruct_3d` with the method attribute set to 'persp' or 'persp-opti'.
+
+.. note: since we interpolate the position value of a camera from t to t+dt, dt being the delay, the first and last detected point will be removed from the analysis as it would require extrapolation.
 
 
 Error indicators

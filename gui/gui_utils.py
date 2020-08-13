@@ -6,6 +6,11 @@ from matplotlib.figure import Figure
 
 
 def plot_fig(figure):
+    """ Create a new tk window instance with a figure ploted in a canvas
+    
+    :param figure: figure to plot 
+    :return: canvas object
+    """
     root = tk.Tk()
     root.title("")
     root.geometry("600x600")

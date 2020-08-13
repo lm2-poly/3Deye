@@ -107,10 +107,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../function_list.html">Camera object</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-calibration.main">Camera calibration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-data_treat.reconstruction_3d">3D Trajectory reconstruction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-data_treat.data_pp">Trajectory post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-data_treat.objectExtract">3D Trajectory reconstruction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../function_list.html#trajectory-post-processing">Trajectory post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-data_treat.make_report">Report generation and save</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-gui.recons_gui">GUI fonctions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../function_list.html#module-gui.calibration">GUI fonctions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Credits:</span></p>
 <ul>
@@ -209,7 +209,7 @@
 <p>The function <a class="reference internal" href="../function_list.html#data_treat.objectExtract.compute_2d_traj" title="data_treat.objectExtract.compute_2d_traj"><code class="xref py py-func docutils literal notranslate"><span class="pre">data_treat.objectExtract.compute_2d_traj()</span></code></a> extracts the shot trajectory for every pictures given for a camera</p>
 <dl class="py function">
 <dt id="data_treat.objectExtract.compute_2d_traj">
-<code class="sig-prename descclassname">data_treat.objectExtract.</code><code class="sig-name descname">compute_2d_traj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam</span></em>, <em class="sig-param"><span class="n">splitSymb</span><span class="o">=</span><span class="default_value">'_'</span></em>, <em class="sig-param"><span class="n">numsplit</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">plotTraj</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/data_treat/objectExtract.html#compute_2d_traj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.objectExtract.compute_2d_traj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">data_treat.objectExtract.</code><code class="sig-name descname">compute_2d_traj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cam</span></em>, <em class="sig-param"><span class="n">splitSymb</span><span class="o">=</span><span class="default_value">'_'</span></em>, <em class="sig-param"><span class="n">numsplit</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">plotTraj</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">canvas</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/data_treat/objectExtract.html#compute_2d_traj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_treat.objectExtract.compute_2d_traj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,
 by computing the difference of images with the object and without the object (initial state)</p>
 <dl class="field-list simple">
