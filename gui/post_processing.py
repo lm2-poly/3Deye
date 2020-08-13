@@ -129,7 +129,7 @@ def launch_pp(vels, cam_top, cam_left, T, traj_3d, fileSave, ang, pos):
     :param ang: angle parameter form
     :param pos: impact position parameter form
     """
-    plt.close()
+    #plt.close()
     log = ''
     fileSave[0][1].delete(0, tk.END)
     fileSave[0][1].insert(tk.END, traj_3d.save_dir)

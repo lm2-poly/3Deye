@@ -75,16 +75,18 @@ def get_init_angle(Xi, Yi, Zi, ti, cam_top, cam_left, plot=True, saveDir='data_t
     plt.subplot(121)
     plt.title("Left camera")
     plot_supper(init, end, cam_left)
+    projNorm = np.sqrt(proj_V_l[0]**2 + proj_V_l[1]**2)
     plt.quiver(xl[init], yl[init],
-               proj_V_l[0]/(numPic+1), proj_V_l[1]/(numPic+1), color=(1., 0., 0.), scale=50)
+               10.*proj_V_l[0]/projNorm, 10.*proj_V_l[1]/projNorm, color=(1., 0., 0.), scale=50)
     plt.xlim((0, cam_left.res[0]))
     plt.ylim((0, cam_left.res[1]))
 
     plt.subplot(122)
     plt.title("Top camera")
+    projNorm = np.sqrt(proj_V_l[0] ** 2 + proj_V_l[1] ** 2)
     plot_supper(init, end, cam_top)
     plt.quiver([xt[init]], [yt[init]],
-              proj_V_t[0]/(numPic+1), proj_V_t[1]/(numPic+1), color=(1., 0., 0.), scale=50)
+              10.*proj_V_t[0]/projNorm, 10.*proj_V_t[1]/projNorm, color=(1., 0., 0.), scale=50)
 
     plt.xlim((0, cam_top.res[0]))
     plt.ylim((0, cam_top.res[1]))
@@ -142,7 +144,7 @@ def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True, saveDir='data_tre
     return X[i], Y[i], Z[i]
 
 
-def plot_supper(init, end, cam):
+def plot_supper(init, end, cam, thres=40.):
     """Plot the superposition (addition) of a cam shot picture between picture init and end
 
     :param init,end: start and stop indices for the addition
@@ -150,11 +152,19 @@ def plot_supper(init, end, cam):
     """
     picList = glob.glob(cam.dir + "/*.tif")
     picList += glob.glob(cam.dir + "/*.jpg")
-    ver_pic = np.array(Image.open(picList[0]))
-    ver_pic = ver_pic[0:cam.res[0] - cam.cropSize[3], :]
+    pic_init = np.array(Image.open(picList[0]))
+    ver_pic = pic_init[0:cam.res[0] - cam.cropSize[3], :]
     for i in range(init, end):
         im_act = np.array(Image.open(picList[i]))
-        ver_pic = ver_pic/2 + im_act[0:cam.res[0] - cam.cropSize[3], :]/2
+
+        mask = np.abs(im_act - pic_init)
+        mask = mask[0:cam.res[0] - cam.cropSize[3], :]
+        mask[mask < thres] = 0
+        mask[mask >= thres] = 1
+
+        ver_pic = ver_pic * (1 - mask) + im_act[0:cam.res[0] - cam.cropSize[3], :] * mask
+    ver_pic = ver_pic / (end-init)
+    ver_pic = ver_pic.astype('uint8')
 
     plt.imshow(ver_pic, "gray")
 

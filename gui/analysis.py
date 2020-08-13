@@ -336,9 +336,6 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
             cam_top.set_crop_size()
             cam_left.set_crop_size()
 
-            X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
-                                               splitSymb="_", numsplit=-1, method=meth,
-                                               plotTraj=show_traj.get(), plot=not(isbatch.get()), isgui=True)
         except NameError:
             popupmsg("One of the camera folder name you entered was either incorrect or empty.")
         except:
@@ -346,11 +343,14 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
 
         else:
             try:
-                traj_3d.set_trajectory(timespan, X, Y, Z)
+                X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
+                                                   splitSymb="_", numsplit=-1, method=meth,
+                                                   plotTraj=show_traj.get(), plot=not (isbatch.get()), isgui=True)
             except:
                 notebook.tab(3, state='disable')
                 popupmsg("Something went wrong in the analysis. Check out the console messages for more detail.")
             else:
+                traj_3d.set_trajectory(timespan, X, Y, Z)
                 notebook.tab(3, state='normal')
                 if isbatch.get():
                     alpha = get_init_angle(X, Y, Z, timespan, cam_top, cam_left, plot=False,
