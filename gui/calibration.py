@@ -48,9 +48,12 @@ def launch_calib(entries, numcase, lencase):
     :param numcase: number of checkboard case form object
     :param lencase: length of a checkboard case form object
     """
-    calibrate_stereo(entries[0][1].get(),
-                     entries[1][1].get(),
-                     entries[2][1].get(),
-                     entries[3][1].get(),
-                     entries[4][1].get(),
-                     chess_dim=int(numcase.get()), chess_case_len=float(lencase.get()))
+    try:
+        calibrate_stereo(entries[0][1].get(),
+                         entries[1][1].get(),
+                         entries[2][1].get(),
+                         entries[3][1].get(),
+                         entries[4][1].get(),
+                         chess_dim=int(numcase.get()), chess_case_len=float(lencase.get()))
+    except:
+        popupmsg("Calibration failed !")

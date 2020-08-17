@@ -5,7 +5,7 @@ from matplotlib.backends.backend_tkagg import (
 from matplotlib.figure import Figure
 
 
-def plot_fig(figure):
+def plot_fig(figure, size="600x600"):
     """ Create a new tk window instance with a figure ploted in a canvas
     
     :param figure: figure to plot 
@@ -13,12 +13,19 @@ def plot_fig(figure):
     """
     root = tk.Tk()
     root.title("")
-    root.geometry("600x600")
+    root.geometry(size)
     root.wm_iconbitmap('gui/logo-lm2-f_0.ico')
+
     canvas = FigureCanvasTkAgg(figure, master=root)
     canvas.draw()
-    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-    return canvas
+    canvas.get_tk_widget().pack(side=tk.TOP, fill='none', expand='NO')
+
+    return root, canvas
+
+
+def disable_event():
+    pass
+
 
 def popupmsg(msg):
     """Instantiate a popup with a message and an "ok" button.

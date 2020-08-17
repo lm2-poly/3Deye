@@ -8,6 +8,7 @@ from PIL import Image
 from data_treat.reconstruction_3d import get_proj_list
 import glob
 from gui.gui_utils import plot_fig
+from matplotlib.figure import Figure
 
 
 def result_plot(X, Y, Z, timespan):
@@ -71,34 +72,35 @@ def get_init_angle(Xi, Yi, Zi, ti, cam_top, cam_left, plot=True, saveDir='data_t
     proj_V_t = [xt[end] - xt[init], yt[end] - yt[init]]
     proj_V_l = [xl[end] - xl[init], yl[end] - yl[init]]
 
-    f = plt.figure(figsize=(8, 6))
-    plt.subplot(121)
-    plt.title("Left camera")
-    plot_supper(init, end, cam_left)
-    projNorm = np.sqrt(proj_V_l[0]**2 + proj_V_l[1]**2)
-    plt.quiver(xl[init], yl[init],
-               10.*proj_V_l[0]/projNorm, 10.*proj_V_l[1]/projNorm, color=(1., 0., 0.), scale=50)
-    plt.xlim((0, cam_left.res[0]))
-    plt.ylim((0, cam_left.res[1]))
+    #f = plt.figure(figsize=(8, 6))
+    f = Figure(figsize=(8, 6))
+    ax1, ax2 = f.subplots(ncols=2, nrows=1)
 
-    plt.subplot(122)
-    plt.title("Top camera")
+    ax1.set_title("Left camera")
+    plot_supper(init, end, cam_left, ax=ax1)
+    projNorm = np.sqrt(proj_V_l[0]**2 + proj_V_l[1]**2)
+    ax1.quiver(xl[init], yl[init],
+               10.*proj_V_l[0]/projNorm, 10.*proj_V_l[1]/projNorm, color=(1., 0., 0.), scale=50)
+    ax1.set_xlim((0, cam_left.res[0]))
+    ax1.set_ylim((0, cam_left.res[1]))
+
+    ax2.set_title("Top camera")
     projNorm = np.sqrt(proj_V_l[0] ** 2 + proj_V_l[1] ** 2)
-    plot_supper(init, end, cam_top)
-    plt.quiver([xt[init]], [yt[init]],
+    plot_supper(init, end, cam_top, ax=ax2)
+    ax2.quiver([xt[init]], [yt[init]],
               10.*proj_V_t[0]/projNorm, 10.*proj_V_t[1]/projNorm, color=(1., 0., 0.), scale=50)
 
-    plt.xlim((0, cam_top.res[0]))
-    plt.ylim((0, cam_top.res[1]))
+    ax2.set_xlim((0, cam_top.res[0]))
+    ax2.set_ylim((0, cam_top.res[1]))
 
     if not(saveDir is None):
-        plt.savefig(saveDir+"Angle.png")
+        f.savefig(saveDir+"Angle.png")
     if plot:
         #plt.show(block=False)
         plot_fig(f)
         print("Horizontal angle: {:.02f}°".format(alpha))
-    else:
-        plt.close(f)
+    # else:
+    #     plt.close(f)
 
     return alpha
 
@@ -122,29 +124,30 @@ def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True, saveDir='data_tre
         else:
             i+=1
 
-    f = plt.figure(figsize=(8, 6))
-    plot_supper(0, 10, cam_top)
+    f = Figure(figsize=(8, 6))
+    ax = f.subplots(ncols=1, nrows=1)
+    plot_supper(0, 10, cam_top, ax=ax)
     xt, yt = get_proj_list(X, Y, Z, cam_top)
     pos_screen_resize(xt, yt, cam_top)
-    plt.plot(xt, yt, color="white", label="Shot trajectory")
-    plt.plot(xt[i], yt[i], '.', ms=5, color="red", label="Detected impact position")
-    plt.title("Impact position detection")
-    plt.xlim((0, cam_top.res[0]))
-    plt.ylim((0, cam_top.res[1]))
-    plt.legend()
+    ax.plot(xt, yt, color="white", label="Shot trajectory")
+    ax.plot(xt[i], yt[i], '.', ms=5, color="red", label="Detected impact position")
+    ax.set_title("Impact position detection")
+    ax.set_xlim((0, cam_top.res[0]))
+    ax.set_ylim((0, cam_top.res[1]))
+    ax.legend()
     if not(saveDir is None):
-        plt.savefig(saveDir+"Impact_position.png")
+        f.savefig(saveDir+"Impact_position.png")
 
     if plot:
         #plt.show(block=False)
         plot_fig(f)
         print("Impact position: ({:.02f}, {:.02f}, {:.02f}) (cm)".format(X[i], Y[i], Z[i]))
-    else:
-        plt.close(f)
+    # else:
+    #     plt.close(f)
     return X[i], Y[i], Z[i]
 
 
-def plot_supper(init, end, cam, thres=40.):
+def plot_supper(init, end, cam, thres=40., ax=None):
     """Plot the superposition (addition) of a cam shot picture between picture init and end
 
     :param init,end: start and stop indices for the addition
@@ -165,8 +168,10 @@ def plot_supper(init, end, cam, thres=40.):
         ver_pic = ver_pic * (1 - mask) + im_act[0:cam.res[0] - cam.cropSize[3], :] * mask
     ver_pic = ver_pic / (end-init)
     ver_pic = ver_pic.astype('uint8')
-
-    plt.imshow(ver_pic, "gray")
+    if ax is None:
+        plt.imshow(ver_pic, "gray")
+    else:
+        ax.imshow(ver_pic, "gray")
 
 
 def pos_screen_resize(x, y, cam):
@@ -221,11 +226,12 @@ def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir='data_treat/', in
     VY = np.polyfit(t[init:i], Y[init:i], deg=1)[0]
     VZ = np.polyfit(t[init:i], Z[init:i], deg=1)[0]
 
-    f = plt.figure(figsize=(8,6))
-    plt.plot(t * 1000, X - X0, marker=".", label="X")
-    plt.plot(t * 1000, Y - Y0, marker=".", label="Y")
-    plt.plot(t * 1000, Z - Z0, marker=".", label="Z")
-    plt.plot(t[init:i] * 1000, (dat[0][0] * t[init:i] + dat[0][1]), label="Best linear fit (initial)")
+    f = Figure(figsize=(8, 6))
+    ax = f.subplots(ncols=1, nrows=1)
+    ax.plot(t * 1000, X - X0, marker=".", label="X")
+    ax.plot(t * 1000, Y - Y0, marker=".", label="Y")
+    ax.plot(t * 1000, Z - Z0, marker=".", label="Z")
+    ax.plot(t[init:i] * 1000, (dat[0][0] * t[init:i] + dat[0][1]), label="Best linear fit (initial)")
     print("Initial velocity: ({:.02f}, {:.02f}, {:.02f}) m/s".format(VX / 100, VY / 100, VZ / 100))
 
     score_down = 1000.
@@ -240,15 +246,15 @@ def get_velocity(ti, Xi, Yi, Zi, thres=1.3, plot=True, saveDir='data_treat/', in
     VY_after = np.polyfit(t[i:i + lenVel], Y[i:i + lenVel], deg=1)[0]
     VZ_after = np.polyfit(t[i:i + lenVel], Z[i:i + lenVel], deg=1)[0]
 
-    plt.plot(t[i:i+lenVel] * 1000, (dat[0][0] * t[i:i+lenVel] + dat[0][1]), label="Best linear fit (after impact)")
-    plt.legend()
+    ax.plot(t[i:i+lenVel] * 1000, (dat[0][0] * t[i:i+lenVel] + dat[0][1]), label="Best linear fit (after impact)")
+    ax.legend()
     if not(saveDir is None):
-        plt.savefig(saveDir+"Velocity.png")
+        f.savefig(saveDir+"Velocity.png")
     if plot:
         #plt.show(block=False)
         plot_fig(f)
         print("Velocity after impact: ({:.02f}, {:.02f}, {:.02f}) m/s".format(VX_after / 100, VY_after / 100,
                                                                       VZ_after / 100))
-    else:
-        plt.close(f)
+    # else:
+    #     plt.close(f)
     return [VX / 100, VY / 100, VZ / 100], [VX_after / 100, VY_after / 100, VZ_after / 100]

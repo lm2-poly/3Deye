@@ -5,7 +5,17 @@ from PIL import Image
 from gui.gui_utils import plot_fig
 import matplotlib
 matplotlib.use("TkAgg")
+from matplotlib.figure import Figure
 import time
+import cv2
+import imutils
+
+
+def create_circle(center, radius):
+	theta = np.linspace(0., 2 * np.pi, 100)
+	x = center[0] + radius * np.cos(theta)
+	y = center[1] + radius * np.sin(theta)
+	return x, y
 
 
 def filter_val(pic, width, height, tol=20.):
@@ -21,6 +31,19 @@ def filter_val(pic, width, height, tol=20.):
 	yi = np.arange(height)
 	Y, X = np.meshgrid(yi, xi)
 	bool_tab = pic>tol
+
+	# mask = (bool_tab * 1).astype('uint8')
+	# cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	# cnts = imutils.grab_contours(cnts)
+	# center = None
+	# if len(cnts) > 0:
+	# 	c = max(cnts, key=cv2.contourArea)
+	# 	((x, y), radius) = cv2.minEnclosingCircle(c)
+	# else:
+	# 	x = np.nan
+	# 	y = np.nan
+	# 	radius = np.nan
+
 	bary_x = float(np.sum(X[bool_tab]))
 	bary_y = float(np.sum(Y[bool_tab]))
 	numvals = np.sum(bool_tab)
@@ -34,7 +57,7 @@ def filter_val(pic, width, height, tol=20.):
 	return bary_x, bary_y, numvals
 
 
-def compute_2d_traj(cam, splitSymb="_", numsplit=-1, plotTraj=True, canvas=None):
+def compute_2d_traj(cam, splitSymb="_", numsplit=-1, plotTraj=True, isgui=False):
 	"""Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,
 	by computing the difference of images with the object and without the object (initial state)
 
@@ -78,6 +101,10 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=-1, plotTraj=True, canvas=None)
 	avgdif = np.zeros((lenDat, 2))
 	timespan = np.linspace(0, lenDat, lenDat) / cam.framerate
 
+	if isgui and plotTraj:
+		fig = Figure(figsize=(8, 6))
+		root, canvas = plot_fig(fig)
+
 	for k in range(0, lenDat):
 		img = Image.open(picList[k]).convert('LA')
 		RGBPic_actu = (np.array(img)[:, :, 0].T).astype(np.int16)
@@ -97,14 +124,18 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=-1, plotTraj=True, canvas=None)
 		avgdif[numActu, 1] = bary_y
 
 		if plotTraj:
-			if canvas is None:
+			if not(isgui):
 				plt.clf()
 				plt.imshow(imSuper, cmap='gray')
 				plt.plot([bary_x], [bary_y], '.', markersize=3, color="red", label="Detected position")
 			else:
-				canvas.figure.clear()
-				canvas.figure.add_subplot(111).imshow(imSuper, cmap='gray')
-				canvas.figure.add_subplot(111).plot([bary_x], [bary_y], '.', markersize=3, color="red", label="Detected position")
+				fig.clear()
+				fig.add_subplot(111).imshow(imSuper, cmap='gray')
+				fig.add_subplot(111).plot(bary_x, bary_y, '.', ms=2, color='red')
+				# if not(np.isnan(circ_radius)):
+				# 	x_c, y_c = create_circle((bary_x, bary_y), circ_radius)
+				# 	canvas.figure.add_subplot(111).plot(x_c, y_c, color='red', linewidth=1)
+				# 	canvas.figure.add_subplot(111).plot(bary_x, bary_y, '.', ms=2, color='red')
 
 			# plt.xlim((0, cam.res[0]))
 			# plt.ylim((0, cam.res[1]))
@@ -116,6 +147,7 @@ def compute_2d_traj(cam, splitSymb="_", numsplit=-1, plotTraj=True, canvas=None)
 			else:
 				canvas.draw()
 				time.sleep(0.1)
-
+	if isgui and plotTraj:
+		root.destroy()
 
 	return avgdif, timespan

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from gui.gui_utils import plot_fig
 import matplotlib
 matplotlib.use("TkAgg")
-
+from matplotlib.figure import Figure
 
 def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp",
                    plotTraj=True, plot=True, isgui=False):
@@ -23,14 +23,10 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
     """
 
     print("**** Shot position detection")
-    canvas = None
-    if isgui and plotTraj:
-        canvas = plot_fig(plt.figure(figsize=(8,6)))
-
     print("** Top camera")
-    traj_2d_top, timespan_top = compute_2d_traj(cam_top, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj, canvas=canvas)
+    traj_2d_top, timespan_top = compute_2d_traj(cam_top, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj, isgui=isgui)
     print("** Left camera")
-    traj_2d_left, timespan_left = compute_2d_traj(cam_left, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj, canvas=canvas)
+    traj_2d_left, timespan_left = compute_2d_traj(cam_left, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj, isgui=isgui)
     minspan_len = min(len(timespan_top), len(timespan_left))
 
     traj_2d_top, traj_2d_left = cam_shift_resize(traj_2d_top, traj_2d_left, cam_top, cam_left)
@@ -77,29 +73,31 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left):
     x_top, y_top = get_proj_list(X, Y, Z, cam_top)
     x_left, y_left = get_proj_list(X, Y, Z, cam_left)
 
-    figure = plt.figure(figsize=(18,6))
-    plt.title("Trajectory reprojection error")
-    plt.subplot(131)
-    plt.title("Top camera")
-    plt.plot(traj_top[:, 0], traj_top[:, 1], 'o-', label="Camera trajectory")
-    plt.plot(x_top, y_top,'.', label="Reprojected trajectory")
-    plot_square(cam_top)
+    fig = Figure(figsize=(18, 6), tight_layout=True)
+    ax1, ax2, ax3 = fig.subplots(ncols=3, nrows=1)
+    ax1.set_title("Top camera")
+    ax1.plot(traj_top[:, 0], traj_top[:, 1], 'o-', label="Camera trajectory")
+    ax1.plot(x_top, y_top,'.', label="Reprojected trajectory")
+    # plot_square(cam_top)
+    ax1.legend()
 
-    plt.legend()
-    plt.subplot(132)
-    plt.title("Left camera")
-    plt.plot(traj_left[:, 0], traj_left[:, 1], 'o-', label="Camera trajectory")
-    plt.plot(x_left, y_left, '.', label="Reprojected trajectory")
-    plot_square(cam_left)
-    plt.legend()
-    plt.subplot(133)
-    plt.title("Shot 3D Trajectory")
-    plt.plot(X, label="X")
-    plt.plot(Y, label="Y")
-    plt.plot(Z, label="Z")
-    plt.legend()
+    ax2.set_title("Left camera")
+    ax2.plot(traj_left[:, 0], traj_left[:, 1], 'o-', label="Camera trajectory")
+    ax2.plot(x_left, y_left, '.', label="Reprojected trajectory")
+    # plot_square(cam_left)
+    ax2.legend()
 
-    plot_fig(figure)
+    ax3.set_title("Shot 3D Trajectory")
+    ax3.plot(X, label="X")
+    ax3.plot(Y, label="Y")
+    ax3.plot(Z, label="Z")
+    ax3.set_xlabel("time (ms)")
+    ax3.set_ylabel("Position (cm)")
+    ax3.legend()
+    #
+    fig.savefig("data_treat/Reproj_error.png")
+    root, canvas = plot_fig(fig, size="1200x450")
+
     #plt.show(block=False)
 
 

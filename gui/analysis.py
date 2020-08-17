@@ -328,8 +328,14 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
     for elem in foldList:
         print("************ "+elem)
         try:
-            create_camera(top_entry, 'top', cam_top, float(ratTop.get()))
-            create_camera(left_entry, 'left', cam_left, float(ratLeft.get()))
+            if meth == 'no-persp':
+                ptc_top = float(ratTop.get())
+                ptc_left = float(ratLeft.get())
+            else:
+                ptc_top = None
+                ptc_left = None
+            create_camera(top_entry, 'top', cam_top, ptc_top)
+            create_camera(left_entry, 'left', cam_left, ptc_left)
             if not elem == '':
                 cam_top.dir = ana_fold + elem + '/' + cam_top.dir
                 cam_left.dir = ana_fold + elem + '/' + cam_left.dir
@@ -338,28 +344,29 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
 
         except NameError:
             popupmsg("One of the camera folder name you entered was either incorrect or empty.")
-        except:
-            popupmsg("Camera creation failed. Check the parameters you entered for possible mistakes.")
 
         else:
-            try:
-                X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
-                                                   splitSymb="_", numsplit=-1, method=meth,
-                                                   plotTraj=show_traj.get(), plot=not (isbatch.get()), isgui=True)
-            except:
-                notebook.tab(3, state='disable')
-                popupmsg("Something went wrong in the analysis. Check out the console messages for more detail.")
-            else:
-                traj_3d.set_trajectory(timespan, X, Y, Z)
-                notebook.tab(3, state='normal')
-                if isbatch.get():
+            #try:
+            X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
+                                               splitSymb="_", numsplit=-1, method=meth,
+                                               plotTraj=show_traj.get(), plot=not (isbatch.get()), isgui=True)
+            #except:
+            notebook.tab(3, state='disable')
+            #popupmsg("Something went wrong in the analysis. Check out the console messages for more detail.")
+            #else:
+            traj_3d.set_trajectory(timespan, X, Y, Z)
+            notebook.tab(3, state='normal')
+            if isbatch.get():
+                try:
                     alpha = get_init_angle(X, Y, Z, timespan, cam_top, cam_left, plot=False,
                                            saveDir=ana_fold+'RESULTS\\'+elem+'-', init=traj_3d.ang_min_ind, end=traj_3d.ang_end_ind)
                     xi, yi, zi = get_impact_position(X, Y, Z, cam_left, cam_top, plot=False,
                                                      saveDir=ana_fold+'RESULTS\\'+elem+'-', threshold= traj_3d.imp_thres)
                     Vinit, Vend = get_velocity(timespan, X, Y, Z, thres=traj_3d.vel_det_fac, plot=False,
                                                saveDir=ana_fold+'RESULTS\\'+elem+'-', init=traj_3d.vel_init_ind, pt_num=traj_3d.vel_min_pt)
-
+                except:
+                    popupmsg("Wrong batch post-processing parameters. Please adjust.")
+                else:
                     traj_3d.set_pp(alpha, Vinit, Vend, [xi, yi, zi])
                     traj_3d.save_dir = ana_fold+'RESULTS/'+elem+'.txt'
                     make_report(traj_3d, cam_top, cam_left, "data_treat/report_template.txt")
