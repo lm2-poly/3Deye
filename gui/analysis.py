@@ -63,7 +63,7 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
 
     w = ttk.Combobox(option_box, values=['No perspective', 'Perspective simple', 'Perspective optimized'])
     w.bind("<<ComboboxSelected>>", (lambda val=w.get(), camf=cam_factors: method_change(val, camf)))
-    w.insert(tk.END, 'Perspective simple')
+    w.insert(tk.END, 'Perspective optimized')
     cb = tk.Checkbutton(option_box, text="Show detected points", variable=show_traj)
 
     exp_params_fr = tk.Frame(frame)
@@ -320,9 +320,11 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
         if 'RESULTS' in foldList:
             foldList.remove('RESULTS')
         os.system('cd ' + ana_fold + ' && mkdir RESULTS')
+        savedir = ana_fold + 'RESULTS/'
     else:
         foldList  = ['']
         ana_fold = ''
+        savedir = 'data_treat/Reproj_error.png'
 
 
     for elem in foldList:
@@ -346,10 +348,13 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
             popupmsg("One of the camera folder name you entered was either incorrect or empty.")
 
         else:
+            if isbatch.get():
+                savedir += elem+'_reproj.png'
             #try:
             X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
                                                splitSymb="_", numsplit=-1, method=meth,
-                                               plotTraj=show_traj.get(), plot=not (isbatch.get()), isgui=True)
+                                               plotTraj=show_traj.get(), plot=not (isbatch.get()), isgui=True,
+                                               savedir=savedir)
             #except:
             notebook.tab(3, state='disable')
             #popupmsg("Something went wrong in the analysis. Check out the console messages for more detail.")

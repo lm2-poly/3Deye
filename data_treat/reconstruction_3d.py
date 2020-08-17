@@ -10,7 +10,7 @@ matplotlib.use("TkAgg")
 from matplotlib.figure import Figure
 
 def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp",
-                   plotTraj=True, plot=True, isgui=False):
+                   plotTraj=True, plot=True, isgui=False, savedir='data_treat/Reproj_error.png'):
     """Reconstruct the 3D trajectory of a moving object filmed by 2 cameras with a given angle between them
 
     :param cam_top,cam_left: camera object for the top and left camera
@@ -19,6 +19,7 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
     :param method: "persp", "persp-opti" or "no-persp" (default) - using the camera intrinsinc matrix for 3D trajectory or not, using analytical expression or least square optimisation
     :param plotTraj: Boolean, if True the detected shot position will be plotted
     :param plot: Boolean, if true the reprojection error will be plotted
+    :param savedir: path to the directory to save the reprojection error to
     :return:
     """
 
@@ -37,8 +38,7 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
     else:
         X, Y, Z, traj_2d_top, traj_2d_left = get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method, timespan_top[:minspan_len])
 
-    if plot:
-        plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left)
+    plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left, savedir=savedir, plot=plot)
 
     return X, Y, Z, timespan_top[:minspan_len]
 
@@ -63,12 +63,13 @@ def cam_shift_resize(traj_2d_top, traj_2d_left, cam_top, cam_left):
     return np.array(shift_2d_top), np.array(shift_2d_left)
 
 
-def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left):
+def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, savedir='data_treat/Reproj_error.png', plot=True):
     """Plot the reprojected trajectory for each camera to check for the trajectory errors
 
         :param traj_top,traj_left: screen trajectory for the top and left cameras
         :param X,Y,Z: computed 3D trajectory
         :param cam_top,cam_left: top and left camera objects
+        :param savedir: path to the directory to save the reprojection error to
         """
     x_top, y_top = get_proj_list(X, Y, Z, cam_top)
     x_left, y_left = get_proj_list(X, Y, Z, cam_left)
@@ -95,8 +96,9 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left):
     ax3.set_ylabel("Position (cm)")
     ax3.legend()
     #
-    fig.savefig("data_treat/Reproj_error.png")
-    root, canvas = plot_fig(fig, size="1200x450")
+    fig.savefig(savedir)
+    if plot:
+        root, canvas = plot_fig(fig, size="1200x450")
 
     #plt.show(block=False)
 

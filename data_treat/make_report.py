@@ -1,6 +1,9 @@
 import numpy as np
 from string import Template
 from gui.gui_utils import popupmsg
+import glob
+import platform
+import os
 
 
 def load_data(fileName, trajectory, cam_top, cam_left):
@@ -42,6 +45,21 @@ def load_data(fileName, trajectory, cam_top, cam_left):
     cam_left_string = category[6].split("=")[1].split('Left camera\n')[1]
     cam_left.load_from_string(cam_left_string)
     cam_left.framerate = fps
+
+    listpic = glob.glob("data_treat/*.png")
+    for elem in listpic:
+        if "Reproj_error.png" in elem:
+            delete_pic("data_treat/Reproj_error.png")
+
+
+def delete_pic(pic_path):
+    if platform.system() == 'Windows':
+        pic_path = pic_path.replace('/', '\\')
+        os.system('del '+pic_path)
+    elif platform.system() == 'Linux':
+        os.system('rm -rf '+pic_path)
+    else:
+        popupmsg("Unknown OS, I cannot save the pictures. You may find them in the data_treat folder directly...")
 
 
 def data_save(traj_3d, cam_top, cam_left):
