@@ -29,7 +29,9 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     top_cam = tk.Frame(cam_frames, width=250)
     left_cam = tk.Frame(cam_frames, width=250)
 
-    option_box = tk.Frame(frame)
+
+    div_params = tk.Frame(frame)
+    option_box = tk.Frame(div_params)
 
     cam_factors = tk.Frame(frame)
     cam_factors.hidden = 1
@@ -66,7 +68,7 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     w.insert(tk.END, 'Perspective optimized')
     cb = tk.Checkbutton(option_box, text="Show detected points", variable=show_traj)
 
-    exp_params_fr = tk.Frame(frame)
+    exp_params_fr = tk.Frame(div_params)
     exp_param = makeform(exp_params_fr, ['Shot type', 'Sample name', 'Input pressure (psi)'],
                    ["0.5mm", "Aluminum 6050", "50"])
 
@@ -100,12 +102,13 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
                                    bo=is_batch, bf=batch_folder, ep=exp_param:
                             launch_analysis(t, l, n, wval,ct, cl, traj, s, ratTop, ratLeft, bo, bf, ep)))
 
-    exp_params_fr.pack(side=tk.TOP)
+    exp_params_fr.pack(side=tk.LEFT)
     b1.pack(side=tk.BOTTOM, padx=5, pady=5)
     w.pack(side=tk.LEFT)
     cb.pack(side=tk.RIGHT)
     batch_switch.pack(side=tk.RIGHT)
-    option_box.pack(side=tk.BOTTOM)
+    option_box.pack(side=tk.RIGHT)
+    div_params.pack(side=tk.TOP)
     warning_label = tk.Label(frame, text="Warning, picture name must be in the following format: 'Name_number.jpg'")
     warning_label.pack(side=tk.BOTTOM)
 

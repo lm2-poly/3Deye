@@ -23,6 +23,8 @@ def start_gui():
 
     notebook = ttk.Notebook(root, style="lefttab.TNotebook")
 
+
+
     calib_frame = tk.Frame(notebook, width=800, height=600)
     load_frame = tk.Frame(notebook, width=800, height=600)
     ana_frame = tk.Frame(notebook, width=800, height=600)
