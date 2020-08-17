@@ -16,7 +16,7 @@ def get_transfo_mat(calib_pic_file, mtx, dist, chess_dim, chess_case_len):
     :param chess_case_len: real life lenth of the chess square
     :return: R, T Rotation Rodrigues vector and Translation vector
     """
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 1000, 1.e-9)
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 1000, 1.e-2)
 
     objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pic_file, False, criteria, chess_dim)
     objpoints = chess_case_len * np.array(objpoints)

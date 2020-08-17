@@ -78,15 +78,35 @@ def get_blob_position(img, corners, dim):
 
     for i in range(0, dim-1):
         for j in range(0, dim-1):
-            x_min = int(min(point_grid[i, j, 0], point_grid[i,j+1,0]))
-            x_max = int(max(point_grid[i, j, 0], point_grid[i, j + 1, 0]))
-            y_min = int(min(point_grid[i, j, 1], point_grid[i+1, j, 1]))
-            y_max = int(max(point_grid[i, j, 1], point_grid[i+1, j, 1]))
-            pic_actu = img[y_min:y_max, x_min:x_max, :]
+            # x_min = int(min(point_grid[i, j, 0], point_grid[i,j+1,0]))
+            # x_max = int(max(point_grid[i, j, 0], point_grid[i, j + 1, 0]))
+            # y_min = int(min(point_grid[i, j, 1], point_grid[i+1, j, 1]))
+            # y_max = int(max(point_grid[i, j, 1], point_grid[i+1, j, 1]))
+            x_min = int(min(point_grid[i, j, 0], point_grid[i + 1, j, 0]))
+            x_max = int(max(point_grid[i, j + 1, 0], point_grid[i + 1, j + 1, 0]))
+            y_min = int(min(point_grid[i, j, 1], point_grid[i, j + 1, 1]))
+            y_max = int(max(point_grid[i, j + 1, 1], point_grid[i + 1, j + 1, 1]))
+
+            contour = np.array([point_grid[i, j], point_grid[i + 1, j], point_grid[i + 1, j + 1], point_grid[i, j + 1]])
+            img_copy = mask_pic(contour, img)
+            pic_actu = img_copy[y_min:y_max, x_min:x_max, :]
+
             blob = detector.detect(pic_actu)
             if not(blob == []):
                 blob_pos.append([j, i, pic_actu[int(blob[0].pt[1]), int(blob[0].pt[0])][0]])
     return blob_pos
+
+
+def mask_pic(contour, img):
+    img_copy = img.copy()
+    lenx = img.shape[0]
+    leny = img.shape[1]
+
+    for i in range(0, lenx):
+        for j in range(0, leny):
+            if cv2.pointPolygonTest(contour, (j, i), False) == -1.:
+                img_copy[i, j] = 0
+    return img_copy
 
 
 def change_chess_ori(blobs, objpoints):
