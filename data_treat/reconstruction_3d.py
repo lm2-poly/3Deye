@@ -1,6 +1,6 @@
 """functions to reconstruct the object 3D trajectory"""
 import numpy as np
-from scipy.optimize import least_squares
+from scipy.optimize import least_squares, differential_evolution
 from scipy.interpolate import interp1d
 from data_treat.objectExtract import compute_2d_traj
 import matplotlib.pyplot as plt
@@ -79,13 +79,13 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, savedir='da
     ax1.set_title("Top camera")
     ax1.plot(traj_top[:, 0], traj_top[:, 1], 'o-', label="Camera trajectory")
     ax1.plot(x_top, y_top,'.', label="Reprojected trajectory")
-    # plot_square(cam_top)
+    plot_square(cam_top, ax1)
     ax1.legend()
 
     ax2.set_title("Left camera")
     ax2.plot(traj_left[:, 0], traj_left[:, 1], 'o-', label="Camera trajectory")
     ax2.plot(x_left, y_left, '.', label="Reprojected trajectory")
-    # plot_square(cam_left)
+    plot_square(cam_left, ax2)
     ax2.legend()
 
     ax3.set_title("Shot 3D Trajectory")
@@ -103,7 +103,7 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, savedir='da
     #plt.show(block=False)
 
 
-def plot_square(cam):
+def plot_square(cam, ax):
     """Plot a square repreentive the cropped camera screen
 
     :param cam: camera object
@@ -112,10 +112,10 @@ def plot_square(cam):
     B = [cam.camRes[0] / 2 + cam.res[0] / 2, cam.camRes[1] / 2 - cam.res[1] / 2]
     C = [cam.camRes[0] / 2 + cam.res[0] / 2, cam.camRes[1] / 2 + cam.res[1] / 2]
     D = [cam.camRes[0] / 2 - cam.res[0] / 2, cam.camRes[1] / 2 + cam.res[1] / 2]
-    plt.plot([A[0], B[0]], [A[1], B[1]], color="black")
-    plt.plot([B[0], C[0]], [B[1], C[1]], color="black")
-    plt.plot([C[0], D[0]], [C[1], D[1]], color="black")
-    plt.plot([D[0], A[0]], [D[1], A[1]], color="black")
+    ax.plot([A[0], B[0]], [A[1], B[1]], color="black")
+    ax.plot([B[0], C[0]], [B[1], C[1]], color="black")
+    ax.plot([C[0], D[0]], [C[1], D[1]], color="black")
+    ax.plot([D[0], A[0]], [D[1], A[1]], color="black")
 
 
 def get_proj_list(X, Y, Z, cam):
@@ -181,11 +181,14 @@ def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, metho
             X_coor[i], Y_coor[i], Z_coor[i] = [np.nan, np.nan, np.nan]
 
     if method == "persp-opti":
+        #tau_0 = 0.7e-5
         tau_0 = 0.
         args = (X_coor, Y_coor, Z_coor, cam_left, cam_top, traj_2d_left, traj_2d_top, timespan)
-        res_act = least_squares(shift_error, tau_0, args=args)
+        #res_act = least_squares(shift_error, tau_0, args=args)
+        res_act = differential_evolution(shift_error, [(-timespan[1], timespan[1])], args=args)
         tau = float(res_act.x)
         X_coor, Y_coor, Z_coor, t1, t2 = get_shifted_3D(tau, X, Y, Z, cam_left, cam_top, traj_2d_left, traj_2d_top, timespan)
+        print(tau)
 
     return X_coor, Y_coor, Z_coor, t1, t2
 
@@ -202,16 +205,17 @@ def shift_error(tau, X, Y, Z, cam_left, cam_top, traj_left, traj_top, timespan):
     x, y, z, corr_top, corr_left = get_shifted_3D(tau, X, Y, Z, cam_left, cam_top, traj_left, traj_top, timespan)
     err = [0., 0., 0., 0.]
     len_traj = len(timespan)
-    for i in range(0, len_traj):
+    for i in range(0, len_traj-1):
         if not (np.isnan(X[i]) or np.isnan(Y[i]) or np.isnan(Z[i])):
             err_actu = get_proj_error([x[i], y[i], z[i]], cam_left, cam_top, corr_left[i, :], corr_top[i, :])
-            if np.sum(np.isnan(err_actu)) == 0:
-                err[0] += float(err_actu[0]) ** 2
-                err[1] += float(err_actu[1]) ** 2
-                err[2] += float(err_actu[2]) ** 2
-                err[3] += float(err_actu[3]) ** 2
+            w = np.sqrt((x[i + 1] - x[i]) ** 2 + (y[i + 1] - y[i]) ** 2 + (z[i + 1] - z[i]) ** 2)
+            if np.sum(np.isnan(err_actu)) == 0 and not(np.isnan(w)):
+                err[0] += w * float(err_actu[0]) ** 2
+                err[1] += w * float(err_actu[1]) ** 2
+                err[2] += w * float(err_actu[2]) ** 2
+                err[3] += w * float(err_actu[3]) ** 2
 
-    return err
+    return np.sum(err)
 
 
 def get_shifted_3D(tau, X, Y, Z, cam_left, cam_top, traj_left, traj_top, timespan):
