@@ -8,6 +8,10 @@ from gui.gui_utils import plot_fig
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.figure import Figure
+import glob
+from PIL import Image
+import tkinter as tk
+
 
 def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-persp",
                    plotTraj=True, plot=True, isgui=False, savedir='data_treat/Reproj_error.png'):
@@ -25,10 +29,14 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
 
     print("**** Shot position detection")
     print("** Top camera")
-    traj_2d_top, timespan_top = compute_2d_traj(cam_top, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj, isgui=isgui)
+    traj_2d_top, timespan_top = compute_2d_traj(cam_top, splitSymb=splitSymb, numsplit=numsplit, plotTraj=False, isgui=isgui)
     print("** Left camera")
-    traj_2d_left, timespan_left = compute_2d_traj(cam_left, splitSymb=splitSymb, numsplit=numsplit, plotTraj=plotTraj, isgui=isgui)
+    traj_2d_left, timespan_left = compute_2d_traj(cam_left, splitSymb=splitSymb, numsplit=numsplit, plotTraj=False, isgui=isgui)
     minspan_len = min(len(timespan_top), len(timespan_left))
+
+    if plotTraj:
+        plot_cam_traj(cam_top, traj_2d_top, "Top camera")
+        plot_cam_traj(cam_left, traj_2d_left, "Left camera")
 
     traj_2d_top, traj_2d_left = cam_shift_resize(traj_2d_top, traj_2d_left, cam_top, cam_left)
 
@@ -39,6 +47,8 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
         X, Y, Z, traj_2d_top, traj_2d_left = get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method, timespan_top[:minspan_len])
 
     plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left, savedir=savedir, plot=plot)
+
+
 
     return X, Y, Z, timespan_top[:minspan_len]
 
@@ -101,6 +111,41 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, savedir='da
         root, canvas = plot_fig(fig, size="1200x450")
 
     #plt.show(block=False)
+
+
+def plot_cam_traj(cam, traj, title):
+    pic_num = tk.IntVar()
+    picList = glob.glob(cam.dir + "/*.tif")
+    if len(picList) == 0:
+        picList = glob.glob(cam.dir + "/*.jpg")
+    fig = Figure(tight_layout=True)
+    root, canvas = plot_fig(fig, size="600x600")
+    lab = tk.Label(root, text=title)
+    lab.pack(side=tk.TOP)
+    update_pic(0, canvas, cam, traj, picList)
+    mask_val_w = tk.Scale(root, from_=0, to=len(picList), orient=tk.HORIZONTAL, variable=pic_num,
+                          command=(lambda ma=pic_num, c=canvas, ca=cam, tr=traj, pl=picList: update_pic(ma,c, ca, tr, pl)))
+    mask_val_w.pack(side=tk.BOTTOM)
+
+
+def update_pic(pic_num, canvas, cam, traj, picList):
+    img = get_treated_pic(cam, picList[int(pic_num)])
+    canvas.figure.clear()
+    canvas.figure.add_subplot(111).imshow(img, cmap='gray')
+    canvas.figure.add_subplot(111).plot(traj[:, 1], traj[:, 0], '.', color='red', ms=1.5)
+    canvas.draw()
+
+
+def get_treated_pic(cam, pic):
+    img = Image.open(pic).convert('LA')
+
+    width, height = img.size
+    RGBPicRef = (np.array(img)[:, :, 0].T).astype(np.int16)
+    RGBPicRef[:int(cam.mask_w), :] = 0  # Width mask
+    RGBPicRef[:, RGBPicRef.shape[1] - int(cam.mask_h):] = 0  # Height mask
+    RGBPicRef = RGBPicRef[:, :height - cam.cropSize[3]]  # Vertical crop
+    RGBPicRef = RGBPicRef[cam.cropSize[0]:width - cam.cropSize[1], :]  # Horizontal crop
+    return RGBPicRef
 
 
 def plot_square(cam, ax):
