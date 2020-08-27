@@ -72,6 +72,7 @@ def get_blob_position(img, corners, dim):
     params = cv2.SimpleBlobDetector_Params()
     params.filterByCircularity = True
     params.minCircularity = 0.8
+    params.minThreshold = 40
     params.filterByColor = 0
     detector = cv2.SimpleBlobDetector_create(params)
     blob_pos = []
@@ -89,7 +90,7 @@ def get_blob_position(img, corners, dim):
 
             contour = np.array([point_grid[i, j], point_grid[i + 1, j], point_grid[i + 1, j + 1], point_grid[i, j + 1]])
             img_copy = mask_pic(contour, img)
-            pic_actu = img_copy[y_min:y_max, x_min:x_max, :]
+            pic_actu = img_copy[y_min:y_max, x_min:x_max, :].astype('uint8')
 
             blob = detector.detect(pic_actu)
             if not(blob == []):
@@ -98,14 +99,18 @@ def get_blob_position(img, corners, dim):
 
 
 def mask_pic(contour, img):
-    img_copy = img.copy()
+    img_copy = np.zeros(img.shape)
     lenx = img.shape[0]
     leny = img.shape[1]
+    xmin = int(np.min(contour[:, 0]))
+    xmax = int(np.max(contour[:, 0]))
+    ymin = int(np.min(contour[:, 1]))
+    ymax = int(np.max(contour[:, 1]))
 
-    for i in range(0, lenx):
-        for j in range(0, leny):
-            if cv2.pointPolygonTest(contour, (j, i), False) == -1.:
-                img_copy[i, j] = 0
+    for i in range(xmin, xmax):
+        for j in range(ymin, ymax):
+            if not(cv2.pointPolygonTest(contour, (i, j), False) == -1.):
+                img_copy[j, i] = img[j, i]
     return img_copy
 
 

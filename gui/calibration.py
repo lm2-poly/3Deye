@@ -24,16 +24,26 @@ def calib_tab(root,frame):
     lencase.pack()
 
 
+    # ents = makeform(frame, ['Top camera chessboard picture folder',
+    #                         'Left camera chessboard picture folder',
+    #                         'Top camera sample position picture',
+    #                         'Left camera sample position picture',
+    #                         'Output calibration files folder path'],
+    #                 ["calibration/lens_dist_calib_top",
+    #               "calibration/lens_dist_calib_left",
+    #               "calibration/sources/calib_checker_top.jpg",
+    #               "calibration/sources/calib_checker_left.jpg",
+    #                  "calibration/res"])
     ents = makeform(frame, ['Top camera chessboard picture folder',
                             'Left camera chessboard picture folder',
                             'Top camera sample position picture',
                             'Left camera sample position picture',
                             'Output calibration files folder path'],
-                    ["calibration/lens_dist_calib_top",
-                  "calibration/lens_dist_calib_left",
-                  "calibration/sources/calib_checker_top.jpg",
-                  "calibration/sources/calib_checker_left.jpg",
-                     "calibration/res"])
+                    ["C:/Users/breum/Desktop/2020-08-26/calib/LEFT",
+                     "C:/Users/breum/Desktop/2020-08-26/calib/TOP",
+                     "C:/Users/breum/Desktop/2020-08-26/calib_30deg_top.tif",
+                     "C:/Users/breum/Desktop/2020-08-26/calib_30deg_left.tif",
+                     "C:/Users/breum/Desktop/2020-08-26/calib_res/30deg"])
 
     b1 = tk.Button(frame, text='Calibrate !',
                    command=(lambda e=ents: launch_calib(e, numcase, lencase)))
