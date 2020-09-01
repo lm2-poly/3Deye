@@ -1,5 +1,6 @@
 import tkinter as tk
 from calibration.main import calibrate_stereo
+from calibration.errorClass import CalibrationError
 from gui.gui_utils import makeform, popupmsg
 
 
@@ -39,11 +40,11 @@ def calib_tab(root,frame):
                             'Top camera sample position picture',
                             'Left camera sample position picture',
                             'Output calibration files folder path'],
-                    ["C:/Users/breum/Desktop/2020-08-26/calib/LEFT",
-                     "C:/Users/breum/Desktop/2020-08-26/calib/TOP",
-                     "C:/Users/breum/Desktop/2020-08-26/calib_30deg_top.tif",
-                     "C:/Users/breum/Desktop/2020-08-26/calib_30deg_left.tif",
-                     "C:/Users/breum/Desktop/2020-08-26/calib_res/30deg"])
+                    ["calibration/lens_dist_calib_top",
+                     "Ccalibration/lens_dist_calib_left",
+                     "calibration/sources/calib_checker_top.jpg",
+                     "calibration/sources/calib_checker_left.jpg",
+                     "calibration/res"])
 
     b1 = tk.Button(frame, text='Calibrate !',
                    command=(lambda e=ents: launch_calib(e, numcase, lencase)))
@@ -65,5 +66,5 @@ def launch_calib(entries, numcase, lencase):
                          entries[3][1].get(),
                          entries[4][1].get(),
                          chess_dim=int(numcase.get()), chess_case_len=float(lencase.get()))
-    except:
-        popupmsg("Calibration failed !")
+    except CalibrationError as err:
+        popupmsg(err)

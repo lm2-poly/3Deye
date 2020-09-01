@@ -8,6 +8,7 @@ https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_calib3d/
 """
 from calibration.calib_len import get_cam_matrix
 from calibration.find_sample_ori import get_transfo_mat, plot_proj_origin
+from calibration.errorClass import CalibrationError
 import matplotlib.pyplot as plt
 import json
 
@@ -24,12 +25,23 @@ def calibrate_stereo(left_lens, right_lens, left_pos, right_pos, calib_folder, c
     """
 
     print("Getting cameras matrix")
-    mtx_top, dist_top = get_cam_matrix(left_lens, chess_dim, chess_case_len)
-    mtx_left, dist_left = get_cam_matrix(right_lens, chess_dim, chess_case_len)
+    try:
+        print("** Top")
+        mtx_top, dist_top = get_cam_matrix(left_lens, chess_dim, chess_case_len)
+        print("** Left")
+        mtx_left, dist_left = get_cam_matrix(right_lens, chess_dim, chess_case_len)
+    except:
+        raise CalibrationError('I can\'t find the camera intrinsic matrix. Please select better chessboard picture')
 
     print("Getting reference frame transformations")
-    R_top, T_top = get_transfo_mat(left_pos, mtx_top, dist_top, chess_dim, chess_case_len)
-    R_left, T_left = get_transfo_mat(right_pos, mtx_left, dist_left, chess_dim, chess_case_len)
+    try:
+        print("** Top")
+        R_top, T_top = get_transfo_mat(left_pos, mtx_top, dist_top, chess_dim, chess_case_len)
+        print("** Left")
+        R_left, T_left = get_transfo_mat(right_pos, mtx_left, dist_left, chess_dim, chess_case_len)
+    except:
+        raise CalibrationError('I can\'t find the chessboard points for the transformation matrix. '
+                               'Please provide a picture with well defined corners or calibrate manually.')
 
     print("Check system coordinate consistency")
     plt.figure(figsize=(14,6))
