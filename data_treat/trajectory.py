@@ -6,7 +6,8 @@ class Experiment:
     Class for the Experiment object
     """
     def __init__(self, t=None, X=None, Y=None, Z=None, shot=None, sample=None, pressure=None, alpha=np.nan,
-                 vinit=[np.nan, np.nan, np.nan], vend=[np.nan, np.nan, np.nan], impact_pos=[np.nan, np.nan, np.nan]):
+                 vinit=[np.nan, np.nan, np.nan], vend=[np.nan, np.nan, np.nan], impact_pos=[np.nan, np.nan, np.nan],
+                 yerr=None):
         """Initialization for the Experiment object
 
         :param t: time list
@@ -37,6 +38,7 @@ class Experiment:
         self.ang_min_ind = 0
         self.ang_end_ind = 3
         self.imp_thres = 0.995
+        self.yerr = yerr
 
     def set_exp_params(self, shot, sample, pressure, fileName):
         """Set experimental parameters
@@ -64,7 +66,7 @@ class Experiment:
         self.vend = vend
         self.impact_pos = impact_pos
 
-    def set_trajectory(self, t, X, Y, Z):
+    def set_trajectory(self, t, X, Y, Z, yerr=None):
         """Set experiment trajectory list
 
         :param t: time list
@@ -74,3 +76,4 @@ class Experiment:
         self.X = X
         self.Y = Y
         self.Z = Z
+        self.yerr = yerr

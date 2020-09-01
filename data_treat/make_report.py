@@ -30,14 +30,23 @@ def load_data(fileName, trajectory, cam_top, cam_left):
     X = []
     Y = []
     Z = []
+    yerr = []
     for elem in traj[2:]:
-        if (len(elem.split()) == 4):
-            ti, xi, yi, zi = elem.split()
-        t.append(float(ti))
-        X.append(float(xi))
-        Y.append(float(yi))
-        Z.append(float(zi))
-    trajectory.set_trajectory(np.array(t), np.array(X), np.array(Y), np.array(Z))
+        if (len(elem.split()) > 4):
+            if (len(elem.split()) == 4):
+                ti, xi, yi, zi = elem.split()
+            elif (len(elem.split()) == 5):
+                ti, xi, yi, zi, yerri = elem.split()
+                yerr.append(float(yerri))
+            t.append(float(ti))
+            X.append(float(xi))
+            Y.append(float(yi))
+            Z.append(float(zi))
+
+    if len(yerr) == 0:
+        trajectory.set_trajectory(np.array(t), np.array(X), np.array(Y), np.array(Z))
+    else:
+        trajectory.set_trajectory(np.array(t), np.array(X), np.array(Y), np.array(Z), yerr=np.array(yerr))
 
     cam_top_string = category[5].split("=")[1].split('Top camera\n')[1]
     cam_top.load_from_string(cam_top_string)
@@ -73,7 +82,11 @@ def data_save(traj_3d, cam_top, cam_left):
     lenX = traj_3d.X.shape[0]
     out_str = ''
     for i in range(0, lenX):
-        out_str += '\n{:.04E} {:.04E} {:.04E} {:.04E}'.format(traj_3d.t[i], traj_3d.X[i], traj_3d.Y[i], traj_3d.Z[i])
+        out_str += '\n{:.04E} {:.04E} {:.04E} {:.04E}'.format(traj_3d.t[i], traj_3d.X[i],
+                                                              traj_3d.Y[i], traj_3d.Z[i])
+        if not(traj_3d.yerr is None):
+            out_str += ' {:.04E}'.format(traj_3d.yerr[i])
+
     out_str += "\n\n=== Calibration data\n"
     out_str += "==== Top camera\n" + cam_top.write_cam_data()
     out_str += "==== Left camera\n" + cam_left.write_cam_data()

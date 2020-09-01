@@ -19,4 +19,4 @@ Velocity norm after impact (m/s): $VoNorm
 Impact position (cm, relative to initial position): ($X, $Y, $Z)
 
 === Trajectory
-t(ms)	X(cm)	Y(cm)	Z(cm)
+t(ms)	X(cm)	Y(cm)	Z(cm)	Error(cm)

@@ -178,7 +178,17 @@
 <span class="kn">from</span> <span class="nn">gui.gui_utils</span> <span class="kn">import</span> <span class="n">plot_fig</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;TkAgg&quot;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">matplotlib.figure</span> <span class="kn">import</span> <span class="n">Figure</span>
 <span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">imutils</span>
+
+
+<span class="k">def</span> <span class="nf">create_circle</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+	<span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+	<span class="n">x</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+	<span class="n">y</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
 
 
 <div class="viewcode-block" id="filter_val"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.objectExtract.filter_val">[docs]</a><span class="k">def</span> <span class="nf">filter_val</span><span class="p">(</span><span class="n">pic</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">20.</span><span class="p">):</span>
@@ -194,6 +204,19 @@
 	<span class="n">yi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
 	<span class="n">Y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">yi</span><span class="p">,</span> <span class="n">xi</span><span class="p">)</span>
 	<span class="n">bool_tab</span> <span class="o">=</span> <span class="n">pic</span><span class="o">&gt;</span><span class="n">tol</span>
+
+	<span class="c1"># mask = (bool_tab * 1).astype(&#39;uint8&#39;)</span>
+	<span class="c1"># cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)</span>
+	<span class="c1"># cnts = imutils.grab_contours(cnts)</span>
+	<span class="c1"># center = None</span>
+	<span class="c1"># if len(cnts) &gt; 0:</span>
+	<span class="c1"># 	c = max(cnts, key=cv2.contourArea)</span>
+	<span class="c1"># 	((x, y), radius) = cv2.minEnclosingCircle(c)</span>
+	<span class="c1"># else:</span>
+	<span class="c1"># 	x = np.nan</span>
+	<span class="c1"># 	y = np.nan</span>
+	<span class="c1"># 	radius = np.nan</span>
+
 	<span class="n">bary_x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">bool_tab</span><span class="p">]))</span>
 	<span class="n">bary_y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">bool_tab</span><span class="p">]))</span>
 	<span class="n">numvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">bool_tab</span><span class="p">)</span>
@@ -207,7 +230,7 @@
 	<span class="k">return</span> <span class="n">bary_x</span><span class="p">,</span> <span class="n">bary_y</span><span class="p">,</span> <span class="n">numvals</span></div>
 
 
-<div class="viewcode-block" id="compute_2d_traj"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.objectExtract.compute_2d_traj">[docs]</a><span class="k">def</span> <span class="nf">compute_2d_traj</span><span class="p">(</span><span class="n">cam</span><span class="p">,</span> <span class="n">splitSymb</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">numsplit</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">plotTraj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">canvas</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_2d_traj"><a class="viewcode-back" href="../../contents/function_list.html#data_treat.objectExtract.compute_2d_traj">[docs]</a><span class="k">def</span> <span class="nf">compute_2d_traj</span><span class="p">(</span><span class="n">cam</span><span class="p">,</span> <span class="n">splitSymb</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">numsplit</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">plotTraj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isgui</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Compute the 2D trajectory (in m) of the barycenter of a moving object filmed by a camera,</span>
 <span class="sd">	by computing the difference of images with the object and without the object (initial state)</span>
 
@@ -251,6 +274,10 @@
 	<span class="n">avgdif</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">lenDat</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 	<span class="n">timespan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lenDat</span><span class="p">,</span> <span class="n">lenDat</span><span class="p">)</span> <span class="o">/</span> <span class="n">cam</span><span class="o">.</span><span class="n">framerate</span>
 
+	<span class="k">if</span> <span class="n">isgui</span> <span class="ow">and</span> <span class="n">plotTraj</span><span class="p">:</span>
+		<span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+		<span class="n">root</span><span class="p">,</span> <span class="n">canvas</span> <span class="o">=</span> <span class="n">plot_fig</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
 	<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lenDat</span><span class="p">):</span>
 		<span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">picList</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;LA&#39;</span><span class="p">)</span>
 		<span class="n">RGBPic_actu</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
@@ -270,14 +297,18 @@
 		<span class="n">avgdif</span><span class="p">[</span><span class="n">numActu</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bary_y</span>
 
 		<span class="k">if</span> <span class="n">plotTraj</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">canvas</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">isgui</span><span class="p">):</span>
 				<span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 				<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">imSuper</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
 				<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">bary_x</span><span class="p">],</span> <span class="p">[</span><span class="n">bary_y</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Detected position&quot;</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="n">canvas</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-				<span class="n">canvas</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">imSuper</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
-				<span class="n">canvas</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">bary_x</span><span class="p">],</span> <span class="p">[</span><span class="n">bary_y</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Detected position&quot;</span><span class="p">)</span>
+				<span class="n">fig</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+				<span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">imSuper</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+				<span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bary_x</span><span class="p">,</span> <span class="n">bary_y</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+				<span class="c1"># if not(np.isnan(circ_radius)):</span>
+				<span class="c1"># 	x_c, y_c = create_circle((bary_x, bary_y), circ_radius)</span>
+				<span class="c1"># 	canvas.figure.add_subplot(111).plot(x_c, y_c, color=&#39;red&#39;, linewidth=1)</span>
+				<span class="c1"># 	canvas.figure.add_subplot(111).plot(bary_x, bary_y, &#39;.&#39;, ms=2, color=&#39;red&#39;)</span>
 
 			<span class="c1"># plt.xlim((0, cam.res[0]))</span>
 			<span class="c1"># plt.ylim((0, cam.res[1]))</span>
@@ -289,7 +320,8 @@
 			<span class="k">else</span><span class="p">:</span>
 				<span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 				<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-
+	<span class="k">if</span> <span class="n">isgui</span> <span class="ow">and</span> <span class="n">plotTraj</span><span class="p">:</span>
+		<span class="n">root</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
 
 	<span class="k">return</span> <span class="n">avgdif</span><span class="p">,</span> <span class="n">timespan</span></div>
 </pre></div>

@@ -42,7 +42,7 @@ Position optimisation
 Slight time delay between the pictures taken by the two cameras can lead to errors in the trajectory estimation as the trajectory will be guessed using two pictures taken at different moments.
 
 To reduce this error, the trajectory of one of the two camera is linearly interpolated to get the pixel coordinate of the shots on the two cameras at the same time.
-However, the time delay between the two cameras is difficult to caracterize experimentally. The 'persp-opti' mode of 3D eye finds the values of the camera delay that minimizes the overall projection errors on the two cameras using elast-square optimization (see figure below).
+However, the time delay between the two cameras is difficult to caracterize experimentally. The 'persp-opti' mode of 3D eye finds the values of the camera delay that minimizes the overall projection errors on the two cameras using scipy differential_evolution optimization (see figure below).
 
 .. image:: figures/persp-opti.png
    :align: center
@@ -89,3 +89,11 @@ Reprojection error can be plotted using the :py:func:`data_treat.reconstruction_
 .. autofunction:: plot_proj_error
 
 The error will also be plotted when calling :py:func:`data_treat.reconstruction_3d.reconstruct_3d` with the argument `plot` set to `True`.
+
+If the **pixel to centimeter** ratio :math:`\delta` is provided in the camera object (or in the respective input of the GUI), an uncertainty on the 3D position estimation will also be provided based on the reprojection error, computed as:
+
+:math:`\sqrt{(x_{proj} - x_{detect})^2 + (y_{proj} - y_{detect})^2)} * \delta,`
+
+where :math:`(x,y)_{proj}` and :math:`(x,y)_{detect}` are respectively the reprojected and detected shot coordinate on the 2D screen.
+
+..note: This estimation is neither a lower nor a higher boundary of the effective position error but provides an order of accuracy.

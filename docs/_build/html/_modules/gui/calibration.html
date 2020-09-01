@@ -197,16 +197,26 @@
     <span class="n">lencase</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
 
 
+    <span class="c1"># ents = makeform(frame, [&#39;Top camera chessboard picture folder&#39;,</span>
+    <span class="c1">#                         &#39;Left camera chessboard picture folder&#39;,</span>
+    <span class="c1">#                         &#39;Top camera sample position picture&#39;,</span>
+    <span class="c1">#                         &#39;Left camera sample position picture&#39;,</span>
+    <span class="c1">#                         &#39;Output calibration files folder path&#39;],</span>
+    <span class="c1">#                 [&quot;calibration/lens_dist_calib_top&quot;,</span>
+    <span class="c1">#               &quot;calibration/lens_dist_calib_left&quot;,</span>
+    <span class="c1">#               &quot;calibration/sources/calib_checker_top.jpg&quot;,</span>
+    <span class="c1">#               &quot;calibration/sources/calib_checker_left.jpg&quot;,</span>
+    <span class="c1">#                  &quot;calibration/res&quot;])</span>
     <span class="n">ents</span> <span class="o">=</span> <span class="n">makeform</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Top camera chessboard picture folder&#39;</span><span class="p">,</span>
                             <span class="s1">&#39;Left camera chessboard picture folder&#39;</span><span class="p">,</span>
                             <span class="s1">&#39;Top camera sample position picture&#39;</span><span class="p">,</span>
                             <span class="s1">&#39;Left camera sample position picture&#39;</span><span class="p">,</span>
                             <span class="s1">&#39;Output calibration files folder path&#39;</span><span class="p">],</span>
-                    <span class="p">[</span><span class="s2">&quot;calibration/lens_dist_calib_top&quot;</span><span class="p">,</span>
-                  <span class="s2">&quot;calibration/lens_dist_calib_left&quot;</span><span class="p">,</span>
-                  <span class="s2">&quot;calibration/sources/calib_checker_top.jpg&quot;</span><span class="p">,</span>
-                  <span class="s2">&quot;calibration/sources/calib_checker_left.jpg&quot;</span><span class="p">,</span>
-                     <span class="s2">&quot;calibration/res&quot;</span><span class="p">])</span>
+                    <span class="p">[</span><span class="s2">&quot;C:/Users/breum/Desktop/2020-08-26/calib/LEFT&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;C:/Users/breum/Desktop/2020-08-26/calib/TOP&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;C:/Users/breum/Desktop/2020-08-26/calib_30deg_top.tif&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;C:/Users/breum/Desktop/2020-08-26/calib_30deg_left.tif&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;C:/Users/breum/Desktop/2020-08-26/calib_res/30deg&quot;</span><span class="p">])</span>
 
     <span class="n">b1</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Calibrate !&#39;</span><span class="p">,</span>
                    <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="o">=</span><span class="n">ents</span><span class="p">:</span> <span class="n">launch_calib</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">numcase</span><span class="p">,</span> <span class="n">lencase</span><span class="p">)))</span>
@@ -221,12 +231,15 @@
 <span class="sd">    :param numcase: number of checkboard case form object</span>
 <span class="sd">    :param lencase: length of a checkboard case form object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">calibrate_stereo</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-                     <span class="n">entries</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-                     <span class="n">entries</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-                     <span class="n">entries</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-                     <span class="n">entries</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-                     <span class="n">chess_dim</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">numcase</span><span class="o">.</span><span class="n">get</span><span class="p">()),</span> <span class="n">chess_case_len</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">lencase</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">calibrate_stereo</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                         <span class="n">entries</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                         <span class="n">entries</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                         <span class="n">entries</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                         <span class="n">entries</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                         <span class="n">chess_dim</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">numcase</span><span class="o">.</span><span class="n">get</span><span class="p">()),</span> <span class="n">chess_case_len</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">lencase</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">popupmsg</span><span class="p">(</span><span class="s2">&quot;Calibration failed !&quot;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

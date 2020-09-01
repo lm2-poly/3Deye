@@ -34,7 +34,7 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     option_box = tk.Frame(div_params)
 
     cam_factors = tk.Frame(frame)
-    cam_factors.hidden = 1
+    #cam_factors.hidden = 1
     cam_top_lab = tk.Label(cam_factors, text="Top pixel to cm ratio")
     cam_top_lab.pack(side=tk.LEFT)
     cam_top_factor = tk.Entry(cam_factors)
@@ -46,6 +46,7 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     cam_left_factor = tk.Entry(cam_factors)
     cam_left_factor.insert(tk.END, '{:.04e}'.format(1 / 148.97))
     cam_left_factor.pack(side=tk.LEFT)
+
 
     batch_options = tk.Frame(frame)
     batch_label = tk.Label(batch_options, text="Batch folder path:")
@@ -64,7 +65,7 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
 
 
     w = ttk.Combobox(option_box, values=['No perspective', 'Perspective simple', 'Perspective optimized'])
-    w.bind("<<ComboboxSelected>>", (lambda val=w.get(), camf=cam_factors: method_change(val, camf)))
+    #w.bind("<<ComboboxSelected>>", (lambda val=w.get(), camf=cam_factors: method_change(val, camf)))
     w.insert(tk.END, 'Perspective optimized')
     cb = tk.Checkbutton(option_box, text="Show detected points", variable=show_traj)
 
@@ -115,6 +116,7 @@ def ana_tab(root,frame, notebook, cam_top, cam_left, traj_3d):
     top_cam.pack(side=tk.LEFT, padx=5, pady=5)
     left_cam.pack(side=tk.RIGHT, padx=5, pady=5)
     cam_frames.pack(side=tk.TOP)
+    cam_factors.pack(side=tk.BOTTOM)
 
 
 def set_mask(cam, form):
@@ -138,7 +140,7 @@ def set_mask(cam, form):
         root.title("Set mask")
         root.geometry("600x600")
         root.wm_iconbitmap('gui/logo-lm2-f_0.ico')
-        fig = Figure(figsize=(5,4), dpi=100)
+        fig = Figure(figsize=(5, 4), dpi=100)
         im_act = np.array(im_act)
         fig_plot = fig.add_subplot(111).imshow(im_act, cmap='gray')
         canvas = FigureCanvasTkAgg(fig, master=root)
@@ -354,7 +356,7 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
             if isbatch.get():
                 savedir += elem+'_reproj.png'
             #try:
-            X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left,
+            X, Y, Z, timespan, err = reconstruct_3d(cam_top, cam_left,
                                                splitSymb="_", numsplit=-1, method=meth,
                                                plotTraj=show_traj.get(), plot=not (isbatch.get()), isgui=True,
                                                savedir=savedir)
@@ -362,7 +364,7 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
             notebook.tab(3, state='disable')
             #popupmsg("Something went wrong in the analysis. Check out the console messages for more detail.")
             #else:
-            traj_3d.set_trajectory(timespan, X, Y, Z)
+            traj_3d.set_trajectory(timespan, X, Y, Z, yerr=err)
             notebook.tab(3, state='normal')
             if isbatch.get():
                 try:

@@ -5,7 +5,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 
-def get_transfo_mat(calib_pic_file, mtx, dist, chess_dim, chess_case_len):
+def get_transfo_mat(calib_pic_file, mtx, dist, chess_dim, chess_case_len, imgpoints=None):
     """
     Finds the transformation matrix between the camera's frame and the sample
 
@@ -18,12 +18,26 @@ def get_transfo_mat(calib_pic_file, mtx, dist, chess_dim, chess_case_len):
     """
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 1000, 1.e-2)
 
-    objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pic_file, False, criteria, chess_dim)
-    objpoints = chess_case_len * np.array(objpoints)
-    obj_vect = np.reshape(objpoints, (objpoints.shape[0] * objpoints.shape[1], 3))
-    img_vect = np.reshape(np.array(imgpoints), (objpoints.shape[0] * objpoints.shape[1], 2))
-    blobs = blobs = get_blob_position(img, img_vect, chess_dim)
-    obj_vect = change_chess_ori(blobs, objpoints)
+    if imgpoints is None:
+        objpoints, imgpoints, gray, img, objp, corners2 = get_chessboard_points(calib_pic_file, False, criteria, chess_dim)
+        objpoints = chess_case_len * np.array(objpoints)
+        obj_vect = np.reshape(objpoints, (objpoints.shape[0] * objpoints.shape[1], 3))
+        img_vect = np.reshape(np.array(imgpoints), (objpoints.shape[0] * objpoints.shape[1], 2))
+        blobs = blobs = get_blob_position(img, img_vect, chess_dim)
+        obj_vect = change_chess_ori(blobs, objpoints)
+
+    else:
+        objp = np.zeros((chess_dim * chess_dim, 3), np.float32)
+        objp[:, :2] = np.mgrid[0:chess_dim, 0:chess_dim].T.reshape(-1, 2)
+        objpoints = [objp]
+
+        objpoints = chess_case_len * np.array(objpoints)
+        obj_vect = np.reshape(objpoints, (objpoints.shape[0] * objpoints.shape[1], 3))
+        img = cv2.imread(calib_pic_file)
+        img_vect = np.reshape(np.array(imgpoints), (objpoints.shape[0] * objpoints.shape[1], 2))
+
+
+
 
     ret, R, T = cv2.solvePnP(obj_vect, img_vect, mtx, dist)
     return R, T

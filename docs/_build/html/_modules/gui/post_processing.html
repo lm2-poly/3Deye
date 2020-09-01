@@ -247,6 +247,8 @@
             <span class="n">move_file</span><span class="p">(</span><span class="s1">&#39;data_treat/Impact_position.png&#39;</span><span class="p">,</span> <span class="n">parse_dir</span><span class="p">(</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">save_dir</span><span class="p">))</span>
         <span class="k">if</span> <span class="s1">&#39;Velocity.png&#39;</span> <span class="ow">in</span> <span class="n">list_pic</span><span class="p">:</span>
             <span class="n">move_file</span><span class="p">(</span><span class="s1">&#39;data_treat/Velocity.png&#39;</span><span class="p">,</span> <span class="n">parse_dir</span><span class="p">(</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">save_dir</span><span class="p">))</span>
+        <span class="k">if</span> <span class="s1">&#39;Reproj_error.png&#39;</span> <span class="ow">in</span> <span class="n">list_pic</span><span class="p">:</span>
+            <span class="n">move_file</span><span class="p">(</span><span class="s1">&#39;data_treat/Reproj_error.png&#39;</span><span class="p">,</span> <span class="n">parse_dir</span><span class="p">(</span><span class="n">traj_3d</span><span class="o">.</span><span class="n">save_dir</span><span class="p">))</span>
 
         <span class="n">make_report</span><span class="p">(</span><span class="n">traj_3d</span><span class="p">,</span> <span class="n">cam_top</span><span class="p">,</span> <span class="n">cam_left</span><span class="p">,</span> <span class="s2">&quot;data_treat/report_template.txt&quot;</span><span class="p">)</span>
         <span class="n">log</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Trajectory exported as &#39;</span> <span class="o">+</span> <span class="n">traj_3d</span><span class="o">.</span><span class="n">save_dir</span>
@@ -259,7 +261,7 @@
 
 
 <div class="viewcode-block" id="parse_dir"><a class="viewcode-back" href="../../contents/function_list.html#gui.post_processing.parse_dir">[docs]</a><span class="k">def</span> <span class="nf">parse_dir</span><span class="p">(</span><span class="n">save_dir</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Parses the save directoryto get only the directory (without the file name) to save the pictures to</span>
+    <span class="sd">&quot;&quot;&quot;Parses the save directory to get only the directory (without the file name) to save the pictures to</span>
 
 <span class="sd">    :param save_dir: save directory string</span>
 <span class="sd">    :return: save directory string without the file name</span>

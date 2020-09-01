@@ -48,7 +48,7 @@ cam_left = Cam(calib_file,
 
 
 print("******* Reconstructing 3D trajectory")
-X, Y, Z, timespan = reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=-1, method="persp", plotTraj=False)
+X, Y, Z, timespan, err = reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=-1, method="persp", plotTraj=False)
 #timespan, X, Y, Z = load_data("TestBlender.txt")
 
 print("******* Plot results")

@@ -46,11 +46,10 @@ def reconstruct_3d(cam_top, cam_left, splitSymb="_", numsplit=1, method="no-pers
     else:
         X, Y, Z, traj_2d_top, traj_2d_left = get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, method, timespan_top[:minspan_len])
 
-    plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left, savedir=savedir, plot=plot)
+    err = plot_proj_error(traj_2d_top, traj_2d_left, X, Y, Z, cam_top, cam_left, timespan_top[:minspan_len], savedir=savedir, plot=plot)
 
 
-
-    return X, Y, Z, timespan_top[:minspan_len]
+    return X, Y, Z, timespan_top[:minspan_len], err
 
 
 def cam_shift_resize(traj_2d_top, traj_2d_left, cam_top, cam_left):
@@ -73,7 +72,7 @@ def cam_shift_resize(traj_2d_top, traj_2d_left, cam_top, cam_left):
     return np.array(shift_2d_top), np.array(shift_2d_left)
 
 
-def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, savedir='data_treat/Reproj_error.png', plot=True):
+def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, time, savedir='data_treat/Reproj_error.png', plot=True):
     """Plot the reprojected trajectory for each camera to check for the trajectory errors
 
         :param traj_top,traj_left: screen trajectory for the top and left cameras
@@ -99,9 +98,10 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, savedir='da
     ax2.legend()
 
     ax3.set_title("Shot 3D Trajectory")
-    ax3.plot(X, label="X")
-    ax3.plot(Y, label="Y")
-    ax3.plot(Z, label="Z")
+    err = get_cam_accuracy(cam_left, np.array([x_left, y_left]).T, traj_left)
+    ax3.errorbar(time, X, yerr=err, label="X")
+    ax3.errorbar(time, Y, yerr=err, label="Y")
+    ax3.errorbar(time, Z, yerr=err, label="Z")
     ax3.set_xlabel("time (ms)")
     ax3.set_ylabel("Position (cm)")
     ax3.legend()
@@ -111,6 +111,24 @@ def plot_proj_error(traj_top, traj_left, X, Y, Z, cam_top, cam_left, savedir='da
         root, canvas = plot_fig(fig, size="1200x450")
 
     #plt.show(block=False)
+    return err
+
+
+def get_cam_accuracy(cam, traj_proj, traj_init):
+    """ Compute the product of the reprojection error and the camera pixel to cm ratio to estimate a position uncertainty
+
+    :param cam: Camera object
+    :param traj_proj: 2D reprojected trajectory
+    :param traj_init: 2D detected traj
+    :return: ndarray with the estimated position errors
+    """
+    if not(cam.firstPic is None):
+        diff = np.array(traj_proj) - np.array(traj_init)
+        diff = np.sqrt(np.sum(diff**2, axis=1))
+        return diff * cam.pic_to_cm
+    else:
+        return np.zeros((traj_proj.shape[0]))
+
 
 
 def plot_cam_traj(cam, traj, title):
@@ -226,11 +244,10 @@ def get_3d_coor(minspan_len, traj_2d_left, traj_2d_top, cam_left, cam_top, metho
             X_coor[i], Y_coor[i], Z_coor[i] = [np.nan, np.nan, np.nan]
 
     if method == "persp-opti":
-        #tau_0 = 0.7e-5
-        tau_0 = 0.
         args = (X_coor, Y_coor, Z_coor, cam_left, cam_top, traj_2d_left, traj_2d_top, timespan)
         #res_act = least_squares(shift_error, tau_0, args=args)
-        res_act = differential_evolution(shift_error, [(-timespan[1], timespan[1])], args=args)
+        dt = 1./cam_top.framerate
+        res_act = differential_evolution(shift_error, [(-dt, dt)], args=args)
         tau = float(res_act.x)
         X_coor, Y_coor, Z_coor, t1, t2 = get_shifted_3D(tau, X, Y, Z, cam_left, cam_top, traj_2d_left, traj_2d_top, timespan)
         print(tau)
