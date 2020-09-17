@@ -7,8 +7,6 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.figure import Figure
 import time
-import cv2
-import imutils
 
 
 def create_circle(center, radius):

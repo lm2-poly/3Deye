@@ -95,7 +95,11 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../user_guide.html">3D trajectory reconstruction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html#calibration">Calibration</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Camera matrices calibration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Camera matrices calibration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general-principles">General principles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manual-calibration">Manual calibration</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="gui.html">Using the GUI</a></li>
 </ul>
 </li>
@@ -182,7 +186,9 @@
             
   <div class="section" id="camera-matrices-calibration">
 <h1>Camera matrices calibration<a class="headerlink" href="#camera-matrices-calibration" title="Permalink to this headline">¶</a></h1>
-<p>The objective of teh calibration procedure is to find:</p>
+<div class="section" id="general-principles">
+<h2>General principles<a class="headerlink" href="#general-principles" title="Permalink to this headline">¶</a></h2>
+<p>The objective of the calibration procedure is to find:</p>
 <ul class="simple">
 <li><p><strong>The camera intrinsic matrix</strong> which results from the camera geometry <span class="math notranslate nohighlight">\(F\)</span>.</p></li>
 <li><p><strong>The transormation matrix</strong> between the sample and the camera coordinate systems <span class="math notranslate nohighlight">\(M\)</span>.</p></li>
@@ -265,6 +271,24 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>As it is computed by opencv, the camera rotation matrix is given as a Rodrigues vector.</p>
+</div>
+</div>
+<div class="section" id="manual-calibration">
+<h2>Manual calibration<a class="headerlink" href="#manual-calibration" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes the <a class="reference internal" href="../function_list.html#module-calibration.find_sample_ori" title="calibration.find_sample_ori"><code class="xref py py-func docutils literal notranslate"><span class="pre">calibration.find_sample_ori()</span></code></a> may fail to detect the chessboard corners. In particular, when performing a calibration on a tilted sample, part of the chessboard might be out of focus for one of the two cameras which results in blury chessboard corners.</p>
+<p>When automatic detection does not seem to be possible, the coordinate of the chessboard corners can be manually chosen. The list of point coordinates in the right order can then be given as input to <a class="reference internal" href="../function_list.html#module-calibration.find_sample_ori" title="calibration.find_sample_ori"><code class="xref py py-func docutils literal notranslate"><span class="pre">calibration.find_sample_ori()</span></code></a> using the imgpoints parameter.</p>
+<p>To obtain the corner coordinates list by simply clicking on the picture, use the click_coor.py provided in 3Drecons/calibration/manual.
+Simply change the value of the <strong>File</strong> variable for the path of your chessboard picture and click on the corners. When clicking, the point coordinates will automatically be appended in a “coord_list” file as a list.</p>
+<p>Please be careful to select the chess corners in a consistent order for the top and left camera to ensure both camera will have the same origin and axes orientation. You can for instance follow the order provided in the pictures below to be consistent with 3Deye default.</p>
+<img alt="../../_images/calib_order.png" class="align-center" src="../../_images/calib_order.png" />
+<p>Once all the chessboard point are selected for each picture, use the “manual.py” code to compute the calibration files for the two cameras using the manually provided coordinates. Two files “coord_list_top” and “coord_list_left” files containig the coordinate list of the corners should be positioned in the same directory as the code. The following variable values might need to be changed:</p>
+<ul class="simple">
+<li><p>left_lens, right_lens: path of the calibration chessboard pictures for the top and left cameras (intrinsic matrix)</p></li>
+<li><p>left_pos, right_pos: path of the left and top chessboard picture for the transormation matrix calculation</p></li>
+<li><p>calib_folder: calibration folder where the calibration files should be saved</p></li>
+<li><p>chess_dim: chess dimension (number of cases)</p></li>
+<li><p>chess_case_length: chess case length (in cm)</p></li>
+</ul>
 </div>
 </div>
 

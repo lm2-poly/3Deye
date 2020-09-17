@@ -173,6 +173,7 @@
   <h1>Source code for gui.calibration</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
 <span class="kn">from</span> <span class="nn">calibration.main</span> <span class="kn">import</span> <span class="n">calibrate_stereo</span>
+<span class="kn">from</span> <span class="nn">calibration.errorClass</span> <span class="kn">import</span> <span class="n">CalibrationError</span>
 <span class="kn">from</span> <span class="nn">gui.gui_utils</span> <span class="kn">import</span> <span class="n">makeform</span><span class="p">,</span> <span class="n">popupmsg</span>
 
 
@@ -212,11 +213,11 @@
                             <span class="s1">&#39;Top camera sample position picture&#39;</span><span class="p">,</span>
                             <span class="s1">&#39;Left camera sample position picture&#39;</span><span class="p">,</span>
                             <span class="s1">&#39;Output calibration files folder path&#39;</span><span class="p">],</span>
-                    <span class="p">[</span><span class="s2">&quot;C:/Users/breum/Desktop/2020-08-26/calib/LEFT&quot;</span><span class="p">,</span>
-                     <span class="s2">&quot;C:/Users/breum/Desktop/2020-08-26/calib/TOP&quot;</span><span class="p">,</span>
-                     <span class="s2">&quot;C:/Users/breum/Desktop/2020-08-26/calib_30deg_top.tif&quot;</span><span class="p">,</span>
-                     <span class="s2">&quot;C:/Users/breum/Desktop/2020-08-26/calib_30deg_left.tif&quot;</span><span class="p">,</span>
-                     <span class="s2">&quot;C:/Users/breum/Desktop/2020-08-26/calib_res/30deg&quot;</span><span class="p">])</span>
+                    <span class="p">[</span><span class="s2">&quot;calibration/lens_dist_calib_top&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;Ccalibration/lens_dist_calib_left&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;calibration/sources/calib_checker_top.jpg&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;calibration/sources/calib_checker_left.jpg&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;calibration/res&quot;</span><span class="p">])</span>
 
     <span class="n">b1</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Calibrate !&#39;</span><span class="p">,</span>
                    <span class="n">command</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="o">=</span><span class="n">ents</span><span class="p">:</span> <span class="n">launch_calib</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">numcase</span><span class="p">,</span> <span class="n">lencase</span><span class="p">)))</span>
@@ -238,8 +239,8 @@
                          <span class="n">entries</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
                          <span class="n">entries</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
                          <span class="n">chess_dim</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">numcase</span><span class="o">.</span><span class="n">get</span><span class="p">()),</span> <span class="n">chess_case_len</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">lencase</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">popupmsg</span><span class="p">(</span><span class="s2">&quot;Calibration failed !&quot;</span><span class="p">)</span></div>
+    <span class="k">except</span> <span class="n">CalibrationError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">popupmsg</span><span class="p">(</span><span class="n">err</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

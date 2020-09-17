@@ -142,7 +142,7 @@ def set_mask(cam, form):
         root.wm_iconbitmap('gui/logo-lm2-f_0.ico')
         fig = Figure(figsize=(5, 4), dpi=100)
         im_act = np.array(im_act)
-        fig_plot = fig.add_subplot(111).imshow(im_act, cmap='gray')
+        fig_plot = fig.add_subplot(111).imshow(im_act)
         canvas = FigureCanvasTkAgg(fig, master=root)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
@@ -187,7 +187,7 @@ def update_fig(mask, im_act, canvas, ind):
     elif ind == 1:
         pic_act[im_act.shape[0] - int(mask):, :] = 0
     canvas.figure.clear()
-    canvas.figure.add_subplot(111).imshow(pic_act, cmap='gray')
+    canvas.figure.add_subplot(111).imshow(pic_act)
     canvas.draw()
 
 
