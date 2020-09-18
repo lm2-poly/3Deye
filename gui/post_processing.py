@@ -140,7 +140,7 @@ def launch_pp(vels, cam_top, cam_left, T, traj_3d, fileSave, ang, pos):
                            init=int(ang[0][1].get()), end=int(ang[1][1].get()))
 
     log += 'Angle with horizontal: {:.02f}°\n'.format(alpha)
-    xi, yi, zi = get_impact_position(traj_3d.X, traj_3d.Y, traj_3d.Z, cam_left, cam_top, threshold=float(pos[0][1].get()))
+    xi, yi, zi, imp_i = get_impact_position(traj_3d.X, traj_3d.Y, traj_3d.Z, cam_left, cam_top, threshold=float(pos[0][1].get()))
 
     log += 'Impact position (cm): ({:.02f}, {:.02f} {:.02f})\n'.format(xi, yi, zi)
     Vinit, Vend = get_velocity(traj_3d.t, traj_3d.X, traj_3d.Y, traj_3d.Z,
@@ -154,7 +154,7 @@ def launch_pp(vels, cam_top, cam_left, T, traj_3d, fileSave, ang, pos):
     log += 'Velocity after impact (m/s): ({:.02f}, {:.02f} {:.02f})\n'.format(Vend[0], Vend[1], Vend[2])
     log += 'Velocity norm after impact (m/s): {:.02f}\n'.format(vo_norm)
 
-    traj_3d.set_pp(alpha, Vinit, Vend, [xi, yi, zi])
+    traj_3d.set_pp(alpha, Vinit, Vend, [xi, yi, zi], imp_i)
 
     T.delete('1.0', tk.END)
     T.insert(tk.END, log)

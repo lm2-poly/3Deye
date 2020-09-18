@@ -39,7 +39,8 @@ class Experiment:
         self.ang_end_ind = 3
         self.imp_thres = 0.995
         self.yerr = yerr
-
+        self.impact_i = 0
+        
     def set_exp_params(self, shot, sample, pressure, fileName):
         """Set experimental parameters
 
@@ -53,7 +54,7 @@ class Experiment:
         self.pressure = pressure
         self.save_dir = fileName
 
-    def set_pp(self, alpha, vinit, vend, impact_pos):
+    def set_pp(self, alpha, vinit, vend, impact_pos, imp_i=0):
         """Set experiment post-processing values
 
         :param alpha: shot angle wth horizontal
@@ -65,6 +66,7 @@ class Experiment:
         self.vinit = vinit
         self.vend = vend
         self.impact_pos = impact_pos
+        self.impact_i = imp_i
 
     def set_trajectory(self, t, X, Y, Z, yerr=None):
         """Set experiment trajectory list

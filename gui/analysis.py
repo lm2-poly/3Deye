@@ -370,13 +370,13 @@ def launch_analysis(top_entry, left_entry, notebook, method, cam_top, cam_left, 
                 try:
                     alpha = get_init_angle(X, Y, Z, timespan, cam_top, cam_left, plot=False,
                                            saveDir=ana_fold+'RESULTS\\'+elem+'-', init=traj_3d.ang_min_ind, end=traj_3d.ang_end_ind)
-                    xi, yi, zi = get_impact_position(X, Y, Z, cam_left, cam_top, plot=False,
+                    xi, yi, zi, imp_i = get_impact_position(X, Y, Z, cam_left, cam_top, plot=False,
                                                      saveDir=ana_fold+'RESULTS\\'+elem+'-', threshold= traj_3d.imp_thres)
                     Vinit, Vend = get_velocity(timespan, X, Y, Z, thres=traj_3d.vel_det_fac, plot=False,
                                                saveDir=ana_fold+'RESULTS\\'+elem+'-', init=traj_3d.vel_init_ind, pt_num=traj_3d.vel_min_pt)
                 except:
                     popupmsg("Wrong batch post-processing parameters. Please adjust.")
                 else:
-                    traj_3d.set_pp(alpha, Vinit, Vend, [xi, yi, zi])
+                    traj_3d.set_pp(alpha, Vinit, Vend, [xi, yi, zi], imp_i)
                     traj_3d.save_dir = ana_fold+'RESULTS/'+elem+'.txt'
                     make_report(traj_3d, cam_top, cam_left, "data_treat/report_template.txt")

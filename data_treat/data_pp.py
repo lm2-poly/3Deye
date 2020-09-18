@@ -144,7 +144,7 @@ def get_impact_position(X, Y, Z, cam_left, cam_top, plot=True, saveDir='data_tre
         print("Impact position: ({:.02f}, {:.02f}, {:.02f}) (cm)".format(X[i], Y[i], Z[i]))
     # else:
     #     plt.close(f)
-    return X[i], Y[i], Z[i]
+    return X[i], Y[i], Z[i], i
 
 
 def plot_supper(init, end, cam, thres=40., ax=None):

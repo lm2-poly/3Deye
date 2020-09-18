@@ -17,6 +17,7 @@ Initial velocity norm (m/s): $ViNorm
 Velocity after impact (m/s): ($VXAfter, $VYAfter, $VZAfter)
 Velocity norm after impact (m/s): $VoNorm
 Impact position (cm, relative to initial position): ($X, $Y, $Z)
+Impact position uncertainty (cm): $dimp
 
 === Trajectory
 t(ms)	X(cm)	Y(cm)	Z(cm)	Error(cm)
